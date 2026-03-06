@@ -220,10 +220,10 @@ export default function Home() {
               </div>
               <div className="flex-1 min-w-0">
                 <span className="text-[13px] font-bold text-white block leading-tight">
-                  Busca Inteligente
+                  Compra Assistida
                 </span>
                 <span className="text-[11px] text-white/60 block mt-0.5">
-                  Descreva o que voce precisa e a IA encontra pra voce
+                  Converse com a IA e descubra o produto ideal pra voce
                 </span>
               </div>
               <ArrowRight className="w-4 h-4 text-white/50 shrink-0 group-hover:translate-x-0.5 transition-transform" />

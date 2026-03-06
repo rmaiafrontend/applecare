@@ -1,18 +1,180 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { Search as SearchIcon, Sparkles, X, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Sparkles,
+  Send,
+  ExternalLink,
+  Truck,
+} from 'lucide-react';
 import Header from '@/components/navigation/Header';
-import BottomNav from '@/components/navigation/BottomNav';
-import ProductCard from '@/components/product/ProductCard';
-import { Skeleton } from '@/components/ui/skeleton';
-import { smartSearch, suggestedQueries } from '@/lib/smartSearch';
+import { getGreeting, processMessage } from '@/lib/chatEngine';
+
+const formatPrice = (price) =>
+  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+
+function TypingIndicator() {
+  return (
+    <div className="flex items-end gap-2.5 px-4 mb-3">
+      <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center shrink-0">
+        <span className="text-[11px] font-black text-white">W</span>
+      </div>
+      <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-md px-4 py-3">
+        <div className="flex gap-1.5 items-center h-5">
+          {[0, 1, 2].map(i => (
+            <motion.div
+              key={i}
+              className="w-2 h-2 bg-gray-300 rounded-full"
+              animate={{ y: [0, -6, 0] }}
+              transition={{
+                duration: 0.6,
+                repeat: Infinity,
+                delay: i * 0.15,
+                ease: 'easeInOut',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductCarousel({ products }) {
+  return (
+    <div className="mt-2.5 -mx-1 overflow-x-auto no-scrollbar">
+      <div className="flex gap-2.5 px-1 snap-x snap-mandatory" style={{ minWidth: 'min-content' }}>
+        {products.map(product => {
+          const hasDiscount = product.original_price && product.original_price > product.price;
+          const discountPct = hasDiscount
+            ? Math.round((1 - product.price / product.original_price) * 100)
+            : 0;
+
+          return (
+            <div
+              key={product.id}
+              className="snap-start shrink-0 w-[140px] bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden"
+            >
+              <div className="relative">
+                <img
+                  src={product.images?.[0] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=200&fit=crop'}
+                  alt={product.name}
+                  className="w-full aspect-square object-cover bg-gray-100"
+                />
+                {hasDiscount && (
+                  <span className="absolute top-1.5 left-1.5 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                    -{discountPct}%
+                  </span>
+                )}
+                {product.express_delivery && (
+                  <span className="absolute top-1.5 right-1.5 bg-gray-900 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                    <Truck className="w-2.5 h-2.5" /> 1h
+                  </span>
+                )}
+              </div>
+              <div className="p-2.5">
+                <h4 className="text-[11px] font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[28px]">
+                  {product.name}
+                </h4>
+                <div className="mt-1">
+                  {hasDiscount && (
+                    <span className="text-[9px] text-gray-400 line-through block">
+                      {formatPrice(product.original_price)}
+                    </span>
+                  )}
+                  <span className="text-[13px] font-bold text-gray-900 tabular-nums">
+                    {formatPrice(product.price)}
+                  </span>
+                </div>
+                <div className="flex gap-1.5 mt-2">
+                  <Link
+                    to={createPageUrl(`ProductDetail?id=${product.id}`)}
+                    className="flex-1 flex items-center justify-center gap-1 bg-gray-900 text-white text-[10px] font-semibold py-1.5 rounded-lg active:scale-95 transition-transform"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Ver
+                  </Link>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function AiBubble({ message, onQuickReply, isLast }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="flex items-end gap-2.5 px-4 mb-3"
+    >
+      <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center shrink-0">
+        <span className="text-[11px] font-black text-white">W</span>
+      </div>
+      <div className="max-w-[calc(100%-60px)] space-y-0">
+        <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-md px-4 py-3 shadow-sm">
+          <p className="text-[13px] text-gray-800 leading-relaxed whitespace-pre-line"
+            dangerouslySetInnerHTML={{
+              __html: message.text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            }}
+          />
+          {message.products && message.products.length > 0 && (
+            <ProductCarousel products={message.products} />
+          )}
+        </div>
+        {isLast && message.quickReplies && message.quickReplies.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15, duration: 0.3 }}
+            className="flex flex-wrap gap-1.5 mt-2 ml-0.5"
+          >
+            {message.quickReplies.map((reply, i) => (
+              <button
+                key={i}
+                onClick={() => onQuickReply(reply)}
+                className="bg-white border border-gray-200 rounded-full px-3 py-1.5 text-[12px] font-medium text-gray-700 hover:border-gray-400 active:scale-95 transition-all shadow-sm"
+              >
+                {reply}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+function UserBubble({ message }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="flex justify-end px-4 mb-3"
+    >
+      <div className="max-w-[80%] bg-gray-900 text-white rounded-2xl rounded-tr-md px-4 py-3 shadow-sm">
+        <p className="text-[13px] leading-relaxed">{message.text}</p>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function Search() {
-  const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [context, setContext] = useState({});
+  const [cartCount, setCartCount] = useState(0);
+  const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
   const { data: products = [] } = useQuery({
@@ -25,185 +187,125 @@ export default function Search() {
     queryFn: () => base44.entities.Category.list(),
   });
 
-  // Debounce query
+  const { data: cartItems = [] } = useQuery({
+    queryKey: ['cart'],
+    queryFn: () => base44.entities.CartItem.list(),
+  });
+
   useEffect(() => {
-    if (!query.trim()) {
-      setDebouncedQuery('');
-      setIsSearching(false);
-      return;
-    }
-    setIsSearching(true);
+    setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
+  }, [cartItems]);
+
+  // Greeting on mount
+  useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedQuery(query);
-      setTimeout(() => setIsSearching(false), 300);
+      setMessages([getGreeting()]);
     }, 400);
     return () => clearTimeout(timer);
-  }, [query]);
-
-  // Auto-focus input
-  useEffect(() => {
-    setTimeout(() => inputRef.current?.focus(), 100);
   }, []);
 
-  const searchResult = debouncedQuery
-    ? smartSearch(debouncedQuery, products, categories)
-    : { results: [], interpretation: [], query: '' };
+  // Auto-scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping]);
 
-  const handleSuggestionClick = (suggestion) => {
-    setQuery(suggestion);
+  const sendMessage = (text) => {
+    if (!text.trim() || isTyping) return;
+
+    const userMsg = { role: 'user', text: text.trim() };
+    setMessages(prev => [...prev, userMsg]);
+    setInput('');
+    setIsTyping(true);
+
+    const delay = 600 + Math.random() * 600;
+    setTimeout(() => {
+      const { response, updatedContext } = processMessage(text, products, categories, context);
+      setContext(updatedContext);
+      setMessages(prev => [...prev, response]);
+      setIsTyping(false);
+    }, delay);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    sendMessage(input);
+  };
+
+  const handleQuickReply = (reply) => {
+    sendMessage(reply);
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <Header showBack title="Busca Inteligente" />
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header title="Compra Assistida" showBack showCart cartCount={cartCount} />
 
-      <main className="pt-14 w-full max-w-lg mx-auto px-4">
-        {/* Search Input */}
-        <div className="relative mt-2">
-          <div className="relative flex items-center">
-            <Sparkles className="absolute left-3.5 w-4 h-4 text-gray-400" strokeWidth={2} />
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Descreva o que voce procura..."
-              className="w-full h-12 pl-10 pr-10 rounded-2xl bg-gray-100 border border-gray-200 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all"
-            />
-            {query && (
-              <button
-                onClick={() => setQuery('')}
-                className="absolute right-3 w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center"
-              >
-                <X className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
-              </button>
-            )}
-          </div>
-        </div>
+      {/* Chat area */}
+      <main className="flex-1 pt-14 pb-[calc(4rem+env(safe-area-inset-bottom))] w-full max-w-lg mx-auto overflow-y-auto">
+        <div className="h-3" />
 
-        {/* AI Interpretation Chips */}
+        {/* Welcome badge */}
+        {messages.length <= 1 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.4 }}
+            className="flex justify-center mb-4"
+          >
+            <div className="inline-flex items-center gap-1.5 bg-violet-50 text-violet-600 rounded-full px-3 py-1.5 border border-violet-100">
+              <Sparkles className="w-3.5 h-3.5" strokeWidth={2} />
+              <span className="text-[11px] font-semibold">Assistente de compras WEGX</span>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Messages */}
         <AnimatePresence>
-          {searchResult.interpretation.length > 0 && !isSearching && (
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="flex flex-wrap gap-1.5 mt-3"
-            >
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-gray-400 uppercase tracking-wider">
-                <Sparkles className="w-3 h-3" /> IA entendeu:
-              </span>
-              {searchResult.interpretation.map((chip, i) => (
-                <motion.span
-                  key={chip}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="inline-flex items-center bg-gray-900 text-white text-[11px] font-medium px-2.5 py-1 rounded-full"
-                >
-                  {chip}
-                </motion.span>
-              ))}
-            </motion.div>
+          {messages.map((msg, i) =>
+            msg.role === 'ai' ? (
+              <AiBubble
+                key={i}
+                message={msg}
+                onQuickReply={handleQuickReply}
+                isLast={i === messages.length - 1}
+              />
+            ) : (
+              <UserBubble key={i} message={msg} />
+            )
           )}
         </AnimatePresence>
 
-        {/* Loading State */}
-        {isSearching && query.trim() && (
-          <div className="mt-6 space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
-              <span className="text-xs text-gray-400">Analisando sua busca...</span>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="space-y-2">
-                  <Skeleton className="aspect-[3/4] rounded-2xl" />
-                  <Skeleton className="h-4 w-3/4 rounded-lg" />
-                  <Skeleton className="h-4 w-1/2 rounded-lg" />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {isTyping && <TypingIndicator />}
 
-        {/* Results */}
-        {!isSearching && debouncedQuery && searchResult.results.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-5"
-          >
-            <p className="text-[12px] text-gray-400 mb-3">
-              {searchResult.results.length} produto{searchResult.results.length !== 1 ? 's' : ''} encontrado{searchResult.results.length !== 1 ? 's' : ''}
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              {searchResult.results.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.04, duration: 0.3 }}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* No Results */}
-        {!isSearching && debouncedQuery && searchResult.results.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-16 text-center"
-          >
-            <div className="w-16 h-16 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
-              <SearchIcon className="w-7 h-7 text-gray-300" strokeWidth={1.5} />
-            </div>
-            <p className="text-sm font-semibold text-gray-900">Nenhum resultado</p>
-            <p className="text-xs text-gray-400 mt-1 max-w-[220px] mx-auto">
-              Tente descrever o que voce precisa de outra forma
-            </p>
-          </motion.div>
-        )}
-
-        {/* Suggestions (empty state) */}
-        {!query.trim() && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.15 }}
-            className="mt-8"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="w-4 h-4 text-gray-400" strokeWidth={2} />
-              <span className="text-[12px] font-semibold text-gray-500 uppercase tracking-wider">
-                Tente perguntar
-              </span>
-            </div>
-            <div className="space-y-2">
-              {suggestedQueries.map((suggestion, i) => (
-                <motion.button
-                  key={suggestion}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 + i * 0.04 }}
-                  onClick={() => handleSuggestionClick(suggestion)}
-                  className="w-full flex items-center gap-3 text-left px-4 py-3 rounded-2xl bg-gray-50 hover:bg-gray-100 border border-gray-100 transition-colors group"
-                >
-                  <SearchIcon className="w-4 h-4 text-gray-300 shrink-0" strokeWidth={2} />
-                  <span className="text-[13px] text-gray-600 flex-1">{suggestion}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-400 transition-colors shrink-0" strokeWidth={2} />
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
-        )}
+        <div ref={messagesEndRef} />
       </main>
 
-      <BottomNav />
+      {/* Input bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-t border-gray-100 pb-[env(safe-area-inset-bottom)]">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-lg mx-auto px-4 py-3 flex items-center gap-2.5"
+        >
+          <div className="flex-1 relative">
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Digite sua mensagem..."
+              disabled={isTyping}
+              className="w-full bg-white border border-gray-200 rounded-2xl pl-4 pr-4 py-3 text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-gray-400 focus:ring-0 transition-colors disabled:opacity-50"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={!input.trim() || isTyping}
+            className="w-11 h-11 rounded-2xl bg-gray-900 flex items-center justify-center shrink-0 disabled:opacity-30 active:scale-95 transition-all"
+          >
+            <Send className="w-4.5 h-4.5 text-white" strokeWidth={2} />
+          </button>
+        </form>
+      </div>
+
     </div>
   );
 }
