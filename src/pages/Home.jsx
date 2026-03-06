@@ -128,8 +128,8 @@ export default function Home() {
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-950/95 via-gray-900/85 to-gray-800/50" />
-            <div className="absolute inset-0 bg-gradient-to-t from-gray-950/60 to-transparent" />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(3,7,18,0.95), rgba(17,24,39,0.85), rgba(31,41,55,0.5))' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(3,7,18,0.6), transparent)' }} />
 
             <div className="relative z-10">
               <motion.div
