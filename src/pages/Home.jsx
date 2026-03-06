@@ -122,14 +122,14 @@ export default function Home() {
           variants={fadeUp}
           className="relative mx-4 mt-4 rounded-3xl overflow-hidden"
         >
-          <div className="relative bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 p-6 pb-7">
-            {/* Decorative elements */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute -top-20 -right-20 w-56 h-56 bg-white/[0.04] rounded-full blur-2xl" />
-              <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/[0.03] rounded-full blur-3xl" />
-              <div className="absolute top-1/3 right-1/4 w-1 h-1 bg-white/20 rounded-full" />
-              <div className="absolute top-2/3 right-1/3 w-0.5 h-0.5 bg-white/15 rounded-full" />
-            </div>
+          <div className="relative p-6 pb-7">
+            <img
+              src="https://images.unsplash.com/photo-1491933382434-500287f9b54b?w=800&h=500&fit=crop"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-950/95 via-gray-900/85 to-gray-800/50" />
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-950/60 to-transparent" />
 
             <div className="relative z-10">
               <motion.div
