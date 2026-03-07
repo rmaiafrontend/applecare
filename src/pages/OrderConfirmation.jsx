@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,8 @@ import {
   FileText,
   Truck,
   ArrowRight,
+  MessageCircle,
+  Store,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -42,10 +44,16 @@ const paymentLabels = {
   boleto: 'Boleto Bancario',
 };
 
+const COUNTDOWN_SECONDS = 5;
+
 export default function OrderConfirmation() {
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
   const orderNumber = urlParams.get('order');
+  const whatsappUrl = urlParams.get('wa') ? decodeURIComponent(urlParams.get('wa')) : null;
+
+  const [countdown, setCountdown] = useState(whatsappUrl ? COUNTDOWN_SECONDS : null);
+  const [redirected, setRedirected] = useState(false);
 
   const { data: order, isLoading } = useQuery({
     queryKey: ['order', orderNumber],
@@ -55,6 +63,25 @@ export default function OrderConfirmation() {
     },
     enabled: !!orderNumber,
   });
+
+  // Countdown timer for WhatsApp redirect
+  useEffect(() => {
+    if (countdown === null || redirected) return;
+    if (countdown <= 0) {
+      setRedirected(true);
+      window.open(whatsappUrl, '_blank');
+      return;
+    }
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown, whatsappUrl, redirected]);
+
+  const handleOpenWhatsApp = useCallback(() => {
+    if (whatsappUrl) {
+      setRedirected(true);
+      window.open(whatsappUrl, '_blank');
+    }
+  }, [whatsappUrl]);
 
   const formatPrice = (price) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
@@ -68,6 +95,8 @@ export default function OrderConfirmation() {
       minute: '2-digit',
     });
   };
+
+  const isWhatsAppFlow = !!whatsappUrl;
 
   if (isLoading) {
     return (
@@ -98,12 +127,12 @@ export default function OrderConfirmation() {
   }
 
   const PaymentIcon = paymentIcons[order.payment_method] || CreditCard;
+  const isPickup = !order.address;
 
   return (
     <div className="min-h-screen bg-background pb-10">
       {/* ── Success Header ── */}
       <div className="relative bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 overflow-hidden">
-        {/* Decorative */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-20 -right-20 w-56 h-56 bg-white/[0.03] rounded-full blur-2xl" />
           <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/[0.02] rounded-full blur-3xl" />
@@ -131,7 +160,7 @@ export default function OrderConfirmation() {
             transition={{ delay: 0.2, duration: 0.4 }}
             className="text-2xl font-bold text-white tracking-tight mb-1.5"
           >
-            Pedido confirmado
+            {isWhatsAppFlow ? 'Pedido registrado' : 'Pedido confirmado'}
           </motion.h1>
 
           <motion.p
@@ -142,6 +171,55 @@ export default function OrderConfirmation() {
           >
             #{order.order_number}
           </motion.p>
+
+          {/* WhatsApp countdown */}
+          {isWhatsAppFlow && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
+              className="mt-5"
+            >
+              {!redirected ? (
+                <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/[0.08]">
+                  <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center shrink-0">
+                    <MessageCircle className="w-5 h-5 text-white" strokeWidth={2} />
+                  </div>
+                  <div className="text-left">
+                    <span className="text-[13px] font-semibold text-white block leading-tight">
+                      Redirecionando para WhatsApp
+                    </span>
+                    <span className="text-[12px] text-white/50">
+                      em {countdown} {countdown === 1 ? 'segundo' : 'segundos'}...
+                    </span>
+                  </div>
+                  {/* Countdown circle */}
+                  <div className="relative w-9 h-9 shrink-0">
+                    <svg className="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+                      <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="3" />
+                      <circle
+                        cx="18" cy="18" r="15" fill="none" stroke="#22c55e" strokeWidth="3"
+                        strokeDasharray={`${(countdown / COUNTDOWN_SECONDS) * 94.25} 94.25`}
+                        strokeLinecap="round"
+                        className="transition-all duration-1000 ease-linear"
+                      />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center text-[13px] font-bold text-white tabular-nums">
+                      {countdown}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={handleOpenWhatsApp}
+                  className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white rounded-2xl px-5 py-3 text-[13px] font-semibold transition-all active:scale-[0.97]"
+                >
+                  <MessageCircle className="w-4 h-4" strokeWidth={2} />
+                  Abrir WhatsApp novamente
+                </button>
+              )}
+            </motion.div>
+          )}
         </div>
       </div>
 
@@ -152,18 +230,22 @@ export default function OrderConfirmation() {
           <motion.div variants={fadeUp} custom={0}>
             <div
               className={`rounded-3xl p-5 ${
-                order.express_delivery
-                  ? 'bg-green-500 text-white'
-                  : 'bg-white border border-gray-100 shadow-sm'
+                isPickup
+                  ? 'bg-amber-500 text-white'
+                  : order.express_delivery
+                    ? 'bg-green-500 text-white'
+                    : 'bg-white border border-gray-100 shadow-sm'
               }`}
             >
               <div className="flex items-center gap-4">
                 <div
                   className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${
-                    order.express_delivery ? 'bg-white/20' : 'bg-gray-50'
+                    isPickup || order.express_delivery ? 'bg-white/20' : 'bg-gray-50'
                   }`}
                 >
-                  {order.express_delivery ? (
+                  {isPickup ? (
+                    <Store className="w-6 h-6 text-white" strokeWidth={1.75} />
+                  ) : order.express_delivery ? (
                     <Truck className="w-6 h-6 text-white" strokeWidth={1.75} />
                   ) : (
                     <Clock className="w-6 h-6 text-gray-600" strokeWidth={1.75} />
@@ -172,17 +254,23 @@ export default function OrderConfirmation() {
                 <div>
                   <span
                     className={`text-[11px] font-medium uppercase tracking-widest block ${
-                      order.express_delivery ? 'text-white/60' : 'text-gray-400'
+                      isPickup || order.express_delivery ? 'text-white/60' : 'text-gray-400'
                     }`}
                   >
-                    Previsao de entrega
+                    {isPickup ? 'Forma de recebimento' : 'Previsao de entrega'}
                   </span>
                   <span
                     className={`text-lg font-bold block mt-0.5 ${
-                      order.express_delivery ? 'text-white' : 'text-gray-900'
+                      isPickup || order.express_delivery ? 'text-white' : 'text-gray-900'
                     }`}
                   >
-                    {order.express_delivery ? 'Em ate 1 hora' : formatDate(order.estimated_delivery)}
+                    {isPickup
+                      ? 'Retirada na loja'
+                      : order.express_delivery
+                        ? 'Em ate 1 hora'
+                        : order.estimated_delivery
+                          ? formatDate(order.estimated_delivery)
+                          : 'A confirmar via WhatsApp'}
                   </span>
                 </div>
               </div>
@@ -297,33 +385,63 @@ export default function OrderConfirmation() {
             </div>
           </motion.div>
 
-          {/* ── NF-e Notice ── */}
+          {/* ── Notice ── */}
           <motion.div variants={fadeUp} custom={4}>
             <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
               <p className="text-[12px] text-gray-400 text-center leading-relaxed">
-                A Nota Fiscal sera enviada para seu e-mail e WhatsApp apos a confirmacao do pagamento.
+                {isWhatsAppFlow
+                  ? 'Seu pedido foi registrado. Finalize a confirmacao pelo WhatsApp para darmos continuidade.'
+                  : 'A Nota Fiscal sera enviada para seu e-mail e WhatsApp apos a confirmacao do pagamento.'}
               </p>
             </div>
           </motion.div>
 
           {/* ── Actions ── */}
           <motion.div variants={fadeUp} custom={5} className="space-y-3 pt-2">
-            <Button
-              onClick={() => navigate(createPageUrl(`OrderDetail?id=${order.id}`))}
-              className="w-full h-12 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold active:scale-[0.97] transition-all"
-            >
-              <Package className="w-4 h-4 mr-2" strokeWidth={2} />
-              Acompanhar pedido
-            </Button>
+            {isWhatsAppFlow ? (
+              <>
+                {redirected && (
+                  <Button
+                    onClick={handleOpenWhatsApp}
+                    className="w-full h-12 rounded-2xl bg-green-600 hover:bg-green-700 text-white text-sm font-semibold active:scale-[0.97] transition-all"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" strokeWidth={2} />
+                    Abrir WhatsApp
+                  </Button>
+                )}
+                <Button
+                  onClick={() => navigate(createPageUrl('Home'))}
+                  variant={redirected ? 'ghost' : 'default'}
+                  className={`w-full h-12 rounded-2xl text-sm font-semibold active:scale-[0.97] transition-all ${
+                    redirected
+                      ? 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+                      : 'bg-gray-900 hover:bg-gray-800 text-white'
+                  }`}
+                >
+                  <Home className="w-4 h-4 mr-2" strokeWidth={2} />
+                  Voltar para Home
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={() => navigate(createPageUrl(`OrderDetail?id=${order.id}`))}
+                  className="w-full h-12 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold active:scale-[0.97] transition-all"
+                >
+                  <Package className="w-4 h-4 mr-2" strokeWidth={2} />
+                  Acompanhar pedido
+                </Button>
 
-            <Button
-              onClick={() => navigate(createPageUrl('Home'))}
-              variant="ghost"
-              className="w-full h-12 rounded-2xl text-sm font-medium text-gray-400 hover:text-gray-600 hover:bg-gray-50"
-            >
-              <Home className="w-4 h-4 mr-2" strokeWidth={2} />
-              Voltar para Home
-            </Button>
+                <Button
+                  onClick={() => navigate(createPageUrl('Home'))}
+                  variant="ghost"
+                  className="w-full h-12 rounded-2xl text-sm font-medium text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                >
+                  <Home className="w-4 h-4 mr-2" strokeWidth={2} />
+                  Voltar para Home
+                </Button>
+              </>
+            )}
           </motion.div>
         </motion.div>
       </main>

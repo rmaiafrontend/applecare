@@ -7,7 +7,7 @@ const navItems = [
   { name: 'Home', icon: Home, page: 'Home' },
   { name: 'Explorar', icon: Grid3X3, page: 'Categories' },
   { name: 'Carrinho', icon: ShoppingCart, page: 'Cart' },
-  { name: 'Pedidos', icon: Package, page: 'Orders' },
+  // { name: 'Pedidos', icon: Package, page: 'Orders' }, // Oculto: fluxo WhatsApp-first — reativar quando checkout interno estiver ativo
   { name: 'Perfil', icon: User, page: 'Profile' },
 ];
 

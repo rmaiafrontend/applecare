@@ -32,9 +32,9 @@ const fadeUp = {
 };
 
 const quickActions = [
-  { icon: Package, label: 'Pedidos', color: 'bg-blue-500', page: 'Orders' },
+  // { icon: Package, label: 'Pedidos', color: 'bg-blue-500', page: 'Orders' }, // Oculto: fluxo WhatsApp-first — reativar quando checkout interno estiver ativo
+  { icon: MessageCircle, label: 'Orcamentos', color: 'bg-green-500', page: null },
   { icon: Heart, label: 'Favoritos', color: 'bg-pink-500', page: 'Wishlist' },
-  { icon: CreditCard, label: 'Pagamento', color: 'bg-violet-500', page: 'Payment' },
   { icon: MapPin, label: 'Enderecos', color: 'bg-amber-500', page: 'Addresses' },
 ];
 
@@ -44,7 +44,7 @@ const menuSections = [
     items: [
       { icon: User, label: 'Dados Pessoais', subtitle: 'Nome, email e telefone', page: 'EditProfile' },
       { icon: MapPin, label: 'Enderecos Salvos', subtitle: 'Gerencie seus enderecos', page: 'Addresses' },
-      { icon: CreditCard, label: 'Formas de Pagamento', subtitle: 'Cartoes e Pix', page: 'Payment' },
+      // { icon: CreditCard, label: 'Formas de Pagamento', subtitle: 'Cartoes e Pix', page: 'Payment' }, // Oculto: fluxo WhatsApp-first
     ],
   },
   {
@@ -147,7 +147,7 @@ export default function Profile() {
                     <span className="text-lg font-bold text-gray-900 tabular-nums block">
                       {orders.length}
                     </span>
-                    <span className="text-[11px] text-gray-400">Pedidos</span>
+                    <span className="text-[11px] text-gray-400">Orcamentos</span>
                   </div>
                   <div className="w-px h-8 bg-gray-100" />
                   <div className="flex-1 text-center">
