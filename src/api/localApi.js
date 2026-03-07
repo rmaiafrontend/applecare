@@ -8,6 +8,11 @@ const CART_KEY = 'apple_cart';
 const ORDERS_KEY = 'apple_orders';
 const PRODUCTS_KEY = 'admin_products';
 const CATEGORIES_KEY = 'admin_categories';
+const TAGS_KEY = 'admin_tags';
+const STORE_CONFIG_KEY = 'admin_store_config';
+const CHAT_CONFIG_KEY = 'admin_chat_config';
+const CATALOG_CONFIG_KEY = 'admin_catalog_config';
+const PAYMENT_CONFIG_KEY = 'admin_payment_config';
 
 let dataSeeded = false;
 
@@ -265,6 +270,156 @@ export const localApi = {
       orders[i] = { ...orders[i], ...body };
       setOrders(orders);
       return Promise.resolve();
+    },
+  },
+
+  Tag: {
+    list: async () => getStorage(TAGS_KEY) || [],
+    filter: async (query) => {
+      const tags = getStorage(TAGS_KEY) || [];
+      if (query.id) return tags.filter((t) => t.id === query.id);
+      if (query.slug) return tags.filter((t) => t.slug === query.slug);
+      return tags;
+    },
+    create: async (body) => {
+      const tags = getStorage(TAGS_KEY) || [];
+      const id = generateId('tag');
+      const tag = { id, is_active: true, ...body };
+      tags.push(tag);
+      setStorage(TAGS_KEY, tags);
+      return tag;
+    },
+    update: async (id, body) => {
+      const tags = getStorage(TAGS_KEY) || [];
+      const i = tags.findIndex((t) => t.id === id);
+      if (i === -1) return null;
+      tags[i] = { ...tags[i], ...body };
+      setStorage(TAGS_KEY, tags);
+      return tags[i];
+    },
+    delete: async (id) => {
+      const tags = (getStorage(TAGS_KEY) || []).filter((t) => t.id !== id);
+      setStorage(TAGS_KEY, tags);
+    },
+  },
+
+  StoreConfig: {
+    list: async () => getStorage(STORE_CONFIG_KEY) || [],
+    filter: async (query) => {
+      const configs = getStorage(STORE_CONFIG_KEY) || [];
+      if (query.config_key) return configs.filter((c) => c.config_key === query.config_key);
+      if (query.id) return configs.filter((c) => c.id === query.id);
+      return configs;
+    },
+    create: async (body) => {
+      const configs = getStorage(STORE_CONFIG_KEY) || [];
+      const id = generateId('scfg');
+      const config = { id, ...body };
+      configs.push(config);
+      setStorage(STORE_CONFIG_KEY, configs);
+      return config;
+    },
+    update: async (id, body) => {
+      const configs = getStorage(STORE_CONFIG_KEY) || [];
+      const i = configs.findIndex((c) => c.id === id);
+      if (i === -1) return null;
+      configs[i] = { ...configs[i], ...body };
+      setStorage(STORE_CONFIG_KEY, configs);
+      return configs[i];
+    },
+    delete: async (id) => {
+      const configs = (getStorage(STORE_CONFIG_KEY) || []).filter((c) => c.id !== id);
+      setStorage(STORE_CONFIG_KEY, configs);
+    },
+  },
+
+  ChatConfig: {
+    list: async () => getStorage(CHAT_CONFIG_KEY) || [],
+    filter: async (query) => {
+      const configs = getStorage(CHAT_CONFIG_KEY) || [];
+      if (query.config_key) return configs.filter((c) => c.config_key === query.config_key);
+      if (query.id) return configs.filter((c) => c.id === query.id);
+      return configs;
+    },
+    create: async (body) => {
+      const configs = getStorage(CHAT_CONFIG_KEY) || [];
+      const id = generateId('ccfg');
+      const config = { id, ...body };
+      configs.push(config);
+      setStorage(CHAT_CONFIG_KEY, configs);
+      return config;
+    },
+    update: async (id, body) => {
+      const configs = getStorage(CHAT_CONFIG_KEY) || [];
+      const i = configs.findIndex((c) => c.id === id);
+      if (i === -1) return null;
+      configs[i] = { ...configs[i], ...body };
+      setStorage(CHAT_CONFIG_KEY, configs);
+      return configs[i];
+    },
+    delete: async (id) => {
+      const configs = (getStorage(CHAT_CONFIG_KEY) || []).filter((c) => c.id !== id);
+      setStorage(CHAT_CONFIG_KEY, configs);
+    },
+  },
+
+  CatalogConfig: {
+    list: async () => getStorage(CATALOG_CONFIG_KEY) || [],
+    filter: async (query) => {
+      const configs = getStorage(CATALOG_CONFIG_KEY) || [];
+      if (query.config_key) return configs.filter((c) => c.config_key === query.config_key);
+      if (query.id) return configs.filter((c) => c.id === query.id);
+      return configs;
+    },
+    create: async (body) => {
+      const configs = getStorage(CATALOG_CONFIG_KEY) || [];
+      const id = generateId('ctcfg');
+      const config = { id, ...body };
+      configs.push(config);
+      setStorage(CATALOG_CONFIG_KEY, configs);
+      return config;
+    },
+    update: async (id, body) => {
+      const configs = getStorage(CATALOG_CONFIG_KEY) || [];
+      const i = configs.findIndex((c) => c.id === id);
+      if (i === -1) return null;
+      configs[i] = { ...configs[i], ...body };
+      setStorage(CATALOG_CONFIG_KEY, configs);
+      return configs[i];
+    },
+    delete: async (id) => {
+      const configs = (getStorage(CATALOG_CONFIG_KEY) || []).filter((c) => c.id !== id);
+      setStorage(CATALOG_CONFIG_KEY, configs);
+    },
+  },
+
+  PaymentConfig: {
+    list: async () => getStorage(PAYMENT_CONFIG_KEY) || [],
+    filter: async (query) => {
+      const configs = getStorage(PAYMENT_CONFIG_KEY) || [];
+      if (query.config_key) return configs.filter((c) => c.config_key === query.config_key);
+      if (query.id) return configs.filter((c) => c.id === query.id);
+      return configs;
+    },
+    create: async (body) => {
+      const configs = getStorage(PAYMENT_CONFIG_KEY) || [];
+      const id = generateId('pcfg');
+      const config = { id, ...body };
+      configs.push(config);
+      setStorage(PAYMENT_CONFIG_KEY, configs);
+      return config;
+    },
+    update: async (id, body) => {
+      const configs = getStorage(PAYMENT_CONFIG_KEY) || [];
+      const i = configs.findIndex((c) => c.id === id);
+      if (i === -1) return null;
+      configs[i] = { ...configs[i], ...body };
+      setStorage(PAYMENT_CONFIG_KEY, configs);
+      return configs[i];
+    },
+    delete: async (id) => {
+      const configs = (getStorage(PAYMENT_CONFIG_KEY) || []).filter((c) => c.id !== id);
+      setStorage(PAYMENT_CONFIG_KEY, configs);
     },
   },
 };
