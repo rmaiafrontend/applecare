@@ -1,12 +1,12 @@
 import React from "react";
 import { Upload, X } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { uploadFile } from "@/lib/fileUpload";
 
 export default function LogoUploader({ label, value, onChange }) {
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadFile(file);
     onChange(file_url);
   };
 

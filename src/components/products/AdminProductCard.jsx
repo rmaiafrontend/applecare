@@ -1,10 +1,8 @@
 import React from "react";
 import { Pencil, Trash2, Star, Eye, EyeOff, Truck, Package } from "lucide-react";
+import { formatPrice } from '@/lib/format';
 
-const formatPrice = (price) =>
-  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price);
-
-export default function ProductCard({ product, categoryName, onDelete, onToggleActive, onToggleFeatured, onEdit }) {
+export default function AdminProductCard({ product, categoryName, onDelete, onToggleActive, onToggleFeatured, onEdit }) {
   const discount = product.original_price && product.original_price > product.price
     ? Math.round((1 - product.price / product.original_price) * 100)
     : 0;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { CartItem, Product, Order } from '@/api/dataService';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -46,8 +46,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-
-const WHATSAPP_NUMBER = '5511999999999';
+import { formatPrice } from '@/lib/format';
+import { WHATSAPP_NUMBER, QUERY_KEYS } from '@/lib/constants';
 
 const STATES = [
   'AC','AL','AP','AM','BA','CE','DF','ES','GO','MA',
@@ -87,13 +87,13 @@ export default function Cart() {
   });
 
   const { data: cartItems = [], isLoading: loadingCart, refetch: refetchCart } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => base44.entities.CartItem.list(),
+    queryKey: QUERY_KEYS.cart,
+    queryFn: () => CartItem.list(),
   });
 
   const { data: products = [], isLoading: loadingProducts } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => base44.entities.Product.list(),
+    queryKey: QUERY_KEYS.products,
+    queryFn: () => Product.list(),
   });
 
   useEffect(() => {
@@ -109,7 +109,7 @@ export default function Cart() {
   const updateQuantityMutation = useMutation({
     mutationFn: async ({ itemId, quantity }) => {
       if (quantity < 1) return;
-      await base44.entities.CartItem.update(itemId, { quantity });
+      await CartItem.update(itemId, { quantity });
     },
     onSuccess: () => {
       refetchCart();
@@ -119,7 +119,7 @@ export default function Cart() {
 
   const removeItemMutation = useMutation({
     mutationFn: async (itemId) => {
-      await base44.entities.CartItem.delete(itemId);
+      await CartItem.delete(itemId);
     },
     onSuccess: () => {
       refetchCart();
@@ -129,7 +129,7 @@ export default function Cart() {
 
   const clearCartMutation = useMutation({
     mutationFn: async () => {
-      await Promise.all(cartItems.map((item) => base44.entities.CartItem.delete(item.id)));
+      await Promise.all(cartItems.map((item) => CartItem.delete(item.id)));
     },
     onSuccess: () => {
       refetchCart();
@@ -150,9 +150,6 @@ export default function Cart() {
       removeItemMutation.mutate(itemToRemove);
     }
   };
-
-  const formatPrice = (price) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
 
   const subtotal = cartItems.reduce((sum, item) => {
     const product = productMap[item.product_id];
@@ -239,7 +236,7 @@ export default function Cart() {
         };
       });
 
-      await base44.entities.Order.create({
+      await Order.create({
         order_number: orderNumber,
         status: 'ORCAMENTO_WHATSAPP',
         items: orderItems,
@@ -258,7 +255,7 @@ export default function Cart() {
       });
 
       // Clear cart
-      await Promise.all(cartItems.map((item) => base44.entities.CartItem.delete(item.id)));
+      await Promise.all(cartItems.map((item) => CartItem.delete(item.id)));
       refetchCart();
 
       // Build WhatsApp URL

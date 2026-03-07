@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard,
@@ -54,7 +53,7 @@ export default function AdminLayout({ currentView, onNavigate, children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    setUser(null);
   }, []);
 
   return (

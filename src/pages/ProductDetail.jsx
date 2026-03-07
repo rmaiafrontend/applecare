@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Product, CartItem } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -23,6 +23,8 @@ import { useCompare } from '@/lib/CompareContext';
 import ProductCard from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { formatPrice } from '@/lib/format';
+import { QUERY_KEYS } from '@/lib/constants';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -46,19 +48,19 @@ export default function ProductDetail() {
   const productId = urlParams.get('id');
 
   const { data: product, isLoading } = useQuery({
-    queryKey: ['product', productId],
+    queryKey: QUERY_KEYS.product(productId),
     queryFn: async () => {
-      const products = await base44.entities.Product.filter({ id: productId });
+      const products = await Product.filter({ id: productId });
       return products[0];
     },
     enabled: !!productId,
   });
 
   const { data: relatedProducts = [] } = useQuery({
-    queryKey: ['relatedProducts', product?.category_id],
+    queryKey: QUERY_KEYS.relatedProducts(product?.category_id),
     queryFn: async () => {
       if (!product?.category_id) return [];
-      const products = await base44.entities.Product.filter({
+      const products = await Product.filter({
         category_id: product.category_id,
       });
       return products.filter((p) => p.id !== productId).slice(0, 6);
@@ -67,8 +69,8 @@ export default function ProductDetail() {
   });
 
   const { data: cartItems = [], refetch: refetchCart } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => base44.entities.CartItem.list(),
+    queryKey: QUERY_KEYS.cart,
+    queryFn: () => CartItem.list(),
   });
 
   useEffect(() => {
@@ -79,20 +81,17 @@ export default function ProductDetail() {
   const isAvailable = product?.stock > 0;
   const maxQuantity = product?.stock || 1;
 
-  const formatPrice = (price) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
-
   const handleAddToCart = async () => {
     if (!product || !isAvailable) return;
     setIsAdding(true);
     try {
       const existingItem = cartItems.find((item) => item.product_id === product.id);
       if (existingItem) {
-        await base44.entities.CartItem.update(existingItem.id, {
+        await CartItem.update(existingItem.id, {
           quantity: existingItem.quantity + quantity,
         });
       } else {
-        await base44.entities.CartItem.create({
+        await CartItem.create({
           product_id: product.id,
           quantity: quantity,
         });

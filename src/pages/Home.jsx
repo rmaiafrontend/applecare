@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Category, Product, CartItem } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -9,6 +9,8 @@ import Header from '@/components/navigation/Header';
 import BottomNav from '@/components/navigation/BottomNav';
 import ProductCard from '@/components/product/ProductCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import { formatPrice } from '@/lib/format';
+import { STORE_INFO, QUERY_KEYS } from '@/lib/constants';
 import {
   Smartphone,
   Laptop,
@@ -27,23 +29,6 @@ const categoryIconMap = {
   Headphones,
   Monitor,
   Cable,
-};
-
-const STORE_INFO = {
-  name: 'WEGX Fast Delivery',
-  tagline: 'Apple Premium Reseller | Entrega Express',
-  bio: 'Produtos Apple 100% originais com garantia. Entrega em ate 1 hora na sua regiao.',
-  whatsapp: '5511999999999',
-  whatsappMessage: 'Ola! Gostaria de saber mais sobre os produtos WEGX',
-  instagram: 'https://instagram.com/wegxdelivery',
-  tiktok: 'https://tiktok.com/@wegxdelivery',
-  youtube: 'https://youtube.com/@wegxdelivery',
-  location: 'Sao Paulo, SP',
-  hours: {
-    weekday: { open: 9, close: 18 },
-    saturday: { open: 9, close: 14 },
-    sunday: null,
-  },
 };
 
 const getStoreStatus = () => {
@@ -80,18 +65,18 @@ export default function Home() {
   const categoriesRef = useRef(null);
 
   const { data: categories = [], isLoading: loadingCategories } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => base44.entities.Category.list('order'),
+    queryKey: QUERY_KEYS.categories,
+    queryFn: () => Category.list('order'),
   });
 
   const { data: products = [], isLoading: loadingProducts } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => base44.entities.Product.list('-created_date', 200),
+    queryKey: QUERY_KEYS.products,
+    queryFn: () => Product.list('-created_date', 200),
   });
 
   const { data: cartItems = [], refetch: refetchCart } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => base44.entities.CartItem.list(),
+    queryKey: QUERY_KEYS.cart,
+    queryFn: () => CartItem.list(),
   });
 
   useEffect(() => {
@@ -122,11 +107,11 @@ export default function Home() {
     try {
       const existingItem = cartItems.find(item => item.product_id === product.id);
       if (existingItem) {
-        await base44.entities.CartItem.update(existingItem.id, {
+        await CartItem.update(existingItem.id, {
           quantity: existingItem.quantity + 1,
         });
       } else {
-        await base44.entities.CartItem.create({
+        await CartItem.create({
           product_id: product.id,
           quantity: 1,
         });
@@ -137,9 +122,6 @@ export default function Home() {
     }
     setAddingProduct(null);
   };
-
-  const formatPrice = (price) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
 
   return (
     <div className="min-h-screen bg-background pb-24">

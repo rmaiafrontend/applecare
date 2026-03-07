@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Order } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { formatPrice } from '@/lib/format';
+import { QUERY_KEYS } from '@/lib/constants';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -56,9 +58,9 @@ export default function OrderConfirmation() {
   const [redirected, setRedirected] = useState(false);
 
   const { data: order, isLoading } = useQuery({
-    queryKey: ['order', orderNumber],
+    queryKey: QUERY_KEYS.order(orderNumber),
     queryFn: async () => {
-      const orders = await base44.entities.Order.filter({ order_number: orderNumber });
+      const orders = await Order.filter({ order_number: orderNumber });
       return orders[0];
     },
     enabled: !!orderNumber,
@@ -82,9 +84,6 @@ export default function OrderConfirmation() {
       window.open(whatsappUrl, '_blank');
     }
   }, [whatsappUrl]);
-
-  const formatPrice = (price) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

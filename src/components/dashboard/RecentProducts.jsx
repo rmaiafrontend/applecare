@@ -1,9 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Package, ChevronRight } from "lucide-react";
-
-const formatPrice = (price) =>
-  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+import { formatPrice } from '@/lib/format';
 
 export default function RecentProducts({ products = [], onNavigate }) {
   return (

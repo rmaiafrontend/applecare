@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { PaymentConfig } from "@/api/dataService";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { QrCode, CreditCard, FileText, Banknote, Save, Check, Loader2 } from "lucide-react";
+import { QUERY_KEYS } from '@/lib/constants';
 
 const METHODS = [
   { key: "pix", label: "Pix", icon: QrCode, color: "#00D4AA", desc: "Pagamento instantâneo" },
@@ -19,8 +20,8 @@ export default function PaymentSettingsTab() {
   const [saved, setSaved] = useState(false);
 
   const { data: configs, isLoading } = useQuery({
-    queryKey: ["payment_config"],
-    queryFn: () => base44.entities.PaymentConfig.filter({ config_key: "payment_methods" }),
+    queryKey: QUERY_KEYS.paymentConfig,
+    queryFn: () => PaymentConfig.filter({ config_key: "payment_methods" }),
   });
 
   const existing = configs?.[0];
@@ -35,12 +36,12 @@ export default function PaymentSettingsTab() {
     mutationFn: async () => {
       const { id, created_date, updated_date, created_by, ...data } = form;
       if (existing) {
-        return base44.entities.PaymentConfig.update(existing.id, data);
+        return PaymentConfig.update(existing.id, data);
       }
-      return base44.entities.PaymentConfig.create(data);
+      return PaymentConfig.create(data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["payment_config"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.paymentConfig });
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     },

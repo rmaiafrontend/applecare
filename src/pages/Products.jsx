@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Product, Category, CartItem } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { SlidersHorizontal, ChevronDown } from 'lucide-react';
@@ -22,6 +22,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Checkbox } from '@/components/ui/checkbox';
+import { QUERY_KEYS } from '@/lib/constants';
 
 export default function Products() {
   const [cartCount, setCartCount] = useState(0);
@@ -34,28 +35,28 @@ export default function Products() {
   const categoryId = urlParams.get('category');
 
   const { data: products = [], isLoading: loadingProducts } = useQuery({
-    queryKey: ['products', categoryId],
+    queryKey: QUERY_KEYS.productsByCategory(categoryId),
     queryFn: async () => {
       if (categoryId) {
-        return base44.entities.Product.filter({ category_id: categoryId });
+        return Product.filter({ category_id: categoryId });
       }
-      return base44.entities.Product.list();
+      return Product.list();
     },
   });
 
   const { data: category } = useQuery({
-    queryKey: ['category', categoryId],
+    queryKey: QUERY_KEYS.category(categoryId),
     queryFn: async () => {
       if (!categoryId) return null;
-      const categories = await base44.entities.Category.filter({ id: categoryId });
+      const categories = await Category.filter({ id: categoryId });
       return categories[0];
     },
     enabled: !!categoryId,
   });
 
   const { data: cartItems = [], refetch: refetchCart } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => base44.entities.CartItem.list(),
+    queryKey: QUERY_KEYS.cart,
+    queryFn: () => CartItem.list(),
   });
 
   useEffect(() => {
@@ -68,11 +69,11 @@ export default function Products() {
     try {
       const existingItem = cartItems.find(item => item.product_id === product.id);
       if (existingItem) {
-        await base44.entities.CartItem.update(existingItem.id, {
+        await CartItem.update(existingItem.id, {
           quantity: existingItem.quantity + 1
         });
       } else {
-        await base44.entities.CartItem.create({
+        await CartItem.create({
           product_id: product.id,
           quantity: 1
         });

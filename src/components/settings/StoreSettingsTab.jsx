@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { StoreConfig } from "@/api/dataService";
 import { Save, Loader2, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,7 @@ import StoreSettingsSection from "../store/StoreSettingsSection";
 import LogoUploader from "../store/LogoUploader";
 import ColorPicker from "../store/ColorPicker";
 import ThemePreview from "../store/ThemePreview";
+import { QUERY_KEYS } from '@/lib/constants';
 
 const defaultConfig = {
   config_key: "general",
@@ -28,8 +29,8 @@ export default function StoreSettingsTab() {
   const [configId, setConfigId] = useState(null);
 
   const { data: configs = [] } = useQuery({
-    queryKey: ["store_config"],
-    queryFn: () => base44.entities.StoreConfig.list(),
+    queryKey: QUERY_KEYS.storeConfig,
+    queryFn: () => StoreConfig.list(),
   });
 
   useEffect(() => {
@@ -48,11 +49,11 @@ export default function StoreSettingsTab() {
   const handleSave = async () => {
     setSaving(true);
     if (configId) {
-      await base44.entities.StoreConfig.update(configId, form);
+      await StoreConfig.update(configId, form);
     } else {
-      await base44.entities.StoreConfig.create(form);
+      await StoreConfig.create(form);
     }
-    queryClient.invalidateQueries({ queryKey: ["store_config"] });
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.storeConfig });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);

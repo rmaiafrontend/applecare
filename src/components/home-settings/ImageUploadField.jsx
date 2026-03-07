@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Upload, Loader2, X } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { uploadFile } from "@/lib/fileUpload";
 import { Input } from "@/components/ui/input";
 
 export default function ImageUploadField({ value, onChange, label, hint, aspect = "aspect-[16/9]" }) {
@@ -10,7 +10,7 @@ export default function ImageUploadField({ value, onChange, label, hint, aspect 
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadFile(file);
     onChange(file_url);
     setUploading(false);
   };

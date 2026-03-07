@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { CartItem, Product, Order } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -27,6 +27,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { formatPrice } from '@/lib/format';
+import { QUERY_KEYS } from '@/lib/constants';
 
 const STATES = [
   'AC','AL','AP','AM','BA','CE','DF','ES','GO','MA',
@@ -57,19 +59,16 @@ export default function Checkout() {
   });
 
   const { data: cartItems = [] } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => base44.entities.CartItem.list(),
+    queryKey: QUERY_KEYS.cart,
+    queryFn: () => CartItem.list(),
   });
 
   const { data: products = [] } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => base44.entities.Product.list(),
+    queryKey: QUERY_KEYS.products,
+    queryFn: () => Product.list(),
   });
 
   const productMap = products.reduce((acc, p) => { acc[p.id] = p; return acc; }, {});
-
-  const formatPrice = (price) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
 
   const subtotal = cartItems.reduce((sum, item) => {
     const product = productMap[item.product_id];
@@ -148,7 +147,7 @@ export default function Checkout() {
         };
       });
 
-      await base44.entities.Order.create({
+      await Order.create({
         order_number: orderNumber,
         status: payment.method === 'pix' ? 'AGUARDANDO_PAGAMENTO' : 'PAGAMENTO_CONFIRMADO',
         items: orderItems,
@@ -165,7 +164,7 @@ export default function Checkout() {
         }],
       });
 
-      await Promise.all(cartItems.map((item) => base44.entities.CartItem.delete(item.id)));
+      await Promise.all(cartItems.map((item) => CartItem.delete(item.id)));
       navigate(createPageUrl(`OrderConfirmation?order=${orderNumber}`));
     } catch (error) {
       console.error('Error creating order:', error);

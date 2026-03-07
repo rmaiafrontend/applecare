@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { CatalogConfig, Category } from "@/api/dataService";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Settings2, Layers } from "lucide-react";
 import {
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import SectionCard from "@/components/settings/SectionCard";
 import SectionFormDialog from "@/components/settings/SectionFormDialog";
+import { QUERY_KEYS } from '@/lib/constants';
 
 export default function CatalogSettings() {
   const [editDialog, setEditDialog] = useState(null);
@@ -21,23 +22,23 @@ export default function CatalogSettings() {
   const queryClient = useQueryClient();
 
   const { data: configs = [] } = useQuery({
-    queryKey: ['catalog_configs'],
-    queryFn: () => base44.entities.CatalogConfig.list('display_order'),
+    queryKey: QUERY_KEYS.catalogConfigs,
+    queryFn: () => CatalogConfig.list('display_order'),
   });
 
   const { data: categories = [] } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => base44.entities.Category.list(),
+    queryKey: QUERY_KEYS.categories,
+    queryFn: () => Category.list(),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.CatalogConfig.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['catalog_configs'] }); setDeleteTarget(null); },
+    mutationFn: (id) => CatalogConfig.delete(id),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.catalogConfigs }); setDeleteTarget(null); },
   });
 
   const toggleMutation = useMutation({
-    mutationFn: ({ id, is_active }) => base44.entities.CatalogConfig.update(id, { is_active }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['catalog_configs'] }),
+    mutationFn: ({ id, is_active }) => CatalogConfig.update(id, { is_active }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.catalogConfigs }),
   });
 
   const openNew = () => {
@@ -65,11 +66,11 @@ export default function CatalogSettings() {
   const handleSave = async () => {
     setSaving(true);
     if (editDialog === 'new') {
-      await base44.entities.CatalogConfig.create(form);
+      await CatalogConfig.create(form);
     } else {
-      await base44.entities.CatalogConfig.update(editDialog.id, form);
+      await CatalogConfig.update(editDialog.id, form);
     }
-    queryClient.invalidateQueries({ queryKey: ['catalog_configs'] });
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.catalogConfigs });
     setSaving(false);
     setEditDialog(null);
   };

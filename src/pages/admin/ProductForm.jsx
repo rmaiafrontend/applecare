@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { Product, Category, Tag } from "@/api/dataService";
+import { uploadFile } from "@/lib/fileUpload";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, Plus, X, Upload, Save, Loader2, Check,
@@ -16,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import SmartProductSearch from "@/components/products/SmartProductSearch";
 import FormSection from "@/components/products/FormSection";
 import ConditionChecklist from "@/components/products/ConditionChecklist";
+import { QUERY_KEYS } from '@/lib/constants';
 
 export default function ProductForm({ onNavigate, productId: propProductId }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -40,11 +42,11 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
   const [saved, setSaved] = useState(false);
   const [aiFilled, setAiFilled] = useState(false);
 
-  const { data: categories = [] } = useQuery({ queryKey: ['categories'], queryFn: () => base44.entities.Category.list() });
-  const { data: tags = [] } = useQuery({ queryKey: ['tags'], queryFn: () => base44.entities.Tag.list() });
+  const { data: categories = [] } = useQuery({ queryKey: QUERY_KEYS.categories, queryFn: () => Category.list() });
+  const { data: tags = [] } = useQuery({ queryKey: QUERY_KEYS.tags, queryFn: () => Tag.list() });
   const { data: existingProduct } = useQuery({
-    queryKey: ['product', productId],
-    queryFn: () => base44.entities.Product.filter({ id: productId }),
+    queryKey: QUERY_KEYS.product(productId),
+    queryFn: () => Product.filter({ id: productId }),
     enabled: !!productId,
   });
 
@@ -92,11 +94,11 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
       stock: parseInt(form.stock) || 0,
     };
     if (isEditing) {
-      await base44.entities.Product.update(productId, data);
+      await Product.update(productId, data);
     } else {
-      await base44.entities.Product.create(data);
+      await Product.create(data);
     }
-    queryClient.invalidateQueries({ queryKey: ['products'] });
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products });
     setSaving(false);
     setSaved(true);
     setTimeout(() => {
@@ -114,7 +116,7 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadFile(file);
     setForm(prev => ({ ...prev, images: [...prev.images, file_url] }));
   };
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));

@@ -1,4 +1,5 @@
 import { smartSearch } from './smartSearch';
+import { formatPrice } from '@/lib/format';
 
 const categoryKeywords = {
   'cat-1': ['iphone', 'celular', 'smartphone', 'telefone'],
@@ -86,10 +87,6 @@ function extractPriceFromText(text) {
   }
 
   return maxPrice;
-}
-
-function formatPrice(price) {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
 }
 
 function getProductBlurb(product, useCase) {

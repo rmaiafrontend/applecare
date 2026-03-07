@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { ChatConfig } from "@/api/dataService";
 import { Save, Loader2, Check, Plus, X, MessageCircle, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ChatPreview from "@/components/chat/ChatPreview";
+import { QUERY_KEYS } from '@/lib/constants';
 
 const TONES = [
   { value: "formal", label: "Formal", desc: "Linguagem corporativa e profissional" },
@@ -43,8 +44,8 @@ export default function ChatSettings() {
   const [newQuestion, setNewQuestion] = useState("");
 
   const { data: configs = [] } = useQuery({
-    queryKey: ["chat_config"],
-    queryFn: () => base44.entities.ChatConfig.list(),
+    queryKey: QUERY_KEYS.chatConfig,
+    queryFn: () => ChatConfig.list(),
   });
 
   useEffect(() => {
@@ -70,11 +71,11 @@ export default function ChatSettings() {
   const handleSave = async () => {
     setSaving(true);
     if (configId) {
-      await base44.entities.ChatConfig.update(configId, form);
+      await ChatConfig.update(configId, form);
     } else {
-      await base44.entities.ChatConfig.create(form);
+      await ChatConfig.create(form);
     }
-    queryClient.invalidateQueries({ queryKey: ["chat_config"] });
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.chatConfig });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);

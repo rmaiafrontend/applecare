@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Category, Product, CartItem } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -17,6 +17,7 @@ import {
 import Header from '@/components/navigation/Header';
 import BottomNav from '@/components/navigation/BottomNav';
 import { Skeleton } from '@/components/ui/skeleton';
+import { QUERY_KEYS } from '@/lib/constants';
 
 const iconMap = {
   Smartphone,
@@ -41,18 +42,18 @@ export default function Categories() {
   const [cartCount, setCartCount] = useState(0);
 
   const { data: categories = [], isLoading } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => base44.entities.Category.list('order'),
+    queryKey: QUERY_KEYS.categories,
+    queryFn: () => Category.list('order'),
   });
 
   const { data: products = [] } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => base44.entities.Product.list(),
+    queryKey: QUERY_KEYS.products,
+    queryFn: () => Product.list(),
   });
 
   const { data: cartItems = [] } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => base44.entities.CartItem.list(),
+    queryKey: QUERY_KEYS.cart,
+    queryFn: () => CartItem.list(),
   });
 
   useEffect(() => {

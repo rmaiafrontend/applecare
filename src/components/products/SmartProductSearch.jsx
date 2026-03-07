@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Sparkles, Loader2, Search, Zap, ChevronRight } from "lucide-react";
-import { base44 } from "@/api/base44Client";
 
 const appleProducts = {
   "iPhone": [
@@ -100,46 +99,7 @@ export default function SmartProductSearch({ onProductData, categories = [] }) {
 
     const catNames = categories.map(c => c.name).join(", ");
 
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Você é um especialista em produtos Apple. Retorne dados técnicos completos para cadastro de: "${productName}".
-
-Categorias disponíveis no sistema: ${catNames}
-
-IMPORTANTE: 
-- Retorne preços em Reais (BRL) baseados no preço atual de mercado brasileiro
-- Gere um product_id no formato "prod-xxx" (slug curto)
-- Gere um SKU no formato "APL-XXXX-XXX"
-- Escolha a category_id correspondente dentre as categorias disponíveis
-- Inclua especificações técnicas detalhadas e reais do produto
-- A descrição deve ser comercial e atraente
-- Inclua tags relevantes como: novo, express, oferta, premium, lacrado`,
-      add_context_from_internet: true,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          product_id: { type: "string" },
-          name: { type: "string" },
-          sku: { type: "string" },
-          price: { type: "number" },
-          original_price: { type: "number" },
-          category_id: { type: "string" },
-          description: { type: "string" },
-          condition: { type: "string", enum: ["new", "used"] },
-          specs: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                label: { type: "string" },
-                value: { type: "string" }
-              }
-            }
-          },
-          tags: { type: "array", items: { type: "string" } },
-          suggested_images: { type: "array", items: { type: "string" } }
-        }
-      }
-    });
+    const result = { result: '' };
 
     setLoading(false);
     onProductData(result);

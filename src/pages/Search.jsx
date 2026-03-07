@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Product, Category, CartItem } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -12,9 +12,8 @@ import {
 } from 'lucide-react';
 import Header from '@/components/navigation/Header';
 import { getGreeting, processMessage } from '@/lib/chatEngine';
-
-const formatPrice = (price) =>
-  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+import { formatPrice } from '@/lib/format';
+import { QUERY_KEYS } from '@/lib/constants';
 
 function TypingIndicator() {
   return (
@@ -178,18 +177,18 @@ export default function Search() {
   const inputRef = useRef(null);
 
   const { data: products = [] } = useQuery({
-    queryKey: ['allProducts'],
-    queryFn: () => base44.entities.Product.list(),
+    queryKey: QUERY_KEYS.allProducts,
+    queryFn: () => Product.list(),
   });
 
   const { data: categories = [] } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => base44.entities.Category.list(),
+    queryKey: QUERY_KEYS.categories,
+    queryFn: () => Category.list(),
   });
 
   const { data: cartItems = [] } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => base44.entities.CartItem.list(),
+    queryKey: QUERY_KEYS.cart,
+    queryFn: () => CartItem.list(),
   });
 
   useEffect(() => {

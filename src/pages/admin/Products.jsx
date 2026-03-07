@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { Product, Category, Tag } from "@/api/dataService";
 import { Plus, Package, LayoutGrid, List, SlidersHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import ProductCard from "@/components/products/ProductCard";
+import AdminProductCard from "@/components/products/AdminProductCard";
 import ProductTable from "@/components/products/ProductTable";
 import ProductFilters from "@/components/products/ProductFilters";
 import ProductFormModal from "@/components/products/ProductFormModal";
+import { QUERY_KEYS } from '@/lib/constants';
 
 export default function Products() {
   const [search, setSearch] = useState("");
@@ -23,29 +24,29 @@ export default function Products() {
   const queryClient = useQueryClient();
 
   const { data: products = [] } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => base44.entities.Product.list('-created_date'),
+    queryKey: QUERY_KEYS.products,
+    queryFn: () => Product.list('-created_date'),
   });
 
   const { data: categories = [] } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => base44.entities.Category.list(),
+    queryKey: QUERY_KEYS.categories,
+    queryFn: () => Category.list(),
   });
 
   const { data: tags = [] } = useQuery({
-    queryKey: ['tags'],
-    queryFn: () => base44.entities.Tag.list(),
+    queryKey: QUERY_KEYS.tags,
+    queryFn: () => Tag.list(),
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Product.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['products'] }),
+    mutationFn: ({ id, data }) => Product.update(id, data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products }),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Product.delete(id),
+    mutationFn: (id) => Product.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products });
       setDeleteTarget(null);
     },
   });
@@ -149,7 +150,7 @@ export default function Products() {
               className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"
             >
               {filtered.map((product) => (
-                <ProductCard
+                <AdminProductCard
                   key={product.id}
                   product={product}
                   categoryName={getCategoryName(product.category_id)}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { Tag, Product } from "@/api/dataService";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Pencil, Trash2, Save, Loader2, Tags as TagsIcon, Hash } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
+import { QUERY_KEYS } from '@/lib/constants';
 
 const PRESET_COLORS = [
   "#10B981", "#3B82F6", "#8B5CF6", "#F59E0B", "#EF4444",
@@ -27,18 +28,18 @@ export default function Tags() {
   const queryClient = useQueryClient();
 
   const { data: tags = [] } = useQuery({
-    queryKey: ['tags'],
-    queryFn: () => base44.entities.Tag.list(),
+    queryKey: QUERY_KEYS.tags,
+    queryFn: () => Tag.list(),
   });
 
   const { data: products = [] } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => base44.entities.Product.list(),
+    queryKey: QUERY_KEYS.products,
+    queryFn: () => Product.list(),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Tag.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['tags'] }); setDeleteTarget(null); },
+    mutationFn: (id) => Tag.delete(id),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tags }); setDeleteTarget(null); },
   });
 
   const openNew = () => {
@@ -56,11 +57,11 @@ export default function Tags() {
     const slug = form.slug || form.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
     const data = { ...form, slug };
     if (editDialog === 'new') {
-      await base44.entities.Tag.create(data);
+      await Tag.create(data);
     } else {
-      await base44.entities.Tag.update(editDialog.id, data);
+      await Tag.update(editDialog.id, data);
     }
-    queryClient.invalidateQueries({ queryKey: ['tags'] });
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tags });
     setSaving(false);
     setEditDialog(null);
   };

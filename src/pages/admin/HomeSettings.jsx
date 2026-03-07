@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { StoreConfig } from "@/api/dataService";
 import { Save, Loader2, Check, Link2, Image, Award, Sparkles, FolderOpen, LayoutGrid, ScrollText, Info, ShoppingBag } from "lucide-react";
 
 import SectionWrapper from "@/components/home-settings/SectionWrapper";
@@ -15,6 +15,7 @@ import CarouselsSection from "@/components/home-settings/CarouselsSection";
 import InfoCardSection from "@/components/home-settings/InfoCardSection";
 import ProductListSection from "@/components/home-settings/ProductListSection";
 import HomePreview from "@/components/home-settings/HomePreview";
+import { QUERY_KEYS } from '@/lib/constants';
 
 const DEFAULT_CONFIG = {
   config_key: "home_layout",
@@ -92,8 +93,8 @@ export default function HomeSettings() {
   const [openSections, setOpenSections] = useState({});
 
   const { data: configs = [] } = useQuery({
-    queryKey: ["home_config"],
-    queryFn: () => base44.entities.HomeConfig.list(),
+    queryKey: QUERY_KEYS.homeConfig,
+    queryFn: () => StoreConfig.list(),
   });
 
   useEffect(() => {
@@ -114,11 +115,11 @@ export default function HomeSettings() {
   const handleSave = async () => {
     setSaving(true);
     if (configId) {
-      await base44.entities.HomeConfig.update(configId, form);
+      await StoreConfig.update(configId, form);
     } else {
-      await base44.entities.HomeConfig.create(form);
+      await StoreConfig.create(form);
     }
-    queryClient.invalidateQueries({ queryKey: ["home_config"] });
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.homeConfig });
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);

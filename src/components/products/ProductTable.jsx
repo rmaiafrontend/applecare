@@ -1,8 +1,6 @@
 import React from "react";
 import { Pencil, Trash2, Star, Eye, EyeOff, Package } from "lucide-react";
-
-const formatPrice = (price) =>
-  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price);
+import { formatPrice } from '@/lib/format';
 
 export default function ProductTable({ products = [], categories = [], onDelete, onToggleActive, onToggleFeatured, onEdit }) {
   const getCategoryName = (catId) => categories.find(c => c.category_id === catId)?.name || catId;

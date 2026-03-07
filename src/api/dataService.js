@@ -423,3 +423,5 @@ export const localApi = {
     },
   },
 };
+
+export const { Category, Product, CartItem, Order, Tag, StoreConfig, ChatConfig, CatalogConfig, PaymentConfig } = localApi;

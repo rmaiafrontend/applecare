@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { CatalogConfig } from "@/api/dataService";
+import { uploadFile } from "@/lib/fileUpload";
 import { motion, AnimatePresence } from "framer-motion";
 import { Save, Loader2, Check, AlertCircle, ImagePlay, Lightbulb } from "lucide-react";
 import BannerPreviewCard from "@/components/banners/BannerPreviewCard";
 import BannerFormFields from "@/components/banners/BannerFormFields";
+import { QUERY_KEYS } from '@/lib/constants';
 
 const BANNER_KEYS = ["hero_banner", "promo_banner"];
 
@@ -17,8 +19,8 @@ export default function BannerSettings() {
   const [form, setForm] = useState({});
 
   const { data: configs = [] } = useQuery({
-    queryKey: ["catalog_configs"],
-    queryFn: () => base44.entities.CatalogConfig.list("display_order"),
+    queryKey: QUERY_KEYS.catalogConfigs,
+    queryFn: () => CatalogConfig.list("display_order"),
   });
 
   const banners = configs.filter(c => BANNER_KEYS.includes(c.config_key));
@@ -47,7 +49,7 @@ export default function BannerSettings() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadFile(file);
     setForm(f => ({ ...f, banner_image_url: file_url }));
     setUploading(false);
   };
@@ -55,8 +57,8 @@ export default function BannerSettings() {
   const handleSave = async () => {
     if (!selected) return;
     setSaving(true);
-    await base44.entities.CatalogConfig.update(selected.id, form);
-    queryClient.invalidateQueries({ queryKey: ["catalog_configs"] });
+    await CatalogConfig.update(selected.id, form);
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.catalogConfigs });
     setSaving(false);
     setSavedFeedback(true);
     setTimeout(() => setSavedFeedback(false), 2000);

@@ -1,3 +1,5 @@
+import { formatPrice } from '@/lib/format';
+
 const categoryUseCases = {
   'cat-1': 'comunicacao e fotografia',
   'cat-2': 'trabalho e produtividade',
@@ -34,10 +36,6 @@ function getAllSpecLabels(products) {
     if (p.specs) p.specs.forEach(s => labels.add(s.label));
   });
   return Array.from(labels);
-}
-
-function formatPrice(price) {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
 }
 
 export function generateComparison(products, categories) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { CartItem, Order } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import {
@@ -18,6 +18,7 @@ import {
   Settings,
   Smartphone,
 } from 'lucide-react';
+import { WHATSAPP_NUMBER, QUERY_KEYS } from '@/lib/constants';
 import Header from '@/components/navigation/Header';
 import BottomNav from '@/components/navigation/BottomNav';
 import { Switch } from '@/components/ui/switch';
@@ -75,24 +76,18 @@ export default function Profile() {
   const [notifications, setNotifications] = useState(true);
 
   const { data: user } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: async () => {
-      try {
-        return await base44.auth.me();
-      } catch {
-        return null;
-      }
-    },
+    queryKey: QUERY_KEYS.currentUser,
+    queryFn: () => Promise.reject(new Error('Not authenticated')),
   });
 
   const { data: cartItems = [] } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => base44.entities.CartItem.list(),
+    queryKey: QUERY_KEYS.cart,
+    queryFn: () => CartItem.list(),
   });
 
   const { data: orders = [] } = useQuery({
-    queryKey: ['orders'],
-    queryFn: () => base44.entities.Order.list(),
+    queryKey: QUERY_KEYS.orders,
+    queryFn: () => Order.list(),
   });
 
   useEffect(() => {
@@ -101,11 +96,11 @@ export default function Profile() {
   }, [cartItems]);
 
   const handleLogout = () => {
-    base44.auth.logout();
+    window.localStorage.removeItem('app_access_token'); window.localStorage.removeItem('access_token');
   };
 
   const handleWhatsApp = () => {
-    window.open('https://wa.me/5511999999999?text=Ola, preciso de ajuda com a WEGX', '_blank');
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Ola, preciso de ajuda com a WEGX`, '_blank');
   };
 
   return (

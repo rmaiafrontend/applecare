@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { Product } from "@/api/dataService";
+import { uploadFile } from "@/lib/fileUpload";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, X, Upload, Save, Loader2, Check,
@@ -16,6 +17,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SmartProductSearch from "./SmartProductSearch";
 import FormSection from "./FormSection";
+import { QUERY_KEYS } from '@/lib/constants';
 
 const emptyForm = {
   product_id: "", name: "", sku: "", price: "", original_price: "",
@@ -92,11 +94,11 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
       stock: parseInt(form.stock) || 0,
     };
     if (isEditing) {
-      await base44.entities.Product.update(editProduct.id, data);
+      await Product.update(editProduct.id, data);
     } else {
-      await base44.entities.Product.create(data);
+      await Product.create(data);
     }
-    queryClient.invalidateQueries({ queryKey: ['products'] });
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products });
     setSaving(false);
     setSaved(true);
     setTimeout(() => { onOpenChange(false); }, 800);
@@ -111,7 +113,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const { file_url } = await uploadFile(file);
     setForm(prev => ({ ...prev, images: [...prev.images, file_url] }));
   };
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));

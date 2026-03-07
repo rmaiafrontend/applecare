@@ -29,7 +29,7 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors (com mock/sem base44, não redireciona para evitar loop)
+  // Handle authentication errors
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;

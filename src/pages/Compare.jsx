@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Product, Category } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -10,6 +10,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useCompare } from '@/lib/CompareContext';
 import { generateComparison } from '@/lib/smartCompare';
+import { formatPrice } from '@/lib/format';
+import { QUERY_KEYS } from '@/lib/constants';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -19,9 +21,6 @@ const fadeUp = {
     transition: { delay: i * 0.06, duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] },
   }),
 };
-
-const formatPrice = (price) =>
-  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
 
 const highlightIcons = {
   discount: Tag,
@@ -35,13 +34,13 @@ export default function Compare() {
   const [showRecommendation, setShowRecommendation] = useState(false);
 
   const { data: allProducts = [] } = useQuery({
-    queryKey: ['allProducts'],
-    queryFn: () => base44.entities.Product.list(),
+    queryKey: QUERY_KEYS.allProducts,
+    queryFn: () => Product.list(),
   });
 
   const { data: categories = [] } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => base44.entities.Category.list(),
+    queryKey: QUERY_KEYS.categories,
+    queryFn: () => Category.list(),
   });
 
   const products = compareIds

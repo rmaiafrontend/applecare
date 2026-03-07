@@ -3,16 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCompare } from '@/lib/CompareContext';
-import { base44 } from '@/api/base44Client';
+import { Product } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/lib/constants';
 
 export default function CompareFloatingBar() {
   const navigate = useNavigate();
   const { compareIds, removeFromCompare, clearCompare } = useCompare();
 
   const { data: products = [] } = useQuery({
-    queryKey: ['allProducts'],
-    queryFn: () => base44.entities.Product.list(),
+    queryKey: QUERY_KEYS.allProducts,
+    queryFn: () => Product.list(),
   });
 
   const selectedProducts = compareIds

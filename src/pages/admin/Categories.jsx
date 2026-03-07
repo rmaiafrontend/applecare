@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { Category, Product } from "@/api/dataService";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Pencil, Trash2, Save, Loader2, Grid3X3, Package, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
+import { QUERY_KEYS } from '@/lib/constants';
 
 const ICON_MAP = {
   Smartphone: "📱", Laptop: "💻", Tablet: "📟", Watch: "⌚",
@@ -30,18 +31,18 @@ export default function Categories() {
   const queryClient = useQueryClient();
 
   const { data: categories = [] } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => base44.entities.Category.list('display_order'),
+    queryKey: QUERY_KEYS.categories,
+    queryFn: () => Category.list('display_order'),
   });
 
   const { data: products = [] } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => base44.entities.Product.list(),
+    queryKey: QUERY_KEYS.products,
+    queryFn: () => Product.list(),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Category.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['categories'] }); setDeleteTarget(null); },
+    mutationFn: (id) => Category.delete(id),
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.categories }); setDeleteTarget(null); },
   });
 
   const openNew = () => {
@@ -61,11 +62,11 @@ export default function Categories() {
   const handleSave = async () => {
     setSaving(true);
     if (editDialog === 'new') {
-      await base44.entities.Category.create(form);
+      await Category.create(form);
     } else {
-      await base44.entities.Category.update(editDialog.id, form);
+      await Category.update(editDialog.id, form);
     }
-    queryClient.invalidateQueries({ queryKey: ['categories'] });
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.categories });
     setSaving(false);
     setEditDialog(null);
   };

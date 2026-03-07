@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Plus, Truck, RotateCcw } from 'lucide-react';
+import { formatPrice } from '@/lib/format';
 
 export default function ProductCard({ product, onAddToCart, isAdding }) {
   const isAvailable = product.stock > 0;
@@ -10,9 +11,6 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
   const discountPercent = hasDiscount
     ? Math.round((1 - product.price / product.original_price) * 100)
     : 0;
-
-  const formatPrice = (price) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
 
   return (
     <div

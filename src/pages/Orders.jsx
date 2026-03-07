@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Order, CartItem } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -19,6 +19,8 @@ import {
 import Header from '@/components/navigation/Header';
 import BottomNav from '@/components/navigation/BottomNav';
 import { Skeleton } from '@/components/ui/skeleton';
+import { formatPrice } from '@/lib/format';
+import { QUERY_KEYS } from '@/lib/constants';
 
 const STATUS_CONFIG = {
   AGUARDANDO_PAGAMENTO: {
@@ -91,21 +93,18 @@ export default function Orders() {
   const [cartCount, setCartCount] = useState(0);
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ['orders'],
-    queryFn: () => base44.entities.Order.list('-created_date'),
+    queryKey: QUERY_KEYS.orders,
+    queryFn: () => Order.list('-created_date'),
   });
 
   const { data: cartItems = [] } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => base44.entities.CartItem.list(),
+    queryKey: QUERY_KEYS.cart,
+    queryFn: () => CartItem.list(),
   });
 
   useEffect(() => {
     setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
   }, [cartItems]);
-
-  const formatPrice = (price) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
 
   const formatDate = (dateString) =>
     new Date(dateString).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });

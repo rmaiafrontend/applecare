@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Minus, Plus, Trash2 } from 'lucide-react';
+import { formatPrice } from '@/lib/format';
 
 export default function CartItemCard({
   item,
@@ -10,9 +11,6 @@ export default function CartItemCard({
   onRemove,
   isUpdating,
 }) {
-  const formatPrice = (price) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
-
   const subtotal = (product?.price || 0) * item.quantity;
   const maxStock = product?.stock || 99;
 

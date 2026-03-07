@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { Product, Category, Tag } from "@/api/dataService";
 import { motion } from "framer-motion";
 import { Package, Zap, Star, TrendingDown, Grid3X3, Tags, DollarSign, BarChart3 } from "lucide-react";
 import StatsCard from "@/components/dashboard/StatsCard";
@@ -8,9 +8,8 @@ import RecentProducts from "@/components/dashboard/RecentProducts";
 import CategoryBreakdown from "@/components/dashboard/CategoryBreakdown";
 import QuickActions from "@/components/dashboard/QuickActions";
 import StockAlert from "@/components/dashboard/StockAlert";
-
-const formatPrice = (price) =>
-  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
+import { formatPrice } from '@/lib/format';
+import { QUERY_KEYS } from '@/lib/constants';
 
 const greetingByHour = () => {
   const h = new Date().getHours();
@@ -22,18 +21,18 @@ const todayFormatted = () =>
 
 export default function Dashboard({ onNavigate }) {
   const { data: products = [] } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => base44.entities.Product.list('-created_date'),
+    queryKey: QUERY_KEYS.products,
+    queryFn: () => Product.list('-created_date'),
   });
 
   const { data: categories = [] } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => base44.entities.Category.list(),
+    queryKey: QUERY_KEYS.categories,
+    queryFn: () => Category.list(),
   });
 
   const { data: tags = [] } = useQuery({
-    queryKey: ['tags'],
-    queryFn: () => base44.entities.Tag.list(),
+    queryKey: QUERY_KEYS.tags,
+    queryFn: () => Tag.list(),
   });
 
   const totalProducts = products.length;

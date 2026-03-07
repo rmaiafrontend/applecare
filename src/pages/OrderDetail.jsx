@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Order, CartItem } from '@/api/dataService';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -20,6 +20,8 @@ import Header from '@/components/navigation/Header';
 import BottomNav from '@/components/navigation/BottomNav';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { formatPrice } from '@/lib/format';
+import { WHATSAPP_NUMBER, QUERY_KEYS } from '@/lib/constants';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -60,25 +62,22 @@ export default function OrderDetail() {
   const orderId = urlParams.get('id');
 
   const { data: order, isLoading, refetch } = useQuery({
-    queryKey: ['order', orderId],
+    queryKey: QUERY_KEYS.order(orderId),
     queryFn: async () => {
-      const orders = await base44.entities.Order.filter({ id: orderId });
+      const orders = await Order.filter({ id: orderId });
       return orders[0];
     },
     enabled: !!orderId,
   });
 
   const { data: cartItems = [] } = useQuery({
-    queryKey: ['cart'],
-    queryFn: () => base44.entities.CartItem.list(),
+    queryKey: QUERY_KEYS.cart,
+    queryFn: () => CartItem.list(),
   });
 
   useEffect(() => {
     setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
   }, [cartItems]);
-
-  const formatPrice = (price) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
 
   const formatDateTime = (dateString) =>
     new Date(dateString).toLocaleDateString('pt-BR', {
@@ -94,7 +93,7 @@ export default function OrderDetail() {
     ['AGUARDANDO_PAGAMENTO', 'PAGAMENTO_CONFIRMADO'].includes(order?.status);
 
   const handleCancel = async () => {
-    await base44.entities.Order.update(order.id, {
+    await Order.update(order.id, {
       status: 'CANCELADO',
       status_history: [
         ...(order.status_history || []),
@@ -385,7 +384,7 @@ export default function OrderDetail() {
           {/* ── Actions ── */}
           <motion.div variants={fadeUp} custom={4} className="space-y-2.5 pt-2 pb-4">
             <button
-              onClick={() => window.open('https://wa.me/5511999999999', '_blank')}
+              onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}`, '_blank')}
               className="w-full h-12 rounded-2xl border border-gray-200 text-[13px] font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 flex items-center justify-center gap-2 transition-colors"
             >
               <MessageCircle className="w-4 h-4" strokeWidth={2} />
