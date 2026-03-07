@@ -60,10 +60,12 @@ import Products from './pages/Products';
 import Profile from './pages/Profile';
 import Search from './pages/Search';
 import Splash from './pages/Splash';
+import Admin from './pages/Admin';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "Admin": Admin,
     "Cart": Cart,
     "Categories": Categories,
     "Compare": Compare,

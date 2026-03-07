@@ -10,9 +10,13 @@ export default function Layout({ children, currentPageName }) {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // Splash page should not have any layout wrapper
+  // Splash and Admin pages should not have the storefront layout
   if (currentPageName === 'Splash') {
     return children;
+  }
+
+  if (currentPageName === 'Admin') {
+    return <div className="min-h-screen">{children}</div>;
   }
 
   return (

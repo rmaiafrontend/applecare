@@ -1,76 +1,137 @@
 /**
- * API local: produtos e categorias do JSON estático,
+ * API local: produtos e categorias com CRUD via localStorage,
  * carrinho e pedidos no localStorage.
+ * Na primeira carga, faz seed a partir do JSON estático.
  */
 
 const CART_KEY = 'apple_cart';
 const ORDERS_KEY = 'apple_orders';
+const PRODUCTS_KEY = 'admin_products';
+const CATEGORIES_KEY = 'admin_categories';
 
-let dataCache = null;
+let dataSeeded = false;
 
-async function loadData() {
-  if (dataCache) return dataCache;
-  const res = await fetch('/data/products.json');
-  if (!res.ok) throw new Error('Falha ao carregar produtos');
-  dataCache = await res.json();
-  return dataCache;
+function generateId(prefix = 'item') {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function getStorage(key) {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setStorage(key, data) {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(data));
+  } catch (_) {}
+}
+
+async function ensureSeeded() {
+  if (dataSeeded && getStorage(PRODUCTS_KEY)) return;
+  if (!getStorage(PRODUCTS_KEY) || !getStorage(CATEGORIES_KEY)) {
+    const res = await fetch('/data/products.json');
+    if (!res.ok) throw new Error('Falha ao carregar produtos');
+    const data = await res.json();
+    if (!getStorage(PRODUCTS_KEY)) setStorage(PRODUCTS_KEY, data.products || []);
+    if (!getStorage(CATEGORIES_KEY)) setStorage(CATEGORIES_KEY, data.categories || []);
+  }
+  dataSeeded = true;
+}
+
+function getProducts() {
+  return getStorage(PRODUCTS_KEY) || [];
+}
+
+function setProducts(products) {
+  setStorage(PRODUCTS_KEY, products);
+}
+
+function getCategories() {
+  return getStorage(CATEGORIES_KEY) || [];
+}
+
+function setCategories(categories) {
+  setStorage(CATEGORIES_KEY, categories);
 }
 
 function getCart() {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = window.localStorage.getItem(CART_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  return getStorage(CART_KEY) || [];
 }
 
 function setCart(items) {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.setItem(CART_KEY, JSON.stringify(items));
-  } catch (_) {}
+  setStorage(CART_KEY, items);
 }
 
 function getOrders() {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = window.localStorage.getItem(ORDERS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+  return getStorage(ORDERS_KEY) || [];
 }
 
 function setOrders(orders) {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
-  } catch (_) {}
+  setStorage(ORDERS_KEY, orders);
 }
 
 export const localApi = {
   Category: {
     list: async (sort) => {
-      const { categories } = await loadData();
-      const out = [...(categories || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-      return Promise.resolve(out);
+      await ensureSeeded();
+      const categories = getCategories();
+      const out = [...categories].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      return out;
     },
     filter: async (query) => {
-      const { categories } = await loadData();
+      await ensureSeeded();
+      const categories = getCategories();
       if (query.id) {
-        const cat = (categories || []).find((c) => c.id === query.id);
-        return Promise.resolve(cat ? [cat] : []);
+        const cat = categories.find((c) => c.id === query.id);
+        return cat ? [cat] : [];
       }
-      return Promise.resolve([]);
+      return [];
+    },
+    create: async (body) => {
+      await ensureSeeded();
+      const categories = getCategories();
+      const id = generateId('cat');
+      const maxOrder = categories.reduce((max, c) => Math.max(max, c.order ?? 0), 0);
+      const cat = { id, order: maxOrder + 1, is_promotion: false, ...body };
+      categories.push(cat);
+      setCategories(categories);
+      return cat;
+    },
+    update: async (id, body) => {
+      await ensureSeeded();
+      const categories = getCategories();
+      const i = categories.findIndex((c) => c.id === id);
+      if (i === -1) return null;
+      categories[i] = { ...categories[i], ...body };
+      setCategories(categories);
+      return categories[i];
+    },
+    delete: async (id) => {
+      await ensureSeeded();
+      const categories = getCategories().filter((c) => c.id !== id);
+      setCategories(categories);
+    },
+    reorder: async (orderedIds) => {
+      await ensureSeeded();
+      const categories = getCategories();
+      orderedIds.forEach((id, idx) => {
+        const cat = categories.find((c) => c.id === id);
+        if (cat) cat.order = idx + 1;
+      });
+      setCategories(categories);
     },
   },
 
   Product: {
     list: async (sort, limit = 100) => {
-      const { products } = await loadData();
-      let out = [...(products || [])];
+      await ensureSeeded();
+      let out = [...getProducts()];
       const desc = sort && String(sort).startsWith('-');
       const field = (sort && String(sort).replace(/^-/, '')) || 'created_date';
       out.sort((a, b) => {
@@ -80,19 +141,50 @@ export const localApi = {
         return desc ? -cmp : cmp;
       });
       if (limit != null && limit > 0) out = out.slice(0, limit);
-      return Promise.resolve(out);
+      return out;
     },
     filter: async (query) => {
-      const { products } = await loadData();
-      const list = products || [];
+      await ensureSeeded();
+      const list = getProducts();
       if (query.id) {
         const p = list.find((x) => x.id === query.id);
-        return Promise.resolve(p ? [p] : []);
+        return p ? [p] : [];
       }
       if (query.category_id != null) {
-        return Promise.resolve(list.filter((x) => x.category_id === query.category_id));
+        return list.filter((x) => x.category_id === query.category_id);
       }
-      return Promise.resolve([]);
+      return [];
+    },
+    create: async (body) => {
+      await ensureSeeded();
+      const products = getProducts();
+      const id = generateId('prod');
+      const product = {
+        id,
+        created_date: new Date().toISOString(),
+        images: [],
+        specs: [],
+        stock: 0,
+        express_delivery: false,
+        ...body,
+      };
+      products.push(product);
+      setProducts(products);
+      return product;
+    },
+    update: async (id, body) => {
+      await ensureSeeded();
+      const products = getProducts();
+      const i = products.findIndex((p) => p.id === id);
+      if (i === -1) return null;
+      products[i] = { ...products[i], ...body };
+      setProducts(products);
+      return products[i];
+    },
+    delete: async (id) => {
+      await ensureSeeded();
+      const products = getProducts().filter((p) => p.id !== id);
+      setProducts(products);
     },
   },
 
