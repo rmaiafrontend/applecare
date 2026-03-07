@@ -28,7 +28,7 @@ export default function Splash() {
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="text-center z-10"
       >
-        <h1 className="text-5xl font-semibold mb-3 text-white tracking-tight" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif' }}>
+        <h1 className="text-5xl font-semibold mb-3 text-white tracking-tight">
           Apple Store
         </h1>
         <p className="text-white/50 text-sm tracking-[0.2em] uppercase">Premium Reseller</p>
