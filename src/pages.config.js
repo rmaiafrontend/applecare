@@ -47,6 +47,7 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import LandingPage from './pages/LandingPage';
 import Cart from './pages/Cart';
 import Compare from './pages/Compare';
 import Categories from './pages/Categories';
@@ -66,6 +67,7 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     "Admin": Admin,
+    "LandingPage": LandingPage,
     "Cart": Cart,
     "Categories": Categories,
     "Compare": Compare,
@@ -82,7 +84,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "Splash",
+    mainPage: "LandingPage",
     Pages: PAGES,
     Layout: __Layout,
 };
