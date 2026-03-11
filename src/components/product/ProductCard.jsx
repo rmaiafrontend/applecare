@@ -33,14 +33,15 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
           {/* Badges top-left */}
           <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
             {hasDiscount && isAvailable && (
-              <span className="bg-green-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
-                -{discountPercent}%
+              <span className="inline-flex items-center gap-1 bg-red-500/90 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
+                <span className="text-[13px] leading-none">-{discountPercent}%</span>
+                <span className="text-white/70 text-[9px] font-medium uppercase">off</span>
               </span>
             )}
             {isUsed && isAvailable && (
-              <span className="inline-flex items-center gap-1 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1 bg-gray-900/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
                 <RotateCcw className="w-2.5 h-2.5" strokeWidth={2.5} />
-                Usado
+                Seminovo
               </span>
             )}
           </div>

@@ -19,7 +19,7 @@
       "express_delivery": true,
       "category_id": "cat-1",
       "created_date": "2024-09-22T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-card-40-17pro-202509?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Titânio. Chip A17 Pro. Câmera principal de 48MP com zoom óptico 5x. Tela Super Retina XDR de 6,7 polegadas com ProMotion. USB-C com USB 3. Botão de Ação.",
       "specs": [
         { "label": "Chip", "value": "A17 Pro" },
@@ -38,7 +38,7 @@
       "express_delivery": true,
       "category_id": "cat-1",
       "created_date": "2024-09-22T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1696446702183-cbd13d78e1e7?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-card-40-17pro-202509?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Titânio. Chip A17 Pro. Sistema de câmera Pro de 48MP. Tela Super Retina XDR de 6,1 polegadas com ProMotion. Design leve e resistente.",
       "specs": [
         { "label": "Chip", "value": "A17 Pro" },
@@ -56,7 +56,7 @@
       "express_delivery": false,
       "category_id": "cat-1",
       "created_date": "2024-09-22T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-card-40-17-202509?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Dynamic Island. Câmera principal de 48MP. Chip A16 Bionic. USB-C. Tela Super Retina XDR de 6,1 polegadas. Cinco cores vibrantes.",
       "specs": [
         { "label": "Chip", "value": "A16 Bionic" },
@@ -76,7 +76,7 @@
       "condition": "used",
       "category_id": "cat-1",
       "created_date": "2024-03-01T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-card-40-16plus-202509?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Chip A15 Bionic. Sistema de câmera avançado de 12MP. Detecção de Acidente. Tela Super Retina XDR de 6,1 polegadas.",
       "specs": [
         { "label": "Chip", "value": "A15 Bionic" },
@@ -94,7 +94,7 @@
       "express_delivery": true,
       "category_id": "cat-2",
       "created_date": "2024-03-08T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-card-40-macbook-air-202503?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Chip M3. Tela Liquid Retina de 15,3 polegadas. Até 18 horas de bateria. 8GB de memória unificada. Design ultrafino em alumínio.",
       "specs": [
         { "label": "Chip", "value": "Apple M3" },
@@ -113,7 +113,7 @@
       "express_delivery": true,
       "category_id": "cat-2",
       "created_date": "2024-03-08T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-card-40-macbook-air-202503?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Chip M3. Tela Liquid Retina de 13,6 polegadas. Até 18 horas de bateria. Design fanless incrivelmente fino e leve. MagSafe.",
       "specs": [
         { "label": "Chip", "value": "Apple M3" },
@@ -131,7 +131,7 @@
       "express_delivery": false,
       "category_id": "cat-2",
       "created_date": "2024-11-07T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1639249227523-78f6c647addb?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-card-40-macbookpro-14-16-202410?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Chip M3 Pro. Tela Liquid Retina XDR de 14,2 polegadas. Até 17 horas de bateria. 18GB de memória unificada. Space Black.",
       "specs": [
         { "label": "Chip", "value": "Apple M3 Pro" },
@@ -149,7 +149,7 @@
       "express_delivery": true,
       "category_id": "cat-3",
       "created_date": "2024-05-15T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/ipad-card-40-pro-202405?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Chip M4. Tela Ultra Retina XDR com tandem OLED. Apple Pencil Pro. Design incrivelmente fino. Face ID. Wi-Fi 6E.",
       "specs": [
         { "label": "Chip", "value": "Apple M4" },
@@ -168,7 +168,7 @@
       "express_delivery": false,
       "category_id": "cat-3",
       "created_date": "2024-03-08T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/ipad-card-40-air-202405?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Chip M2. Tela Liquid Retina de 11 polegadas. Compatível com Apple Pencil e Magic Keyboard. Touch ID. USB-C.",
       "specs": [
         { "label": "Chip", "value": "Apple M2" },
@@ -186,7 +186,7 @@
       "express_delivery": true,
       "category_id": "cat-3",
       "created_date": "2024-10-26T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1561154464-82e9adf32764?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/ipad-card-40-ipad-202410?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Chip A14 Bionic. Tela Liquid Retina de 10,9 polegadas. Câmera frontal horizontal. USB-C. Quatro cores vibrantes.",
       "specs": [
         { "label": "Chip", "value": "A14 Bionic" },
@@ -204,7 +204,7 @@
       "express_delivery": true,
       "category_id": "cat-4",
       "created_date": "2024-09-22T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/watch-card-40-ultra3-202509_GEO_BR?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Caixa de titânio de 49mm. Tela mais brilhante da Apple. GPS de precisão com duas frequências. Resistência à água até 100m. Chip S9.",
       "specs": [
         { "label": "Chip", "value": "S9 SiP" },
@@ -223,7 +223,7 @@
       "express_delivery": false,
       "category_id": "cat-4",
       "created_date": "2024-09-22T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1551816230-ef5deaed4a26?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/watch-card-40-s11-202509_GEO_BR?wid=680&hei=528&fmt=jpeg&qlt=90"],
       "description": "Chip S9. Tela Retina sempre ativa. Gesto de Toque Duplo. Sensor de oxigênio no sangue. ECG. Resistência à água.",
       "specs": [
         { "label": "Chip", "value": "S9 SiP" },
@@ -241,7 +241,7 @@
       "express_delivery": true,
       "category_id": "cat-5",
       "created_date": "2024-09-22T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1603351154351-5e2d0600bb77?w=600&h=600&fit=crop"],
+      "images": ["https://www.apple.com/v/airpods/y/images/overview/hero_endframe__calpooy4ucr6_large.jpg"],
       "description": "Chip H2. Cancelamento Ativo de Ruído adaptativo. Modo Transparência. Áudio Espacial personalizado. USB-C. Até 6h de reprodução.",
       "specs": [
         { "label": "Chip", "value": "Apple H2" },
@@ -261,7 +261,7 @@
       "condition": "used",
       "category_id": "cat-5",
       "created_date": "2024-09-22T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1625245488600-f03fef636a3c?w=600&h=600&fit=crop"],
+      "images": ["https://www.apple.com/v/airpods/y/images/overview/airpods_max_black__x3byrd2venmu_large.png"],
       "description": "Chip H1. Cancelamento Ativo de Ruído. Áudio Espacial com rastreamento dinâmico de cabeça. Estrutura em aço inoxidável e alumínio.",
       "specs": [
         { "label": "Chip", "value": "Apple H1" },
@@ -279,7 +279,7 @@
       "express_delivery": true,
       "category_id": "cat-5",
       "created_date": "2024-09-22T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1588423771073-b8903fde1c68?w=600&h=600&fit=crop"],
+      "images": ["https://www.apple.com/v/airpods/y/images/overview/hero__gb4d3fd8jnu6_large.jpg"],
       "description": "Áudio Espacial com rastreamento dinâmico de cabeça. Áudio computacional. Resistência a suor e água. Até 6h de reprodução.",
       "specs": [
         { "label": "Áudio", "value": "Espacial com rastreamento" },
@@ -297,7 +297,7 @@
       "express_delivery": true,
       "category_id": "cat-6",
       "created_date": "2024-11-07T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-card-40-imac-202410?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Chip M3. Tela Retina 4.5K de 24 polegadas. Design ultrafino em sete cores. Câmera FaceTime HD 1080p. Sistema de som com seis alto-falantes.",
       "specs": [
         { "label": "Chip", "value": "Apple M3" },
@@ -317,7 +317,7 @@
       "condition": "used",
       "category_id": "cat-6",
       "created_date": "2024-01-17T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1624823183493-ed5832f48f18?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-card-40-mac-mini-202410?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Chip M2. Até 24GB de memória unificada. Compacto e poderoso. Duas portas Thunderbolt 4. Compatível com até dois monitores.",
       "specs": [
         { "label": "Chip", "value": "Apple M2" },
@@ -335,7 +335,7 @@
       "express_delivery": false,
       "category_id": "cat-6",
       "created_date": "2024-06-05T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1625842268584-8f3296236761?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/mac-card-40-mac-studio-202503?wid=680&hei=528&fmt=p-jpg&qlt=95"],
       "description": "Chip M2 Ultra. Até 192GB de memória unificada. GPU de até 76 núcleos. Performance profissional extrema. Seis portas Thunderbolt 4.",
       "specs": [
         { "label": "Chip", "value": "Apple M2 Ultra" },
@@ -353,7 +353,7 @@
       "express_delivery": true,
       "category_id": "cat-7",
       "created_date": "2024-01-01T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=600&h=600&fit=crop"],
+      "images": ["https://www.apple.com/br/apple-pencil/images/overview/hero/hero__cwrg2eertpyu_large.png"],
       "description": "Conexão magnética. Carregamento sem fio. Toque duplo para trocar ferramenta. Latência imperceptível. Precisão perfeita de pixels.",
       "specs": [
         { "label": "Conexão", "value": "Magnética + Bluetooth" },
@@ -371,7 +371,7 @@
       "express_delivery": false,
       "category_id": "cat-7",
       "created_date": "2024-01-01T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MXCL3BZ_A?wid=400&hei=400&fmt=jpeg&qlt=90"],
       "description": "Touch ID integrado. Design sem fio e recarregável. Teclas com mecanismo de tesoura. Conector USB-C. Alumínio anodizado.",
       "specs": [
         { "label": "Biometria", "value": "Touch ID integrado" },
@@ -390,7 +390,7 @@
       "express_delivery": true,
       "category_id": "cat-7",
       "created_date": "2024-01-01T10:00:00Z",
-      "images": ["https://images.unsplash.com/photo-1628815113969-0487917e8b76?w=600&h=600&fit=crop"],
+      "images": ["https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/MHXH3_AV1?wid=400&hei=400&fmt=jpeg&qlt=90"],
       "description": "Carregamento sem fio magnético. Alinhamento perfeito automático. Compatível com iPhone 12 e posteriores. Conector USB-C.",
       "specs": [
         { "label": "Tipo", "value": "Carregamento sem fio magnético" },

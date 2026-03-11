@@ -1,7 +1,7 @@
 export const WHATSAPP_NUMBER = '5511999999999';
 
 export const STORE_INFO = {
-  name: 'WEGX Fast Delivery',
+  name: 'AppleLink Loja',
   tagline: 'Apple Premium Reseller | Entrega Express',
   bio: 'Produtos Apple 100% originais com garantia. Entrega em ate 1 hora na sua regiao.',
   whatsapp: WHATSAPP_NUMBER,

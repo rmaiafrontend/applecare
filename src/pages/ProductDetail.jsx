@@ -182,27 +182,28 @@ export default function ProductDetail() {
             <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
               <div className="flex flex-col gap-2">
                 {isAvailable && product.express_delivery && (
-                  <span className="inline-flex items-center gap-1.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full border border-white/10">
+                  <span className="inline-flex items-center gap-1.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-lg border border-white/10">
                     <Truck className="w-3 h-3" />
                     Express 1h
                   </span>
                 )}
                 {isUsed && isAvailable && (
-                  <span className="inline-flex items-center gap-1.5 bg-amber-500/90 backdrop-blur-md text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full border border-white/10">
+                  <span className="inline-flex items-center gap-1.5 bg-gray-900/80 backdrop-blur-md text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-lg shadow-sm">
                     <RotateCcw className="w-3 h-3" strokeWidth={2.5} />
-                    Usado
+                    Seminovo
                   </span>
                 )}
                 {!isAvailable && (
-                  <span className="inline-flex items-center bg-gray-900/70 backdrop-blur-md text-white text-[10px] font-semibold tracking-wider uppercase px-3 py-1.5 rounded-full">
+                  <span className="inline-flex items-center bg-gray-900/70 backdrop-blur-md text-white text-[10px] font-semibold tracking-wider uppercase px-3 py-1.5 rounded-lg">
                     Indisponivel
                   </span>
                 )}
               </div>
 
               {hasDiscount && isAvailable && (
-                <span className="inline-flex items-center bg-green-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-full shadow-lg">
-                  -{discountPercent}%
+                <span className="inline-flex items-center gap-1 bg-red-500/90 backdrop-blur-sm text-white font-bold px-3 py-1.5 rounded-lg shadow-sm">
+                  <span className="text-[14px] leading-none">-{discountPercent}%</span>
+                  <span className="text-white/70 text-[10px] font-medium uppercase">off</span>
                 </span>
               )}
             </div>
@@ -279,17 +280,17 @@ export default function ProductDetail() {
                 <motion.div
                   variants={fadeUp}
                   custom={2.8}
-                  className="mt-3 flex items-center gap-2.5 bg-amber-50 rounded-2xl px-4 py-3 border border-amber-100"
+                  className="mt-3 flex items-center gap-2.5 bg-gray-50 rounded-2xl px-4 py-3 border border-gray-200"
                 >
-                  <div className="w-8 h-8 rounded-xl bg-amber-500 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-gray-900 flex items-center justify-center shrink-0">
                     <RotateCcw className="w-4 h-4 text-white" strokeWidth={2.5} />
                   </div>
                   <div>
-                    <span className="text-[13px] font-semibold text-amber-800 block leading-tight">
-                      Produto usado
+                    <span className="text-[13px] font-semibold text-gray-800 block leading-tight">
+                      Produto seminovo
                     </span>
-                    <span className="text-[11px] text-amber-600/70">
-                      Verificado e com garantia WEGX
+                    <span className="text-[11px] text-gray-500">
+                      Verificado e com garantia AppleLink
                     </span>
                   </div>
                 </motion.div>

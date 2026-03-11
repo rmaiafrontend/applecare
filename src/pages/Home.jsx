@@ -125,22 +125,22 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <main className="pt-2 max-w-lg mx-auto">
+      <main className="max-w-lg mx-auto">
         {/* ── Store Profile (Linktree) ── */}
         <motion.section
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="px-4 mt-4"
+          className="px-5 pt-6 pb-5"
         >
-          {/* Header: Avatar + Info + Social */}
+          {/* Header: Avatar + Info */}
           <motion.div variants={fadeUp} custom={0} className="flex items-start gap-3.5">
-            <div className="w-14 h-14 rounded-2xl bg-gray-900 flex items-center justify-center shrink-0 shadow-lg shadow-gray-900/20">
-              <span className="text-xl font-black text-white tracking-tighter">W</span>
+            <div className="w-[64px] h-[64px] rounded-[18px] bg-gray-900 flex items-center justify-center shadow-lg shadow-gray-900/20 shrink-0">
+              <span className="text-xl font-black text-white tracking-tighter">AL</span>
             </div>
             <div className="flex-1 min-w-0 pt-0.5">
               <div className="flex items-center gap-2">
-                <h2 className="text-[15px] font-bold text-gray-900 tracking-tight truncate">
+                <h2 className="text-[17px] font-bold text-gray-900 tracking-tight truncate">
                   {STORE_INFO.name}
                 </h2>
                 {(() => {
@@ -148,10 +148,10 @@ export default function Home() {
                   return (
                     <span className={`shrink-0 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${
                       status.isOpen
-                        ? 'bg-green-50 text-green-600'
-                        : 'bg-red-50 text-red-500'
+                        ? 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-500/20'
+                        : 'bg-red-50 text-red-500 ring-1 ring-red-500/20'
                     }`}>
-                      <span className={`w-1 h-1 rounded-full ${status.isOpen ? 'bg-green-500 animate-pulse' : 'bg-red-400'}`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${status.isOpen ? 'bg-emerald-500 animate-pulse' : 'bg-red-400'}`} />
                       {status.label}
                     </span>
                   );
@@ -160,14 +160,13 @@ export default function Home() {
               <p className="text-[12px] text-gray-400 mt-0.5 leading-snug">
                 {STORE_INFO.tagline}
               </p>
-              <div className="flex items-center gap-3 mt-2">
-                <div className="flex items-center gap-1 text-[11px] text-gray-400">
-                  <Clock className="w-3 h-3" strokeWidth={2} />
+              <div className="flex items-center gap-2 mt-2">
+                <div className="flex items-center gap-1.5 text-[11px] text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">
+                  <Clock className="w-3 h-3 text-gray-400" strokeWidth={2} />
                   <span>Seg-Sex 9h-18h</span>
                 </div>
-                <span className="text-gray-200 text-[10px]">|</span>
-                <div className="flex items-center gap-1 text-[11px] text-gray-400">
-                  <MapPin className="w-3 h-3" strokeWidth={2} />
+                <div className="flex items-center gap-1.5 text-[11px] text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">
+                  <MapPin className="w-3 h-3 text-gray-400" strokeWidth={2} />
                   <span>{STORE_INFO.location}</span>
                 </div>
               </div>
@@ -175,38 +174,40 @@ export default function Home() {
           </motion.div>
 
           {/* Bio */}
-          <motion.p variants={fadeUp} custom={1} className="text-[13px] text-gray-500 leading-relaxed mt-3.5">
+          <motion.p variants={fadeUp} custom={1} className="text-[13px] text-gray-500 leading-relaxed mt-4">
             {STORE_INFO.bio}
           </motion.p>
 
           {/* Actions row: WhatsApp + Socials */}
-          <motion.div variants={fadeUp} custom={2} className="flex items-center gap-2.5 mt-4">
+          <motion.div variants={fadeUp} custom={2} className="flex items-center gap-2 mt-5">
             <a
               href={`https://wa.me/${STORE_INFO.whatsapp}?text=${encodeURIComponent(STORE_INFO.whatsappMessage)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white rounded-xl h-10 font-semibold text-[13px] transition-all hover:bg-gray-800 active:scale-[0.97]"
+              className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white rounded-2xl h-11 font-semibold text-[13px] transition-all hover:bg-gray-800 active:scale-[0.97]"
             >
               <MessageCircle className="w-4 h-4" strokeWidth={2} />
               WhatsApp
             </a>
-            <a href={STORE_INFO.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
-              <Instagram className="w-[18px] h-[18px]" strokeWidth={1.75} />
-            </a>
-            <a href={STORE_INFO.tiktok} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
-              <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V9.19a8.16 8.16 0 004.76 1.52v-3.4a4.85 4.85 0 01-1-.62z" />
-              </svg>
-            </a>
-            <a href={STORE_INFO.youtube} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
-              <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-              </svg>
-            </a>
+            <div className="flex items-center gap-1.5">
+              <a href={STORE_INFO.instagram} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
+                <Instagram className="w-[18px] h-[18px]" strokeWidth={1.75} />
+              </a>
+              <a href={STORE_INFO.tiktok} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
+                <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V9.19a8.16 8.16 0 004.76 1.52v-3.4a4.85 4.85 0 01-1-.62z" />
+                </svg>
+              </a>
+              <a href={STORE_INFO.youtube} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
+                <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg>
+              </a>
+            </div>
           </motion.div>
 
           {/* Quick Links */}
-          <motion.div variants={fadeUp} custom={3} className="flex items-center gap-2 mt-3.5 overflow-x-auto no-scrollbar">
+          <motion.div variants={fadeUp} custom={3} className="flex items-center gap-2 mt-4 overflow-x-auto no-scrollbar -mx-5 px-5">
             {[
               { label: 'Catalogo', icon: Tag, to: createPageUrl('Products') },
               { label: 'Ofertas', icon: Zap, to: createPageUrl('Products') },
@@ -216,7 +217,7 @@ export default function Home() {
               <Link
                 key={link.label}
                 to={link.to}
-                className="flex items-center gap-1.5 bg-white border border-gray-200 rounded-full px-3.5 py-2 text-[12px] font-semibold text-gray-700 hover:border-gray-300 hover:bg-gray-50 active:scale-[0.96] transition-all shrink-0"
+                className="flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-full px-4 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-200 active:scale-[0.96] transition-all shrink-0"
               >
                 <link.icon className="w-3.5 h-3.5 text-gray-400" strokeWidth={2} />
                 {link.label}
@@ -234,12 +235,12 @@ export default function Home() {
         >
           <div className="relative p-6 pb-7">
             <img
-              src="https://images.unsplash.com/photo-1491933382434-500287f9b54b?w=800&h=500&fit=crop"
+              src="https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/article/Apple-iPhone-15-Pro-lineup-hero-230912_Full-Bleed-Image.jpg.xlarge.jpg"
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(3,7,18,0.95), rgba(17,24,39,0.85), rgba(31,41,55,0.5))' }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(3,7,18,0.6), transparent)' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(3,7,18,0.97), rgba(17,24,39,0.92), rgba(31,41,55,0.7))' }} />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(3,7,18,0.8), transparent 60%)' }} />
 
             <div className="relative z-10">
               <motion.div
@@ -355,7 +356,7 @@ export default function Home() {
           </div>
 
           {loadingCategories ? (
-            <div className="flex gap-3 px-4 overflow-hidden">
+            <div className="flex gap-1 px-4 overflow-hidden">
               {[1, 2, 3, 4].map(i => (
                 <Skeleton key={i} className="w-[100px] h-[110px] rounded-2xl shrink-0" />
               ))}
@@ -363,7 +364,7 @@ export default function Home() {
           ) : (
             <div
               ref={categoriesRef}
-              className="flex gap-3 px-4 overflow-x-auto no-scrollbar scroll-smooth"
+              className="flex gap-1 px-4 overflow-x-auto no-scrollbar scroll-smooth"
             >
               {categories.map((cat, index) => {
                 const Icon = categoryIconMap[cat.icon] || Smartphone;
@@ -413,11 +414,11 @@ export default function Home() {
               <div className="relative rounded-3xl overflow-hidden bg-gradient-to-b from-gray-100 to-gray-50 border border-gray-100">
                 <div className="aspect-[16/10] relative overflow-hidden">
                   <img
-                    src={heroProduct.images?.[0]}
+                    src="https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/article/Apple-iPhone-15-Pro-lineup-hero-230912_Full-Bleed-Image.jpg.xlarge.jpg"
                     alt={heroProduct.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
                   <div className="absolute bottom-0 left-0 right-0 p-5">
                     <div className="flex items-center gap-2 mb-2">

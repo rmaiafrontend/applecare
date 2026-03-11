@@ -47,10 +47,10 @@ export default function Header({
             ) : (
               <Link to={createPageUrl('Home')} className="flex items-center gap-1.5">
                 <div className="w-6 h-6 bg-gray-900 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-[11px] font-black leading-none">W</span>
+                  <span className="text-white text-[10px] font-black leading-none">AL</span>
                 </div>
                 <span className="text-[15px] font-bold tracking-tight text-gray-900">
-                  WEGX
+                  AppleLink
                 </span>
               </Link>
             )}
