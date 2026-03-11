@@ -50,7 +50,7 @@ export default function IdentitySection({ form, updateField }) {
         </FieldRow>
       </div>
 
-      <FieldRow label="Slug da loja" required hint="URL pública: wegx.com.br/[slug] — imutável após publicação">
+      <FieldRow label="Slug da loja" required hint="URL pública: applelink.com.br/[slug] — imutável após publicação">
         <Input
           value={form.identity_slug || ""}
           onChange={e => updateField("identity_slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}

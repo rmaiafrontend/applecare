@@ -100,7 +100,7 @@ export default function Profile() {
   };
 
   const handleWhatsApp = () => {
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Ola, preciso de ajuda com a WEGX`, '_blank');
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Ola, preciso de ajuda com a AppleLink`, '_blank');
   };
 
   return (
@@ -274,7 +274,7 @@ export default function Profile() {
             custom={menuSections.length + 3}
             className="text-center mt-6 mb-4"
           >
-            <p className="text-[11px] text-gray-300 font-medium">WEGX Fast Delivery v1.0.0</p>
+            <p className="text-[11px] text-gray-300 font-medium">AppleLink Loja v1.0.0</p>
           </motion.div>
         </motion.div>
       </main>

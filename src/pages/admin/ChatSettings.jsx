@@ -19,8 +19,8 @@ const TONES = [
 
 const DEFAULT_FORM = {
   config_key: "main",
-  assistant_name: "Assistente WEGX",
-  welcome_message: "Olá! Sou o assistente WEGX. Como posso ajudar você hoje?",
+  assistant_name: "Assistente AppleLink",
+  welcome_message: "Olá! Sou o assistente AppleLink. Como posso ajudar você hoje?",
   system_prompt: "Você é um assistente de vendas especializado em produtos Apple. Ajude os clientes a encontrar o produto ideal, tire dúvidas técnicas e ofereça recomendações personalizadas. Seja sempre prestativo e conhecedor dos produtos.",
   tone: "amigavel",
   primary_color: "#1d1d1f",

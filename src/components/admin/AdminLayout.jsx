@@ -63,7 +63,7 @@ export default function AdminLayout({ currentView, onNavigate, children }) {
         <button onClick={() => setSidebarOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors">
           <Menu className="w-[18px] h-[18px] text-white/70" strokeWidth={1.8} />
         </button>
-        <span className="font-bold text-white text-[15px] tracking-tight">WEGX</span>
+        <span className="font-bold text-white text-[15px] tracking-tight">AppleLink</span>
         <div className="w-9" />
       </header>
 
@@ -88,7 +88,7 @@ export default function AdminLayout({ currentView, onNavigate, children }) {
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
               <span className="text-[#1a1d23] text-[13px] font-bold">W</span>
             </div>
-            <span className="font-bold text-white text-[16px] tracking-tight">WEGX</span>
+            <span className="font-bold text-white text-[16px] tracking-tight">AppleLink</span>
           </div>
           <button className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors" onClick={() => setSidebarOpen(false)}>
             <X className="w-4 h-4 text-white/50" strokeWidth={1.8} />

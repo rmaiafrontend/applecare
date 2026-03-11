@@ -50,8 +50,8 @@ export default function HeaderLinktreeSection({ form, updateField }) {
         />
         <div className="grid grid-cols-2 gap-3">
           <FieldRow label="Nome da loja" required>
-            <Input value={form.header_store_name || ""} onChange={e => updateField("header_store_name", e.target.value)} placeholder="WEGX Store" maxLength={40} className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa] focus:bg-white" />
-            <SuggestionPills suggestions={["WEGX Store", "WEGX Tech", "WEGX Apple", "WEGX Shop"]} onSelect={v => updateField("header_store_name", v)} currentValue={form.header_store_name} />
+            <Input value={form.header_store_name || ""} onChange={e => updateField("header_store_name", e.target.value)} placeholder="AppleLink Store" maxLength={40} className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa] focus:bg-white" />
+            <SuggestionPills suggestions={["AppleLink Store", "AppleLink Tech", "AppleLink Apple", "AppleLink Shop"]} onSelect={v => updateField("header_store_name", v)} currentValue={form.header_store_name} />
           </FieldRow>
           <FieldRow label="Tagline">
             <Input value={form.header_tagline || ""} onChange={e => updateField("header_tagline", e.target.value)} placeholder="Produtos Apple Originais · SP" maxLength={60} className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa] focus:bg-white" />
