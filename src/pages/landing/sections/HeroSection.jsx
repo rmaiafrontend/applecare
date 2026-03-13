@@ -157,7 +157,7 @@ export default function HeroSection() {
                 custom={2}
                 className="mt-5 sm:mt-7 text-[15px] sm:text-[17px] text-white/30 leading-relaxed max-w-[440px] mx-auto"
               >
-                Em breve. Cadastre-se agora para acesso antecipado e uma oferta exclusiva de lancamento.
+                Catalogo inteligente, gestao automatizada e checkout via WhatsApp. Tudo que sua loja Apple precisa em uma unica plataforma.
               </motion.p>
 
               {/* CTAs */}
