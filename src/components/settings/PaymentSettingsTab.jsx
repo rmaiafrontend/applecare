@@ -60,7 +60,7 @@ export default function PaymentSettingsTab() {
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
-        <p className="text-[13px] text-[#86868b]">
+        <p className="text-[13px] text-[#86868b] dark:text-[#98989d]">
           {enabledCount} {enabledCount === 1 ? "método ativo" : "métodos ativos"}
         </p>
         <button
@@ -69,7 +69,7 @@ export default function PaymentSettingsTab() {
           className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-300 ${
             saved
               ? "bg-emerald-500 text-white"
-              : "bg-[#1d1d1f] text-white hover:bg-[#1d1d1f]/90 active:scale-[0.97]"
+              : "bg-[#1d1d1f] dark:bg-[#0a84ff] text-white hover:bg-[#1d1d1f]/90 dark:hover:bg-[#409cff] active:scale-[0.97]"
           }`}
         >
           {saveMutation.isPending ? (
@@ -91,20 +91,20 @@ export default function PaymentSettingsTab() {
           return (
             <div
               key={method.key}
-              className={`bg-white rounded-2xl border transition-all duration-300 ${
-                enabled ? "border-black/[0.08] shadow-sm" : "border-black/[0.04]"
+              className={`bg-white dark:bg-[#2c2c2e] rounded-2xl border transition-all duration-300 ${
+                enabled ? "border-black/[0.08] dark:border-white/[0.1] shadow-sm dark:shadow-[0_1px_4px_rgba(0,0,0,0.2)]" : "border-black/[0.04] dark:border-white/[0.06]"
               }`}
             >
               <div className="flex items-center gap-4 p-4">
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300"
-                  style={{ backgroundColor: enabled ? `${method.color}15` : "#f5f5f7" }}
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${!enabled ? "bg-[#f5f5f7] dark:bg-[#3a3a3c]" : ""}`}
+                  style={enabled ? { backgroundColor: `${method.color}15` } : undefined}
                 >
-                  <Icon className="w-5 h-5 transition-colors duration-300" style={{ color: enabled ? method.color : "#c7c7cc" }} strokeWidth={1.8} />
+                  <Icon className={`w-5 h-5 transition-colors duration-300 ${!enabled ? "text-[#c7c7cc] dark:text-[#636366]" : ""}`} style={enabled ? { color: method.color } : undefined} strokeWidth={1.8} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[14px] font-semibold transition-colors ${enabled ? "text-[#1d1d1f]" : "text-[#86868b]"}`}>{method.label}</p>
-                  <p className="text-[11px] text-[#c7c7cc]">{method.desc}</p>
+                  <p className={`text-[14px] font-semibold transition-colors ${enabled ? "text-[#1d1d1f] dark:text-[#f5f5f7]" : "text-[#86868b] dark:text-[#98989d]"}`}>{method.label}</p>
+                  <p className="text-[11px] text-[#c7c7cc] dark:text-[#636366]">{method.desc}</p>
                 </div>
                 <Switch checked={enabled} onCheckedChange={(v) => updateField(`${method.key}_enabled`, v)} />
               </div>
@@ -118,7 +118,7 @@ export default function PaymentSettingsTab() {
                     transition={{ duration: 0.25 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-4 pb-4 pt-1 border-t border-black/[0.04]">
+                    <div className="px-4 pb-4 pt-1 border-t border-black/[0.04] dark:border-white/[0.06]">
                       <MethodFields method={method.key} form={form} updateField={updateField} />
                     </div>
                   </motion.div>
@@ -133,7 +133,7 @@ export default function PaymentSettingsTab() {
 }
 
 function MethodFields({ method, form, updateField }) {
-  const inputClass = "h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa] focus:bg-white";
+  const inputClass = "h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]";
 
   switch (method) {
     case "pix":
@@ -182,7 +182,7 @@ function MethodFields({ method, form, updateField }) {
 function FieldRow({ label, children }) {
   return (
     <div className="space-y-1">
-      <label className="text-[11px] font-semibold text-[#86868b] uppercase tracking-wider">{label}</label>
+      <label className="text-[11px] font-semibold text-[#86868b] dark:text-[#98989d] uppercase tracking-wider">{label}</label>
       {children}
     </div>
   );

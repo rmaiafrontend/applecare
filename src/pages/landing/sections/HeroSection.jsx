@@ -284,124 +284,13 @@ export default function HeroSection() {
                 </div>
               </motion.div>
 
-              {/* Phone */}
+              {/* Phone mockup */}
               <div className="relative z-10 w-[290px] sm:w-[330px] md:w-[380px] mx-auto">
-                {/* Phone outer glow ring */}
-                <div className="absolute -inset-1 rounded-[2.6rem] sm:rounded-[3rem] bg-gradient-to-b from-white/[0.08] via-transparent to-white/[0.03] pointer-events-none" />
-
-                <div className="relative bg-[#1c1c1e] rounded-[2.5rem] sm:rounded-[2.8rem] p-[9px] sm:p-[10px] shadow-[0_50px_120px_rgba(0,0,0,0.7),0_0_0_0.5px_rgba(255,255,255,0.08)_inset]">
-                  {/* Dynamic Island */}
-                  <div className="absolute top-[13px] sm:top-[15px] left-1/2 -translate-x-1/2 w-[90px] sm:w-[105px] h-[24px] sm:h-[28px] bg-black rounded-full z-20">
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#080810] ring-1 ring-[#15152a]" />
-                  </div>
-
-                  {/* Screen */}
-                  <div className="bg-[#000000] rounded-[2rem] sm:rounded-[2.2rem] overflow-hidden">
-                    <div className="pt-13 sm:pt-14">
-                      {/* Status bar */}
-                      <div className="flex items-center justify-between px-5 mb-4">
-                        <span className="text-[10px] font-semibold text-white/80">9:41</span>
-                        <div className="flex items-center gap-1 opacity-80">
-                          <div className="flex gap-[3px] items-end">
-                            {[1, 2, 3, 4].map(i => (
-                              <div key={i} className={`w-[3px] rounded-full ${i <= 3 ? 'bg-white' : 'bg-white/25'}`} style={{ height: `${5 + i * 2}px` }} />
-                            ))}
-                          </div>
-                          <div className="w-4 h-2 border border-white rounded-[2px] ml-1.5 relative">
-                            <div className="absolute inset-[1px] right-[2px] bg-white rounded-[0.5px]" />
-                            <div className="absolute right-[-1.5px] top-1/2 -translate-y-1/2 w-[1px] h-[4px] bg-white rounded-r-full" />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* App content */}
-                      <div className="px-4 sm:px-5 pb-5 sm:pb-6">
-                        {/* App header */}
-                        <div className="flex items-center justify-between mb-5">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500/20 to-blue-500/10 flex items-center justify-center border border-white/[0.06]">
-                              <Sparkles className="w-4 h-4 text-violet-400" />
-                            </div>
-                            <div>
-                              <p className="text-[10px] text-white/25 leading-none">Painel</p>
-                              <p className="text-[13px] font-semibold text-white leading-tight mt-0.5">AppleLink Admin</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <div className="w-8 h-8 rounded-xl bg-white/[0.05] flex items-center justify-center border border-white/[0.04]">
-                              <BarChart3 className="w-3.5 h-3.5 text-white/30" />
-                            </div>
-                            <div className="relative w-8 h-8 rounded-xl bg-white/[0.05] flex items-center justify-center border border-white/[0.04]">
-                              <svg className="w-3.5 h-3.5 text-white/30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                              </svg>
-                              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-violet-500 rounded-full border border-black" />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* AI Assistant bar */}
-                        <div className="flex items-center gap-2.5 bg-gradient-to-r from-violet-500/[0.08] to-blue-500/[0.05] border border-violet-500/[0.1] rounded-xl px-3.5 py-2.5 mb-4">
-                          <Bot className="w-3.5 h-3.5 text-violet-400" />
-                          <span className="text-[11px] text-white/30">Pergunte a IA sobre seu catalogo...</span>
-                        </div>
-
-                        {/* Stats overview */}
-                        <div className="relative bg-gradient-to-br from-white/[0.07] to-white/[0.02] rounded-2xl p-4 mb-3.5 border border-white/[0.05] overflow-hidden">
-                          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-violet-500/[0.08] to-transparent blur-2xl" />
-                          <div className="relative">
-                            <div className="flex items-center gap-2 mb-3">
-                              <div className="flex items-center gap-1 bg-violet-500/15 px-2 py-0.5 rounded-full">
-                                <Wand2 className="w-2.5 h-2.5 text-violet-400" />
-                                <span className="text-[8px] font-bold text-violet-400 tracking-wider uppercase">IA Ativa</span>
-                              </div>
-                              <div className="flex items-center gap-1 bg-green-500/10 px-2 py-0.5 rounded-full">
-                                <span className="text-[8px] font-bold text-green-400 tracking-wider uppercase">+23%</span>
-                              </div>
-                            </div>
-                            <p className="text-white text-[15px] font-semibold leading-snug tracking-tight">
-                              Vendas de Hoje
-                            </p>
-                            <p className="text-white/20 text-[10px] mt-1">12 pedidos via WhatsApp</p>
-                            <div className="flex items-center justify-between mt-3">
-                              <div className="flex items-baseline gap-2">
-                                <span className="text-white text-[22px] font-semibold tracking-tight">R$47.8k</span>
-                                <span className="text-green-400/60 text-[11px] font-medium">+23%</span>
-                              </div>
-                              <div className="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center shadow-lg shadow-violet-500/30">
-                                <ArrowRight className="w-3.5 h-3.5 text-white" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Feature cards */}
-                        <div className="grid grid-cols-3 gap-2">
-                          {[
-                            { name: 'Produtos', value: '248', tag: 'IA' },
-                            { name: 'Pedidos', value: '12', tag: 'Novo' },
-                            { name: 'Clientes', value: '1.4k', tag: 'Ativo' },
-                          ].map((item) => (
-                            <div key={item.name} className="bg-white/[0.03] rounded-xl p-2.5 border border-white/[0.04]">
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="text-[6px] font-bold text-violet-400/60 bg-violet-500/[0.1] px-1.5 py-0.5 rounded">{item.tag}</span>
-                              </div>
-                              <p className="text-[16px] font-semibold text-white leading-tight">{item.value}</p>
-                              <p className="text-[7px] text-white/20 mt-0.5">{item.name}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Phone edge highlight */}
-                <div className="absolute inset-0 rounded-[2.5rem] sm:rounded-[2.8rem] pointer-events-none z-20 overflow-hidden">
-                  <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-white/[0.04] to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-white/[0.02] to-transparent" />
-                </div>
+                <img
+                  src="/exemple-layout/mockup-home.webp"
+                  alt="AppleLink Catalogo"
+                  className="w-full h-auto drop-shadow-[0_50px_120px_rgba(0,0,0,0.7)]"
+                />
               </div>
 
             </motion.div>

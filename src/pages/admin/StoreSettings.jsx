@@ -16,7 +16,7 @@ export default function StoreSettings() {
   return (
     <div className="space-y-6 max-w-[1400px] mx-auto">
       {/* Tabs */}
-      <div className="flex gap-1 bg-black/[0.03] p-1 rounded-2xl w-fit">
+      <div className="flex gap-1 bg-black/[0.03] dark:bg-white/[0.06] p-1 rounded-2xl w-fit">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
           const Icon = tab.icon;
@@ -26,8 +26,8 @@ export default function StoreSettings() {
               onClick={() => setActiveTab(tab.key)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-200 ${
                 isActive
-                  ? "bg-white text-[#1d1d1f] shadow-sm"
-                  : "text-[#86868b] hover:text-[#1d1d1f]"
+                  ? "bg-white dark:bg-[#0a84ff] text-[#1d1d1f] dark:text-white shadow-sm"
+                  : "text-[#86868b] dark:text-[#98989d] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
               }`}
             >
               <Icon className="w-4 h-4" strokeWidth={1.8} />

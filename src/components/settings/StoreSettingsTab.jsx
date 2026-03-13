@@ -59,7 +59,7 @@ export default function StoreSettingsTab() {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const inputCls = "h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white";
+  const inputCls = "h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]";
 
   return (
     <div className="space-y-5">
@@ -68,7 +68,7 @@ export default function StoreSettingsTab() {
           onClick={handleSave}
           disabled={saving || saved}
           className={`h-9 px-5 rounded-full text-[13px] font-medium flex items-center gap-2 transition-all disabled:opacity-70 ${
-            saved ? "bg-emerald-500 text-white" : "bg-[#1d1d1f] hover:bg-[#1d1d1f]/90 text-white"
+            saved ? "bg-emerald-500 text-white" : "bg-[#1d1d1f] dark:bg-[#0a84ff] hover:bg-[#1d1d1f]/90 dark:hover:bg-[#409cff] text-white"
           }`}
         >
           {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Salvando...</>
@@ -82,11 +82,11 @@ export default function StoreSettingsTab() {
           <StoreSettingsSection title="Identidade da Loja" subtitle="Nome, slogan e logotipos">
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Nome da Loja</Label>
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Nome da Loja</Label>
                 <Input value={form.store_name} onChange={e => updateField("store_name", e.target.value)} placeholder="AppleLink Fast Delivery" className={inputCls} />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Slogan</Label>
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Slogan</Label>
                 <Input value={form.store_slogan} onChange={e => updateField("store_slogan", e.target.value)} placeholder="Entrega rápida, preço justo" className={inputCls} />
               </div>
             </div>
@@ -110,24 +110,24 @@ export default function StoreSettingsTab() {
           <StoreSettingsSection title="Contato e Redes Sociais" subtitle="Informações de contato exibidas no catálogo">
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">WhatsApp</Label>
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">WhatsApp</Label>
                 <Input value={form.whatsapp_number} onChange={e => updateField("whatsapp_number", e.target.value)} placeholder="(85) 99999-9999" className={inputCls} />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Telefone</Label>
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Telefone</Label>
                 <Input value={form.phone_number} onChange={e => updateField("phone_number", e.target.value)} placeholder="(85) 3333-3333" className={inputCls} />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Email</Label>
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Email</Label>
                 <Input value={form.email_contact} onChange={e => updateField("email_contact", e.target.value)} placeholder="contato@applelink.com" className={inputCls} />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Instagram</Label>
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Instagram</Label>
                 <Input value={form.instagram_url} onChange={e => updateField("instagram_url", e.target.value)} placeholder="https://instagram.com/applelink" className={inputCls} />
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[11px] text-[#86868b] font-medium">Endereço</Label>
+              <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Endereço</Label>
               <Input value={form.address} onChange={e => updateField("address", e.target.value)} placeholder="Rua tal, 123 - Fortaleza/CE" className={inputCls} />
             </div>
           </StoreSettingsSection>
@@ -135,15 +135,15 @@ export default function StoreSettingsTab() {
           <StoreSettingsSection title="SEO e Rodapé" subtitle="Metadados e texto do rodapé">
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Título SEO</Label>
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Título SEO</Label>
                 <Input value={form.seo_title} onChange={e => updateField("seo_title", e.target.value)} placeholder="AppleLink - Apple Store Delivery" className={inputCls} />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Descrição SEO</Label>
-                <Textarea value={form.seo_description} onChange={e => updateField("seo_description", e.target.value)} placeholder="A melhor loja de produtos Apple com entrega rápida..." className="rounded-xl text-[13px] min-h-[70px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white" />
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Descrição SEO</Label>
+                <Textarea value={form.seo_description} onChange={e => updateField("seo_description", e.target.value)} placeholder="A melhor loja de produtos Apple com entrega rápida..." className="rounded-xl text-[13px] min-h-[70px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Texto do Rodapé</Label>
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Texto do Rodapé</Label>
                 <Input value={form.footer_text} onChange={e => updateField("footer_text", e.target.value)} placeholder="© 2026 AppleLink. Todos os direitos reservados." className={inputCls} />
               </div>
             </div>

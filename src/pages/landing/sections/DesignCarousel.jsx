@@ -3,12 +3,11 @@ import { Star } from 'lucide-react';
 import { EASE_APPLE } from '../animations';
 
 const carouselCards = [
-  { src: '/exemple-layout/Layout%20Image%201.webp', label: 'Cards de Produto', desc: 'Design minimalista com detalhes que vendem.' },
-  { src: '/exemple-layout/Layout%20Image%202.webp', label: 'Pagina do Produto', desc: 'Galeria imersiva com info card sobreposto.' },
-  { src: '/exemple-layout/Img-layout-3.png', label: 'Vitrine Inteligente', desc: 'Home com hero banner, categorias e destaques.' },
-  { src: '/exemple-layout/Layout%204.webp', label: 'Navegacao Premium', desc: 'Header glassmorphism e barra inferior elegante.' },
-  { src: '/exemple-layout/Img%20Layout%205.webp', label: 'Carrinho & Checkout', desc: 'Checkout via WhatsApp com PIX e cartao.' },
-  { src: '/exemple-layout/Img-layout-6.png', label: 'Entrega Express', desc: 'Badges e indicadores que geram confianca.' },
+  { src: '/exemple-layout/Img-layout-1.webp', label: 'Cards de Produto', desc: 'Design minimalista com detalhes que vendem.' },
+  { src: '/exemple-layout/Img-layout-2.webp', label: 'Pagina do Produto', desc: 'Galeria imersiva com info card sobreposto.' },
+  { src: '/exemple-layout/Img-layout-3.webp', label: 'Vitrine Inteligente', desc: 'Home com hero banner, categorias e destaques.' },
+  { src: '/exemple-layout/Img-layout-4.webp', label: 'Navegacao Premium', desc: 'Header glassmorphism e barra inferior elegante.' },
+  { src: '/exemple-layout/Img-layout-5.webp', label: 'Carrinho & Checkout', desc: 'Checkout via WhatsApp com PIX e cartao.' },
 ];
 
 export default function DesignCarousel() {

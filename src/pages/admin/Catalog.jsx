@@ -10,11 +10,11 @@ export default function Catalog() {
   return (
     <div className="space-y-5 max-w-[1400px] mx-auto">
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="bg-[#f5f5f7] rounded-full p-1 h-10">
-          <TabsTrigger value="categories" className="rounded-full text-[13px] data-[state=active]:bg-white data-[state=active]:shadow-sm px-4 gap-1.5">
+        <TabsList className="bg-[#f5f5f7] dark:bg-[#2c2c2e] rounded-full p-1 h-10">
+          <TabsTrigger value="categories" className="rounded-full text-[13px] data-[state=active]:bg-white dark:data-[state=active]:bg-[#0a84ff] data-[state=active]:shadow-sm dark:data-[state=active]:text-white dark:text-[#98989d] px-4 gap-1.5">
             <Grid3X3 className="w-3.5 h-3.5" /> Categorias
           </TabsTrigger>
-          <TabsTrigger value="tags" className="rounded-full text-[13px] data-[state=active]:bg-white data-[state=active]:shadow-sm px-4 gap-1.5">
+          <TabsTrigger value="tags" className="rounded-full text-[13px] data-[state=active]:bg-white dark:data-[state=active]:bg-[#0a84ff] data-[state=active]:shadow-sm dark:data-[state=active]:text-white dark:text-[#98989d] px-4 gap-1.5">
             <Tags className="w-3.5 h-3.5" /> Tags
           </TabsTrigger>
         </TabsList>

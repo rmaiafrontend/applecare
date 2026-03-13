@@ -35,10 +35,10 @@ export default function SectionWrapper({
         style={{ background: `linear-gradient(135deg, ${color}15, transparent 60%)` }}
       />
 
-      <div className={`relative bg-white/80 backdrop-blur-sm rounded-2xl border transition-all duration-300 ${
+      <div className={`relative bg-white/80 dark:bg-[#2c2c2e]/80 backdrop-blur-sm rounded-2xl border transition-all duration-300 ${
         isOpen
-          ? "border-black/[0.08] shadow-[0_8px_30px_-12px_rgba(0,0,0,0.1)]"
-          : "border-black/[0.04] shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_20px_-8px_rgba(0,0,0,0.08)] hover:border-black/[0.06]"
+          ? "border-black/[0.08] dark:border-white/[0.1] shadow-[0_8px_30px_-12px_rgba(0,0,0,0.1)] dark:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.35)]"
+          : "border-black/[0.04] dark:border-white/[0.06] shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.2)] hover:shadow-[0_4px_20px_-8px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_4px_20px_-8px_rgba(0,0,0,0.3)] hover:border-black/[0.06] dark:hover:border-white/[0.08]"
       }`}>
         {/* Header */}
         <button
@@ -46,7 +46,7 @@ export default function SectionWrapper({
           className="w-full flex items-center gap-3.5 px-5 py-[18px] text-left transition-colors"
         >
           {!fixed && (
-            <GripVertical className="w-3.5 h-3.5 text-black/10 flex-shrink-0 cursor-grab hover:text-black/30 transition-colors" />
+            <GripVertical className="w-3.5 h-3.5 text-black/10 dark:text-white/10 flex-shrink-0 cursor-grab hover:text-black/30 dark:hover:text-white/30 transition-colors" />
           )}
 
           {/* Icon with gradient bg */}
@@ -61,18 +61,18 @@ export default function SectionWrapper({
               <Icon className="w-[18px] h-[18px]" style={{ color }} strokeWidth={1.8} />
             </div>
             {hasToggle && (
-              <span className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white transition-colors duration-300 ${
-                isActive ? "bg-emerald-400" : "bg-black/10"
+              <span className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-[#2c2c2e] transition-colors duration-300 ${
+                isActive ? "bg-emerald-400" : "bg-black/10 dark:bg-white/15"
               }`} />
             )}
           </div>
 
           <div className="flex-1 min-w-0">
             <div className="flex items-baseline gap-2">
-              <span className="text-[10px] font-mono font-bold text-black/15 tracking-tight">{number}</span>
-              <h3 className="text-[14px] font-semibold text-[#1d1d1f] truncate tracking-[-0.01em]">{title}</h3>
+              <span className="text-[10px] font-mono font-bold text-black/15 dark:text-white/15 tracking-tight">{number}</span>
+              <h3 className="text-[14px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] truncate tracking-[-0.01em]">{title}</h3>
             </div>
-            <p className="text-[11px] text-black/35 mt-0.5 truncate leading-tight">{subtitle}</p>
+            <p className="text-[11px] text-black/35 dark:text-white/35 mt-0.5 truncate leading-tight">{subtitle}</p>
           </div>
 
           {hasToggle && (
@@ -84,9 +84,9 @@ export default function SectionWrapper({
           <motion.div
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-            className="w-7 h-7 rounded-full flex items-center justify-center bg-black/[0.03] group-hover:bg-black/[0.05] transition-colors flex-shrink-0"
+            className="w-7 h-7 rounded-full flex items-center justify-center bg-black/[0.03] dark:bg-white/[0.06] group-hover:bg-black/[0.05] dark:group-hover:bg-white/[0.1] transition-colors flex-shrink-0"
           >
-            <ChevronDown className="w-3.5 h-3.5 text-black/30" strokeWidth={2} />
+            <ChevronDown className="w-3.5 h-3.5 text-black/30 dark:text-white/30" strokeWidth={2} />
           </motion.div>
         </button>
 
@@ -100,7 +100,7 @@ export default function SectionWrapper({
               transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
               className="overflow-hidden"
             >
-              <div className="mx-5 mb-5 pt-4 border-t border-black/[0.04]">
+              <div className="mx-5 mb-5 pt-4 border-t border-black/[0.04] dark:border-white/[0.06]">
                 <div className="space-y-4">
                   {children}
                 </div>

@@ -419,41 +419,20 @@ export default function FeaturesMosaic() {
               <p className="mt-2 text-[14px] text-[#86868b] leading-relaxed">
                 Personalize cores, banners, secoes da home e layout do catalogo.
               </p>
-              {/* Visual: Color picker mockup - animated */}
-              <div className="mt-4 bg-[#f5f5f7] rounded-xl p-3.5">
-                <p className="text-[10px] font-medium text-[#86868b] uppercase tracking-wider mb-2.5">Tema da loja</p>
-                <div className="flex items-center gap-2">
-                  {['#1d1d1f', '#007aff', '#5856d6', '#ff3b30', '#ff9500', '#34c759'].map((color, idx) => (
-                    <motion.button
-                      key={color}
-                      initial={{ scale: 0, opacity: 0 }}
-                      whileInView={{ scale: color === '#1d1d1f' ? 1.1 : 1, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.4 + idx * 0.06, duration: 0.3, type: 'spring', stiffness: 400 }}
-                      whileHover={{ scale: 1.2 }}
-                      whileTap={{ scale: 0.9 }}
-                      className={`w-7 h-7 rounded-full border-2 ${color === '#1d1d1f' ? 'border-black/20' : 'border-transparent'} transition-transform`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.8, duration: 0.5 }}
-                  className="mt-3 grid grid-cols-2 gap-2"
-                >
-                  <div className="bg-white rounded-lg p-2 border border-black/[0.04]">
-                    <div className="w-full h-3 bg-[#1d1d1f] rounded-md mb-1.5" />
-                    <div className="w-3/4 h-1.5 bg-black/[0.06] rounded-sm" />
-                  </div>
-                  <div className="bg-[#1d1d1f] rounded-lg p-2 border border-white/[0.06]">
-                    <div className="w-full h-3 bg-white/20 rounded-md mb-1.5" />
-                    <div className="w-3/4 h-1.5 bg-white/[0.08] rounded-sm" />
-                  </div>
-                </motion.div>
-              </div>
+              {/* Visual: Real catalog mockup */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-4 rounded-2xl overflow-hidden h-[200px] sm:h-[220px]"
+              >
+                <img
+                  src="/exemple-layout/mockup-pagina-categorias.webp"
+                  alt="Pagina de categorias"
+                  className="w-full h-full object-cover object-top rounded-2xl"
+                />
+              </motion.div>
             </div>
           </motion.div>
 

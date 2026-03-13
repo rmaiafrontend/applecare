@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import AdminLayout from '@/components/admin/AdminLayout';
 import Dashboard from './admin/Dashboard';
 import Products from './admin/Products';
@@ -57,8 +58,10 @@ export default function Admin() {
   };
 
   return (
-    <AdminLayout currentView={view} onNavigate={onNavigate}>
-      {renderContent()}
-    </AdminLayout>
+    <ThemeProvider>
+      <AdminLayout currentView={view} onNavigate={onNavigate}>
+        {renderContent()}
+      </AdminLayout>
+    </ThemeProvider>
   );
 }

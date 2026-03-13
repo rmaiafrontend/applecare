@@ -16,9 +16,9 @@ export default function ThemePreview({ config }) {
           <div className="w-5 h-5 rounded-md bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center">
             <Smartphone className="w-3 h-3 text-white" strokeWidth={2.2} />
           </div>
-          <span className="text-[12px] font-bold text-[#1d1d1f] tracking-tight">Preview</span>
+          <span className="text-[12px] font-bold text-[#1d1d1f] dark:text-[#f5f5f7] tracking-tight">Preview</span>
         </div>
-        <span className="text-[9px] font-medium text-black/20 bg-black/[0.03] px-2 py-0.5 rounded-full">Tempo real</span>
+        <span className="text-[9px] font-medium text-black/20 dark:text-white/20 bg-black/[0.03] dark:bg-white/[0.06] px-2 py-0.5 rounded-full">Tempo real</span>
       </div>
 
       {/* Phone frame - Dynamic Island style */}

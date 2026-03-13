@@ -80,14 +80,14 @@ export default function Products() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-[12px] font-medium text-[#86868b] bg-[#f5f5f7] px-2.5 py-1 rounded-full tabular-nums">
+            <span className="text-[12px] font-medium text-[#86868b] dark:text-[#98989d] bg-[#f5f5f7] dark:bg-[#3a3a3c] px-2.5 py-1 rounded-full tabular-nums">
               {products.length} total
             </span>
-            <span className="text-[12px] font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full tabular-nums">
+            <span className="text-[12px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/[0.12] px-2.5 py-1 rounded-full tabular-nums">
               {activeCount} ativos
             </span>
             {lowStockCount > 0 && (
-              <span className="text-[12px] font-medium text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full tabular-nums">
+              <span className="text-[12px] font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-500/[0.12] px-2.5 py-1 rounded-full tabular-nums">
                 {lowStockCount} estoque baixo
               </span>
             )}
@@ -96,11 +96,11 @@ export default function Products() {
 
         <div className="flex items-center gap-2">
           {/* View Toggle */}
-          <div className="flex items-center bg-white rounded-xl border border-black/[0.06] p-0.5 shadow-sm">
+          <div className="flex items-center bg-white dark:bg-[#3a3a3c] rounded-xl border border-black/[0.06] dark:border-white/[0.06] p-0.5 shadow-sm">
             <button
               onClick={() => setViewMode("grid")}
               className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all duration-200 ${
-                viewMode === "grid" ? "bg-[#1d1d1f] text-white shadow-sm" : "text-[#86868b] hover:text-[#1d1d1f]"
+                viewMode === "grid" ? "bg-[#1d1d1f] dark:bg-[#0a84ff] text-white shadow-sm" : "text-[#86868b] dark:text-[#98989d] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" strokeWidth={2} />
@@ -108,7 +108,7 @@ export default function Products() {
             <button
               onClick={() => setViewMode("list")}
               className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all duration-200 ${
-                viewMode === "list" ? "bg-[#1d1d1f] text-white shadow-sm" : "text-[#86868b] hover:text-[#1d1d1f]"
+                viewMode === "list" ? "bg-[#1d1d1f] dark:bg-[#0a84ff] text-white shadow-sm" : "text-[#86868b] dark:text-[#98989d] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
               }`}
             >
               <List className="w-3.5 h-3.5" strokeWidth={2} />
@@ -117,7 +117,7 @@ export default function Products() {
 
           <button
             onClick={handleNew}
-            className="h-9 px-4 bg-[#1d1d1f] hover:bg-black text-white rounded-full text-[13px] font-medium flex items-center gap-2 transition-colors shadow-sm"
+            className="h-9 px-4 bg-[#1d1d1f] dark:bg-[#0a84ff] hover:bg-black dark:hover:bg-[#409cff] text-white rounded-full text-[13px] font-medium flex items-center gap-2 transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" strokeWidth={2.2} /> Novo Produto
           </button>
@@ -184,18 +184,18 @@ export default function Products() {
             key="empty"
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="py-24 text-center bg-white rounded-2xl border border-black/[0.04] shadow-sm"
+            className="py-24 text-center bg-white dark:bg-[#2c2c2e] rounded-2xl border border-black/[0.04] dark:border-white/[0.06] shadow-sm"
           >
-            <div className="w-16 h-16 bg-[#f5f5f7] rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Package className="w-7 h-7 text-[#c7c7cc]" strokeWidth={1.5} />
+            <div className="w-16 h-16 bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Package className="w-7 h-7 text-[#c7c7cc] dark:text-[#636366]" strokeWidth={1.5} />
             </div>
-            <p className="text-[15px] font-semibold text-[#1d1d1f]">Nenhum produto encontrado</p>
-            <p className="text-[13px] text-[#86868b] mt-1 max-w-xs mx-auto">
+            <p className="text-[15px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">Nenhum produto encontrado</p>
+            <p className="text-[13px] text-[#86868b] dark:text-[#98989d] mt-1 max-w-xs mx-auto">
               Tente ajustar os filtros ou adicione um novo produto ao catálogo
             </p>
             <button
               onClick={handleNew}
-              className="mt-5 h-9 px-5 bg-[#1d1d1f] text-white rounded-full text-[13px] font-medium inline-flex items-center gap-2 hover:bg-black transition-colors"
+              className="mt-5 h-9 px-5 bg-[#1d1d1f] dark:bg-[#0a84ff] text-white rounded-full text-[13px] font-medium inline-flex items-center gap-2 hover:bg-black dark:hover:bg-[#409cff] transition-colors"
             >
               <Plus className="w-4 h-4" /> Novo Produto
             </button>
@@ -205,15 +205,15 @@ export default function Products() {
 
       {/* Delete dialog */}
       <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <AlertDialogContent className="rounded-3xl">
+        <AlertDialogContent className="rounded-3xl dark:bg-[#2c2c2e] dark:border-white/[0.08]">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#1d1d1f]">Excluir Produto</AlertDialogTitle>
-            <AlertDialogDescription className="text-[#86868b]">
+            <AlertDialogTitle className="text-[#1d1d1f] dark:text-[#f5f5f7]">Excluir Produto</AlertDialogTitle>
+            <AlertDialogDescription className="text-[#86868b] dark:text-[#98989d]">
               Tem certeza que deseja excluir "{deleteTarget?.name}"? Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-full">Cancelar</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-full dark:bg-[#3a3a3c] dark:text-[#f5f5f7] dark:border-white/[0.06] dark:hover:bg-[#48484a]">Cancelar</AlertDialogCancel>
             <AlertDialogAction
               className="bg-red-500 hover:bg-red-600 rounded-full"
               onClick={() => deleteMutation.mutate(deleteTarget.id)}

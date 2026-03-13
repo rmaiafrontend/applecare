@@ -19,9 +19,9 @@ const DEFAULT_ITEMS = [
 ];
 
 const STATUS_CONFIG = {
-  ok: { label: "Perfeito", icon: CircleCheck, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200/60" },
-  minor: { label: "Detalhe leve", icon: CircleMinus, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200/60" },
-  issue: { label: "Problema", icon: CircleAlert, color: "text-red-500", bg: "bg-red-50", border: "border-red-200/60" },
+  ok: { label: "Perfeito", icon: CircleCheck, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-500/[0.1]", border: "border-emerald-200/60 dark:border-emerald-500/[0.2]" },
+  minor: { label: "Detalhe leve", icon: CircleMinus, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-500/[0.1]", border: "border-amber-200/60 dark:border-amber-500/[0.2]" },
+  issue: { label: "Problema", icon: CircleAlert, color: "text-red-500 dark:text-red-400", bg: "bg-red-50 dark:bg-red-500/[0.1]", border: "border-red-200/60 dark:border-red-500/[0.2]" },
 };
 
 export default function ConditionChecklist({ checklist = [], onChange }) {
@@ -54,13 +54,13 @@ export default function ConditionChecklist({ checklist = [], onChange }) {
       {/* Quick add buttons */}
       {unusedDefaults.length > 0 && (
         <div>
-          <p className="text-[11px] text-[#86868b] font-medium mb-2">Adicionar itens rapidamente:</p>
+          <p className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium mb-2">Adicionar itens rapidamente:</p>
           <div className="flex flex-wrap gap-1.5">
             {unusedDefaults.map(item => (
               <button
                 key={item}
                 onClick={() => addItem(item)}
-                className="text-[11px] font-medium px-3 py-1.5 rounded-full bg-[#f5f5f7] text-[#86868b] hover:bg-[#e8e8ed] hover:text-[#1d1d1f] transition-all flex items-center gap-1"
+                className="text-[11px] font-medium px-3 py-1.5 rounded-full bg-[#f5f5f7] dark:bg-[#3a3a3c] text-[#86868b] dark:text-[#98989d] hover:bg-[#e8e8ed] dark:hover:bg-[#48484a] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] transition-all flex items-center gap-1"
               >
                 <Plus className="w-3 h-3" /> {item}
               </button>
@@ -79,20 +79,20 @@ export default function ConditionChecklist({ checklist = [], onChange }) {
               <div key={i} className={`rounded-2xl border ${cfg.border} ${cfg.bg} p-3 space-y-2 group`}>
                 <div className="flex items-center gap-2.5">
                   <Icon className={`w-4 h-4 ${cfg.color} flex-shrink-0`} />
-                  <span className="flex-1 text-[13px] font-medium text-[#1d1d1f]">{entry.item}</span>
+                  <span className="flex-1 text-[13px] font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">{entry.item}</span>
                   <Select value={entry.status} onValueChange={v => updateItem(i, "status", v)}>
                     <SelectTrigger className={`h-7 w-[130px] rounded-lg text-[11px] font-semibold border-0 ${cfg.bg} ${cfg.color}`}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="dark:bg-[#2c2c2e] dark:border-white/[0.08]">
                       <SelectItem value="ok">
-                        <span className="flex items-center gap-1.5 text-emerald-600"><CircleCheck className="w-3 h-3" /> Perfeito</span>
+                        <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><CircleCheck className="w-3 h-3" /> Perfeito</span>
                       </SelectItem>
                       <SelectItem value="minor">
-                        <span className="flex items-center gap-1.5 text-amber-600"><CircleMinus className="w-3 h-3" /> Detalhe leve</span>
+                        <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400"><CircleMinus className="w-3 h-3" /> Detalhe leve</span>
                       </SelectItem>
                       <SelectItem value="issue">
-                        <span className="flex items-center gap-1.5 text-red-500"><CircleAlert className="w-3 h-3" /> Problema</span>
+                        <span className="flex items-center gap-1.5 text-red-500 dark:text-red-400"><CircleAlert className="w-3 h-3" /> Problema</span>
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -105,7 +105,7 @@ export default function ConditionChecklist({ checklist = [], onChange }) {
                     value={entry.note}
                     onChange={e => updateItem(i, "note", e.target.value)}
                     placeholder="Descreva o detalhe..."
-                    className="h-8 rounded-xl text-[12px] border-black/[0.06] bg-white/80 focus:bg-white"
+                    className="h-8 rounded-xl text-[12px] border-black/[0.06] dark:border-white/[0.06] bg-white/80 dark:bg-[#2c2c2e]/80 dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]"
                   />
                 )}
               </div>
@@ -120,13 +120,13 @@ export default function ConditionChecklist({ checklist = [], onChange }) {
           value={customItem}
           onChange={e => setCustomItem(e.target.value)}
           placeholder="Adicionar item personalizado..."
-          className="h-10 rounded-2xl text-[13px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white"
+          className="h-10 rounded-2xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e]/50 dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]"
           onKeyDown={e => { if (e.key === "Enter") addCustom(); }}
         />
         <button
           onClick={addCustom}
           disabled={!customItem.trim()}
-          className="h-10 px-4 bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] rounded-2xl text-[12px] font-medium transition-colors disabled:opacity-40 flex-shrink-0"
+          className="h-10 px-4 bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e8e8ed] dark:hover:bg-[#48484a] text-[#1d1d1f] dark:text-[#f5f5f7] rounded-2xl text-[12px] font-medium transition-colors disabled:opacity-40 flex-shrink-0"
         >
           Adicionar
         </button>
@@ -134,12 +134,12 @@ export default function ConditionChecklist({ checklist = [], onChange }) {
 
       {/* Summary */}
       {checklist.length > 0 && (
-        <div className="flex items-center gap-3 bg-[#f5f5f7] rounded-2xl p-3">
-          <ShieldCheck className="w-4 h-4 text-[#86868b]" />
+        <div className="flex items-center gap-3 bg-[#f5f5f7] dark:bg-[#1c1c1e] rounded-2xl p-3">
+          <ShieldCheck className="w-4 h-4 text-[#86868b] dark:text-[#98989d]" />
           <div className="flex gap-3 text-[11px] font-medium">
-            <span className="text-emerald-600">{checklist.filter(c => c.status === "ok").length} perfeitos</span>
-            <span className="text-amber-600">{checklist.filter(c => c.status === "minor").length} detalhes</span>
-            <span className="text-red-500">{checklist.filter(c => c.status === "issue").length} problemas</span>
+            <span className="text-emerald-600 dark:text-emerald-400">{checklist.filter(c => c.status === "ok").length} perfeitos</span>
+            <span className="text-amber-600 dark:text-amber-400">{checklist.filter(c => c.status === "minor").length} detalhes</span>
+            <span className="text-red-500 dark:text-red-400">{checklist.filter(c => c.status === "issue").length} problemas</span>
           </div>
         </div>
       )}

@@ -151,7 +151,7 @@ export default function HomeSettings() {
       {/* Left: Settings */}
       <div className="flex-1 min-w-0 max-w-[680px]">
         {/* Save bar */}
-        <div className="sticky top-0 z-30 bg-[#f0f1f3]/70 backdrop-blur-2xl py-4 -mx-1 px-1 mb-6">
+        <div className="sticky top-0 z-30 bg-[#f0f1f3]/70 dark:bg-[#1c1c1e]/70 backdrop-blur-2xl py-4 -mx-1 px-1 mb-6">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-3">
@@ -159,8 +159,8 @@ export default function HomeSettings() {
                   <Save className="w-4 h-4 text-white" strokeWidth={2} />
                 </div>
                 <div>
-                  <h2 className="text-[17px] font-bold text-[#1d1d1f] tracking-tight">Layout da Home</h2>
-                  <p className="text-[11px] text-black/30 mt-0.5">Configure cada seção do catálogo público</p>
+                  <h2 className="text-[17px] font-bold text-[#1d1d1f] dark:text-[#f5f5f7] tracking-tight">Layout da Home</h2>
+                  <p className="text-[11px] text-black/30 dark:text-white/30 mt-0.5">Configure cada seção do catálogo público</p>
                 </div>
               </div>
             </div>
@@ -170,7 +170,7 @@ export default function HomeSettings() {
               className={`h-11 px-7 rounded-2xl text-[13px] font-semibold flex items-center gap-2.5 transition-all duration-300 disabled:opacity-70 ${
                 saved
                   ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
-                  : "bg-[#1d1d1f] hover:bg-black text-white shadow-lg shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] active:scale-[0.98]"
+                  : "bg-[#1d1d1f] dark:bg-[#0a84ff] hover:bg-black dark:hover:bg-[#409cff] text-white shadow-lg shadow-black/10 dark:shadow-[#0a84ff]/20 hover:shadow-black/20 hover:scale-[1.02] active:scale-[0.98]"
               }`}
             >
               {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Salvando...</>

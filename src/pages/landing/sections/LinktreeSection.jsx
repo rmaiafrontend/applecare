@@ -10,7 +10,6 @@ import {
   Tag,
   Zap,
   Package,
-  Smartphone,
 } from 'lucide-react';
 import { EASE_APPLE } from '../animations';
 
@@ -220,7 +219,7 @@ export default function LinktreeSection() {
             </div>
           </motion.div>
 
-          {/* ── Card 3: Catalogo + Horario (visual mockup) ── */}
+          {/* ── Card 3: Pagina de produto real ── */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -228,67 +227,17 @@ export default function LinktreeSection() {
             transition={{ delay: 0.18, duration: 0.6, ease: EASE_APPLE }}
           >
             <div className="h-full bg-white rounded-[20px] sm:rounded-[28px] border border-black/[0.04] overflow-hidden hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300">
-              {/* Colored top accent */}
-              <div className="h-1.5 bg-gradient-to-r from-blue-500 via-green-400 to-emerald-500" />
-              <div className="p-6 sm:p-7">
-                {/* Product list section */}
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-[14px] font-bold text-[#1d1d1f]">Produtos em destaque</p>
-                  <span className="text-[12px] text-[#007aff] font-medium">Ver catalogo</span>
-                </div>
-                <div className="space-y-2.5">
-                  {[
-                    { name: 'iPhone 15 Pro', specs: '256GB · Titanio', price: 'R$ 6.299', tag: '-16%', express: true },
-                    { name: 'MacBook Air M3', specs: '8GB · 256GB SSD', price: 'R$ 8.999', tag: '-12%', express: true },
-                    { name: 'AirPods Pro 2', specs: 'USB-C · ANC', price: 'R$ 1.899', tag: '-20%', express: false },
-                  ].map((product, idx) => (
-                    <motion.div
-                      key={product.name}
-                      initial={{ opacity: 0, x: -10 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3 + idx * 0.08, duration: 0.4 }}
-                      className="flex items-center gap-3 bg-[#f5f5f7] rounded-2xl p-3 hover:bg-[#ebebed] transition-colors"
-                    >
-                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-gray-200 to-gray-100 flex items-center justify-center shrink-0">
-                        <Smartphone className="w-5 h-5 text-gray-400" strokeWidth={1.5} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-semibold text-[#1d1d1f] truncate">{product.name}</p>
-                        <p className="text-[10px] text-[#86868b]">{product.specs}</p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-[13px] font-bold text-[#1d1d1f]">{product.price}</p>
-                        <div className="flex items-center gap-1 justify-end mt-0.5">
-                          <span className="text-[9px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">{product.tag}</span>
-                          {product.express && (
-                            <span className="text-[8px] font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                              <Zap className="w-2 h-2" /> 1h
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Divider */}
-                <div className="h-px bg-black/[0.04] my-5" />
-
-                {/* Hours compact */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-[#86868b]" strokeWidth={1.75} />
-                    <span className="text-[12px] font-medium text-[#86868b]">Seg-Sex 9h-18h · Sab 9h-14h</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[11px] font-semibold text-green-600">Aberto</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 mt-2">
-                  <MapPin className="w-4 h-4 text-[#86868b]" strokeWidth={1.75} />
-                  <span className="text-[12px] font-medium text-[#86868b]">Sao Paulo, SP</span>
+              {/* Label */}
+              <div className="px-6 sm:px-7 pt-5 sm:pt-6 pb-3">
+                <p className="text-[11px] font-semibold text-[#86868b] uppercase tracking-wider">Pagina do produto</p>
+              </div>
+              <div className="px-4 sm:px-5 pb-4 sm:pb-5">
+                <div className="rounded-2xl overflow-hidden h-[280px] sm:h-[320px]">
+                  <img
+                    src="/exemple-layout/mockup-pagina-produto.webp"
+                    alt="Pagina de produto"
+                    className="w-full h-full object-cover object-top rounded-2xl"
+                  />
                 </div>
               </div>
             </div>

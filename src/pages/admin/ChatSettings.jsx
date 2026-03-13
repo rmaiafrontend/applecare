@@ -102,7 +102,7 @@ export default function ChatSettings() {
           onClick={handleSave}
           disabled={saving || saved}
           className={`h-9 px-5 rounded-full text-[13px] font-medium flex items-center gap-2 transition-all disabled:opacity-70 ${
-            saved ? "bg-emerald-500 text-white" : "bg-[#1d1d1f] hover:bg-[#1d1d1f]/90 text-white"
+            saved ? "bg-emerald-500 text-white" : "bg-[#1d1d1f] dark:bg-[#0a84ff] hover:bg-[#1d1d1f]/90 dark:hover:bg-[#409cff] text-white"
           }`}
         >
           {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Salvando...</>
@@ -118,35 +118,35 @@ export default function ChatSettings() {
           <Section title="Geral">
             <div className="flex items-center justify-between py-1">
               <div>
-                <p className="text-[13px] font-medium text-[#1d1d1f]">Chat Ativo</p>
-                <p className="text-[11px] text-[#86868b]">Habilitar chat no catálogo</p>
+                <p className="text-[13px] font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">Chat Ativo</p>
+                <p className="text-[11px] text-[#86868b] dark:text-[#98989d]">Habilitar chat no catálogo</p>
               </div>
               <Switch checked={form.is_active} onCheckedChange={v => updateField("is_active", v)} />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[11px] text-[#86868b] font-medium">Nome do Assistente</Label>
-              <Input value={form.assistant_name} onChange={e => updateField("assistant_name", e.target.value)} className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white" />
+              <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Nome do Assistente</Label>
+              <Input value={form.assistant_name} onChange={e => updateField("assistant_name", e.target.value)} className="h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[11px] text-[#86868b] font-medium">Mensagem de Boas-vindas</Label>
-              <Textarea value={form.welcome_message} onChange={e => updateField("welcome_message", e.target.value)} className="rounded-xl text-[13px] min-h-[70px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white" />
+              <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Mensagem de Boas-vindas</Label>
+              <Textarea value={form.welcome_message} onChange={e => updateField("welcome_message", e.target.value)} className="rounded-xl text-[13px] min-h-[70px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
             </div>
           </Section>
 
           {/* Behavior */}
           <Section title="Comportamento da IA">
             <div className="space-y-1.5">
-              <Label className="text-[11px] text-[#86868b] font-medium">Prompt do Sistema</Label>
-              <p className="text-[10px] text-[#b0b0b5]">Define a personalidade, conhecimento e regras do assistente</p>
+              <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Prompt do Sistema</Label>
+              <p className="text-[10px] text-[#b0b0b5] dark:text-[#636366]">Define a personalidade, conhecimento e regras do assistente</p>
               <Textarea
                 value={form.system_prompt}
                 onChange={e => updateField("system_prompt", e.target.value)}
-                className="rounded-xl text-[13px] min-h-[120px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white"
+                className="rounded-xl text-[13px] min-h-[120px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]"
                 placeholder="Você é um assistente de vendas..."
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[11px] text-[#86868b] font-medium">Tom de Voz</Label>
+              <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Tom de Voz</Label>
               <div className="grid grid-cols-2 gap-2">
                 {TONES.map(t => (
                   <button
@@ -154,37 +154,37 @@ export default function ChatSettings() {
                     onClick={() => updateField("tone", t.value)}
                     className={`text-left p-3 rounded-xl border transition-all ${
                       form.tone === t.value
-                        ? "border-[#1d1d1f] bg-[#1d1d1f]/[0.03]"
-                        : "border-black/[0.04] hover:border-black/[0.08]"
+                        ? "border-[#1d1d1f] dark:border-[#0a84ff] bg-[#1d1d1f]/[0.03] dark:bg-[#0a84ff]/[0.1]"
+                        : "border-black/[0.04] dark:border-white/[0.06] hover:border-black/[0.08] dark:hover:border-white/[0.1]"
                     }`}
                   >
-                    <p className={`text-[12px] font-medium ${form.tone === t.value ? "text-[#1d1d1f]" : "text-[#86868b]"}`}>{t.label}</p>
-                    <p className="text-[10px] text-[#b0b0b5] mt-0.5">{t.desc}</p>
+                    <p className={`text-[12px] font-medium ${form.tone === t.value ? "text-[#1d1d1f] dark:text-[#0a84ff]" : "text-[#86868b] dark:text-[#98989d]"}`}>{t.label}</p>
+                    <p className="text-[10px] text-[#b0b0b5] dark:text-[#636366] mt-0.5">{t.desc}</p>
                   </button>
                 ))}
               </div>
             </div>
             <div className="flex items-center justify-between py-1">
               <div>
-                <p className="text-[13px] font-medium text-[#1d1d1f]">Sugestões de Produtos</p>
-                <p className="text-[11px] text-[#86868b]">Mostrar cards de produtos nas respostas</p>
+                <p className="text-[13px] font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">Sugestões de Produtos</p>
+                <p className="text-[11px] text-[#86868b] dark:text-[#98989d]">Mostrar cards de produtos nas respostas</p>
               </div>
               <Switch checked={form.show_product_suggestions} onCheckedChange={v => updateField("show_product_suggestions", v)} />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[11px] text-[#86868b] font-medium">Limite de Mensagens por Sessão</Label>
-              <Input type="number" value={form.max_messages_per_session} onChange={e => updateField("max_messages_per_session", parseInt(e.target.value) || 50)} className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white w-32" />
+              <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Limite de Mensagens por Sessão</Label>
+              <Input type="number" value={form.max_messages_per_session} onChange={e => updateField("max_messages_per_session", parseInt(e.target.value) || 50)} className="h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e] w-32" />
             </div>
           </Section>
 
           {/* Suggested Questions */}
           <Section title="Perguntas Sugeridas">
-            <p className="text-[11px] text-[#b0b0b5]">Exibidas como botões rápidos ao iniciar o chat</p>
+            <p className="text-[11px] text-[#b0b0b5] dark:text-[#636366]">Exibidas como botões rápidos ao iniciar o chat</p>
             <div className="space-y-2">
               {(form.suggested_questions || []).map((q, i) => (
-                <div key={i} className="flex items-center gap-2 bg-[#f5f5f7] rounded-xl px-3 py-2 group">
-                  <MessageCircle className="w-3.5 h-3.5 text-[#86868b] flex-shrink-0" />
-                  <span className="flex-1 text-[12px] text-[#1d1d1f]">{q}</span>
+                <div key={i} className="flex items-center gap-2 bg-[#f5f5f7] dark:bg-[#1c1c1e] rounded-xl px-3 py-2 group">
+                  <MessageCircle className="w-3.5 h-3.5 text-[#86868b] dark:text-[#98989d] flex-shrink-0" />
+                  <span className="flex-1 text-[12px] text-[#1d1d1f] dark:text-[#f5f5f7]">{q}</span>
                   <button onClick={() => removeQuestion(i)} className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                     <X className="w-3 h-3 text-red-400" />
                   </button>
@@ -196,10 +196,10 @@ export default function ChatSettings() {
                 value={newQuestion}
                 onChange={e => setNewQuestion(e.target.value)}
                 placeholder="Digite uma pergunta sugerida..."
-                className="h-9 rounded-xl text-[12px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white"
+                className="h-9 rounded-xl text-[12px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]"
                 onKeyDown={e => { if (e.key === "Enter") addQuestion(); }}
               />
-              <button onClick={addQuestion} disabled={!newQuestion.trim()} className="h-9 px-3 bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f] rounded-xl text-[11px] font-medium transition-colors disabled:opacity-40 flex-shrink-0">
+              <button onClick={addQuestion} disabled={!newQuestion.trim()} className="h-9 px-3 bg-[#f5f5f7] dark:bg-[#2c2c2e] hover:bg-[#e8e8ed] dark:hover:bg-[#3a3a3c] text-[#1d1d1f] dark:text-[#f5f5f7] rounded-xl text-[11px] font-medium transition-colors disabled:opacity-40 flex-shrink-0">
                 <Plus className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -209,21 +209,21 @@ export default function ChatSettings() {
           <Section title="Aparência">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Cor Primária</Label>
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Cor Primária</Label>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
                     value={form.primary_color}
                     onChange={e => updateField("primary_color", e.target.value)}
-                    className="w-10 h-10 rounded-xl border border-black/[0.06] cursor-pointer"
+                    className="w-10 h-10 rounded-xl border border-black/[0.06] dark:border-white/[0.06] cursor-pointer"
                   />
-                  <Input value={form.primary_color} onChange={e => updateField("primary_color", e.target.value)} className="h-10 rounded-xl text-[12px] font-mono border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white" />
+                  <Input value={form.primary_color} onChange={e => updateField("primary_color", e.target.value)} className="h-10 rounded-xl text-[12px] font-mono border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Posição do Chat</Label>
+                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Posição do Chat</Label>
                 <Select value={form.chat_position} onValueChange={v => updateField("chat_position", v)}>
-                  <SelectTrigger className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#f5f5f7]/50"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="bottom-right">Inferior Direito</SelectItem>
                     <SelectItem value="bottom-left">Inferior Esquerdo</SelectItem>
@@ -237,7 +237,7 @@ export default function ChatSettings() {
         {/* Preview */}
         <div className="hidden lg:block">
           <div className="sticky top-20">
-            <p className="text-[11px] font-medium text-[#86868b] uppercase tracking-widest mb-3">Preview</p>
+            <p className="text-[11px] font-medium text-[#86868b] dark:text-[#98989d] uppercase tracking-widest mb-3">Preview</p>
             <ChatPreview config={form} />
           </div>
         </div>
@@ -248,8 +248,8 @@ export default function ChatSettings() {
 
 function Section({ title, children }) {
   return (
-    <div className="bg-white rounded-2xl border border-black/[0.04] shadow-[0_1px_8px_-3px_rgba(0,0,0,0.04)] p-5 space-y-4">
-      <h3 className="text-[13px] font-semibold text-[#1d1d1f]">{title}</h3>
+    <div className="bg-white dark:bg-[#2c2c2e] rounded-2xl border border-black/[0.04] dark:border-white/[0.06] shadow-[0_1px_8px_-3px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_8px_-3px_rgba(0,0,0,0.2)] p-5 space-y-4">
+      <h3 className="text-[13px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">{title}</h3>
       {children}
     </div>
   );
