@@ -73,7 +73,7 @@ export default function PaymentSettings() {
           className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-300 ${
             saved
               ? "bg-emerald-500 text-white"
-              : "bg-[#1d1d1f] text-white hover:bg-[#1d1d1f]/90 active:scale-[0.97]"
+              : "bg-[#007aff] text-white hover:bg-[#0071e3] active:scale-[0.97]"
           }`}
         >
           {saveMutation.isPending ? (

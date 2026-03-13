@@ -22,11 +22,11 @@ export default function CategoriesSection({ form, updateField }) {
               onClick={() => updateField("categories_layout", opt.value)}
               className={`text-left p-3 rounded-xl border transition-all ${
                 (form.categories_layout || "carousel") === opt.value
-                  ? "border-[#1d1d1f] dark:border-[#0a84ff] bg-[#1d1d1f]/[0.03] dark:bg-[#0a84ff]/[0.1]"
+                  ? "border-[#007aff] dark:border-[#0a84ff] bg-[#007aff]/[0.04] dark:bg-[#0a84ff]/[0.1]"
                   : "border-black/[0.04] dark:border-white/[0.06] hover:border-black/[0.08] dark:hover:border-white/[0.1]"
               }`}
             >
-              <p className={`text-[12px] font-medium ${(form.categories_layout || "carousel") === opt.value ? "text-[#1d1d1f] dark:text-[#0a84ff]" : "text-[#86868b] dark:text-[#98989d]"}`}>{opt.label}</p>
+              <p className={`text-[12px] font-medium ${(form.categories_layout || "carousel") === opt.value ? "text-[#007aff] dark:text-[#0a84ff]" : "text-[#86868b] dark:text-[#98989d]"}`}>{opt.label}</p>
               <p className="text-[10px] text-[#c7c7cc] dark:text-[#636366] mt-0.5">{opt.desc}</p>
             </button>
           ))}

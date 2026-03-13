@@ -98,7 +98,7 @@ export default function CatalogSettings() {
 
         <button
           onClick={openNew}
-          className="h-9 px-5 bg-[#1d1d1f] hover:bg-black text-white rounded-full text-[13px] font-medium flex items-center gap-2 transition-colors shadow-sm"
+          className="h-9 px-5 bg-[#007aff] hover:bg-[#0071e3] text-white rounded-full text-[13px] font-medium flex items-center gap-2 transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" strokeWidth={2.2} /> Nova Seção
         </button>
@@ -136,7 +136,7 @@ export default function CatalogSettings() {
           </p>
           <button
             onClick={openNew}
-            className="mt-5 h-9 px-5 bg-[#1d1d1f] text-white rounded-full text-[13px] font-medium inline-flex items-center gap-2 hover:bg-black transition-colors"
+            className="mt-5 h-9 px-5 bg-[#007aff] text-white rounded-full text-[13px] font-medium inline-flex items-center gap-2 hover:bg-[#0071e3] transition-colors"
           >
             <Plus className="w-4 h-4" /> Criar Primeira Seção
           </button>

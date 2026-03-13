@@ -135,7 +135,7 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
           onClick={handleSave}
           disabled={saving || saved || !form.name || !form.product_id || !form.price || !form.category_id}
           className={`h-9 px-5 rounded-full text-[13px] font-medium flex items-center gap-2 transition-all disabled:opacity-40 ${
-            saved ? "bg-emerald-500 text-white" : "bg-[#1d1d1f] hover:bg-[#1d1d1f]/90 text-white"
+            saved ? "bg-emerald-500 text-white" : "bg-[#007aff] hover:bg-[#0071e3] text-white"
           }`}
         >
           {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Salvando...</>

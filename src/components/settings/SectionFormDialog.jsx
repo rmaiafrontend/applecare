@@ -145,7 +145,7 @@ export default function SectionFormDialog({ open, onOpenChange, form, setForm, c
           <button
             onClick={onSave}
             disabled={saving}
-            className="flex-1 h-10 rounded-xl text-[13px] font-medium text-white bg-[#1d1d1f] hover:bg-black transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
+            className="flex-1 h-10 rounded-xl text-[13px] font-medium text-white bg-[#007aff] hover:bg-[#0071e3] transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
           >
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" strokeWidth={1.8} />}
             Salvar

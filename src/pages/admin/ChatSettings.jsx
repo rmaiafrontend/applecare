@@ -102,7 +102,7 @@ export default function ChatSettings() {
           onClick={handleSave}
           disabled={saving || saved}
           className={`h-9 px-5 rounded-full text-[13px] font-medium flex items-center gap-2 transition-all disabled:opacity-70 ${
-            saved ? "bg-emerald-500 text-white" : "bg-[#1d1d1f] dark:bg-[#0a84ff] hover:bg-[#1d1d1f]/90 dark:hover:bg-[#409cff] text-white"
+            saved ? "bg-emerald-500 text-white" : "bg-[#007aff] dark:bg-[#0a84ff] hover:bg-[#0071e3] dark:hover:bg-[#409cff] text-white"
           }`}
         >
           {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Salvando...</>
@@ -154,11 +154,11 @@ export default function ChatSettings() {
                     onClick={() => updateField("tone", t.value)}
                     className={`text-left p-3 rounded-xl border transition-all ${
                       form.tone === t.value
-                        ? "border-[#1d1d1f] dark:border-[#0a84ff] bg-[#1d1d1f]/[0.03] dark:bg-[#0a84ff]/[0.1]"
+                        ? "border-[#007aff] dark:border-[#0a84ff] bg-[#007aff]/[0.04] dark:bg-[#0a84ff]/[0.1]"
                         : "border-black/[0.04] dark:border-white/[0.06] hover:border-black/[0.08] dark:hover:border-white/[0.1]"
                     }`}
                   >
-                    <p className={`text-[12px] font-medium ${form.tone === t.value ? "text-[#1d1d1f] dark:text-[#0a84ff]" : "text-[#86868b] dark:text-[#98989d]"}`}>{t.label}</p>
+                    <p className={`text-[12px] font-medium ${form.tone === t.value ? "text-[#007aff] dark:text-[#0a84ff]" : "text-[#86868b] dark:text-[#98989d]"}`}>{t.label}</p>
                     <p className="text-[10px] text-[#b0b0b5] dark:text-[#636366] mt-0.5">{t.desc}</p>
                   </button>
                 ))}

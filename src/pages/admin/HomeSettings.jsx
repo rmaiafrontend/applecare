@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { StoreConfig } from "@/api/dataService";
 import { Save, Loader2, Check, Link2, Image, Award, Sparkles, FolderOpen, LayoutGrid, ScrollText, Info, ShoppingBag } from "lucide-react";
@@ -91,6 +91,25 @@ export default function HomeSettings() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [openSections, setOpenSections] = useState({});
+  const [activeSection, setActiveSection] = useState(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const sectionsRef = useRef(null);
+
+  const handleScroll = useCallback(() => {
+    const el = sectionsRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const viewportH = window.innerHeight;
+    const totalScroll = el.scrollHeight - viewportH;
+    if (totalScroll <= 0) return;
+    const scrolled = -rect.top;
+    setScrollProgress(Math.max(0, Math.min(1, scrolled / totalScroll)));
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   const { data: configs = [] } = useQuery({
     queryKey: QUERY_KEYS.homeConfig,
@@ -126,7 +145,12 @@ export default function HomeSettings() {
   };
 
   const toggleSection = (key) => {
-    setOpenSections(prev => ({ ...prev, [key]: !prev[key] }));
+    setOpenSections(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      if (next[key]) setActiveSection(key);
+      else if (activeSection === key) setActiveSection(null);
+      return next;
+    });
   };
 
   const renderSectionContent = (key) => {
@@ -170,7 +194,7 @@ export default function HomeSettings() {
               className={`h-11 px-7 rounded-2xl text-[13px] font-semibold flex items-center gap-2.5 transition-all duration-300 disabled:opacity-70 ${
                 saved
                   ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
-                  : "bg-[#1d1d1f] dark:bg-[#0a84ff] hover:bg-black dark:hover:bg-[#409cff] text-white shadow-lg shadow-black/10 dark:shadow-[#0a84ff]/20 hover:shadow-black/20 hover:scale-[1.02] active:scale-[0.98]"
+                  : "bg-[#007aff] dark:bg-[#0a84ff] hover:bg-[#0071e3] dark:hover:bg-[#409cff] text-white shadow-lg shadow-[#007aff]/15 dark:shadow-[#0a84ff]/20 hover:shadow-[#007aff]/25 hover:scale-[1.02] active:scale-[0.98]"
               }`}
             >
               {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Salvando...</>
@@ -181,7 +205,7 @@ export default function HomeSettings() {
         </div>
 
         {/* Sections */}
-        <div className="space-y-3">
+        <div ref={sectionsRef} className="space-y-3">
           {SECTIONS.map((section, index) => (
             <SectionWrapper
               key={section.key}
@@ -207,8 +231,8 @@ export default function HomeSettings() {
       </div>
 
       {/* Right: Live Preview (hidden on small screens) */}
-      <div className="hidden xl:block w-[330px] flex-shrink-0">
-        <HomePreview form={form} />
+      <div className="hidden xl:block w-[390px] flex-shrink-0">
+        <HomePreview form={form} activeSection={activeSection} scrollProgress={scrollProgress} />
       </div>
     </div>
   );

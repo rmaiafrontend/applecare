@@ -44,11 +44,11 @@ export default function ProductListSection({ form, updateField }) {
               onClick={() => updateField("product_list_template", t.value)}
               className={`text-left p-3 rounded-xl border transition-all ${
                 (form.product_list_template || "launches") === t.value
-                  ? "border-[#1d1d1f] dark:border-[#0a84ff] bg-[#1d1d1f]/[0.03] dark:bg-[#0a84ff]/[0.1]"
+                  ? "border-[#007aff] dark:border-[#0a84ff] bg-[#007aff]/[0.04] dark:bg-[#0a84ff]/[0.1]"
                   : "border-black/[0.04] dark:border-white/[0.06] hover:border-black/[0.08] dark:hover:border-white/[0.1]"
               }`}
             >
-              <p className={`text-[11px] font-semibold ${(form.product_list_template || "launches") === t.value ? "text-[#1d1d1f] dark:text-[#0a84ff]" : "text-[#86868b] dark:text-[#98989d]"}`}>{t.label}</p>
+              <p className={`text-[11px] font-semibold ${(form.product_list_template || "launches") === t.value ? "text-[#007aff] dark:text-[#0a84ff]" : "text-[#86868b] dark:text-[#98989d]"}`}>{t.label}</p>
               <p className="text-[9px] text-[#c7c7cc] dark:text-[#636366] mt-0.5">{t.desc}</p>
             </button>
           ))}

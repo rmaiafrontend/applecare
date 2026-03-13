@@ -151,7 +151,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
               className={`h-8 px-4 rounded-lg text-[12px] font-semibold flex items-center gap-1.5 transition-all disabled:opacity-40 ${
                 saved
                   ? "bg-emerald-500 text-white"
-                  : "bg-[#1d1d1f] dark:bg-[#0a84ff] hover:bg-black dark:hover:bg-[#409cff] text-white shadow-sm"
+                  : "bg-[#007aff] dark:bg-[#0a84ff] hover:bg-[#0071e3] dark:hover:bg-[#409cff] text-white shadow-sm"
               }`}
             >
               {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Salvando</>

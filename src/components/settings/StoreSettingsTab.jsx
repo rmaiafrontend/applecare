@@ -68,7 +68,7 @@ export default function StoreSettingsTab() {
           onClick={handleSave}
           disabled={saving || saved}
           className={`h-9 px-5 rounded-full text-[13px] font-medium flex items-center gap-2 transition-all disabled:opacity-70 ${
-            saved ? "bg-emerald-500 text-white" : "bg-[#1d1d1f] dark:bg-[#0a84ff] hover:bg-[#1d1d1f]/90 dark:hover:bg-[#409cff] text-white"
+            saved ? "bg-emerald-500 text-white" : "bg-[#007aff] dark:bg-[#0a84ff] hover:bg-[#0071e3] dark:hover:bg-[#409cff] text-white"
           }`}
         >
           {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Salvando...</>

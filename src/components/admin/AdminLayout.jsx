@@ -123,12 +123,9 @@ export default function AdminLayout({ currentView, onNavigate, children }) {
             <div className="w-[30px] h-[30px] bg-gradient-to-br from-[#1d1d1f] to-[#424245] dark:from-[#0a84ff] dark:to-[#5856d6] rounded-[8px] flex items-center justify-center shadow-sm">
               <span className="text-white text-[12px] font-bold tracking-tight">A</span>
             </div>
-            <div>
-              <span className="font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] text-[15px] tracking-[-0.02em] block leading-tight">
-                AppleLink
-              </span>
-              <span className="text-[10px] text-[#86868b] dark:text-[#98989d] leading-tight">Admin</span>
-            </div>
+            <span className="font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] text-[15px] tracking-[-0.02em]">
+              AppleLink
+            </span>
           </div>
           <button
             className="lg:hidden w-7 h-7 flex items-center justify-center rounded-full hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors"

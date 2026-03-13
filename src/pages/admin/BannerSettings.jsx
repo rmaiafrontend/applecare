@@ -97,7 +97,7 @@ export default function BannerSettings() {
             onClick={handleSave}
             disabled={saving || savedFeedback}
             className={`h-9 px-5 rounded-full text-[13px] font-medium flex items-center gap-2 transition-all disabled:opacity-70 ${
-              savedFeedback ? "bg-emerald-500 text-white" : "bg-[#1d1d1f] hover:bg-black text-white"
+              savedFeedback ? "bg-emerald-500 text-white" : "bg-[#007aff] hover:bg-[#0071e3] text-white"
             }`}
           >
             {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Salvando...</>

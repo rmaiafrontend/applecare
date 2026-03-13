@@ -72,7 +72,7 @@ export default function Tags() {
     <div className="space-y-6">
       {/* Actions */}
       <div className="flex items-center justify-end">
-        <button onClick={openNew} className="h-9 px-4 bg-[#1d1d1f] hover:bg-[#1d1d1f]/90 text-white rounded-full text-[13px] font-medium flex items-center gap-2 transition-colors">
+        <button onClick={openNew} className="h-9 px-4 bg-[#007aff] hover:bg-[#0071e3] text-white rounded-full text-[13px] font-medium flex items-center gap-2 transition-colors">
           <Plus className="w-4 h-4" strokeWidth={2} /> Nova Tag
         </button>
       </div>

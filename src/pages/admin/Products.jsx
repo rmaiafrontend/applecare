@@ -51,7 +51,7 @@ export default function Products() {
     },
   });
 
-  const getCategoryName = (catId) => categories.find(c => c.category_id === catId)?.name || catId;
+  const getCategoryName = (catId) => categories.find(c => (c.category_id || c.id) === catId)?.name || catId;
 
   const filtered = products.filter(p => {
     const matchSearch = !search || p.name?.toLowerCase().includes(search.toLowerCase()) || p.sku?.toLowerCase().includes(search.toLowerCase());
@@ -100,7 +100,7 @@ export default function Products() {
             <button
               onClick={() => setViewMode("grid")}
               className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all duration-200 ${
-                viewMode === "grid" ? "bg-[#1d1d1f] dark:bg-[#0a84ff] text-white shadow-sm" : "text-[#86868b] dark:text-[#98989d] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
+                viewMode === "grid" ? "bg-[#007aff] dark:bg-[#0a84ff] text-white shadow-sm" : "text-[#86868b] dark:text-[#98989d] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" strokeWidth={2} />
@@ -108,7 +108,7 @@ export default function Products() {
             <button
               onClick={() => setViewMode("list")}
               className={`w-8 h-8 rounded-[10px] flex items-center justify-center transition-all duration-200 ${
-                viewMode === "list" ? "bg-[#1d1d1f] dark:bg-[#0a84ff] text-white shadow-sm" : "text-[#86868b] dark:text-[#98989d] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
+                viewMode === "list" ? "bg-[#007aff] dark:bg-[#0a84ff] text-white shadow-sm" : "text-[#86868b] dark:text-[#98989d] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]"
               }`}
             >
               <List className="w-3.5 h-3.5" strokeWidth={2} />
@@ -117,7 +117,7 @@ export default function Products() {
 
           <button
             onClick={handleNew}
-            className="h-9 px-4 bg-[#1d1d1f] dark:bg-[#0a84ff] hover:bg-black dark:hover:bg-[#409cff] text-white rounded-full text-[13px] font-medium flex items-center gap-2 transition-colors shadow-sm"
+            className="h-9 px-4 bg-[#007aff] dark:bg-[#0a84ff] hover:bg-[#0071e3] dark:hover:bg-[#409cff] text-white rounded-full text-[13px] font-medium flex items-center gap-2 transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" strokeWidth={2.2} /> Novo Produto
           </button>
@@ -195,7 +195,7 @@ export default function Products() {
             </p>
             <button
               onClick={handleNew}
-              className="mt-5 h-9 px-5 bg-[#1d1d1f] dark:bg-[#0a84ff] text-white rounded-full text-[13px] font-medium inline-flex items-center gap-2 hover:bg-black dark:hover:bg-[#409cff] transition-colors"
+              className="mt-5 h-9 px-5 bg-[#007aff] dark:bg-[#0a84ff] text-white rounded-full text-[13px] font-medium inline-flex items-center gap-2 hover:bg-[#0071e3] dark:hover:bg-[#409cff] transition-colors"
             >
               <Plus className="w-4 h-4" /> Novo Produto
             </button>

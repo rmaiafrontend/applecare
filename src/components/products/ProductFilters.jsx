@@ -47,7 +47,7 @@ export default function ProductFilters({
             onClick={() => onCategoryChange("all")}
             className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all duration-200 ${
               categoryFilter === "all"
-                ? "bg-[#1d1d1f] dark:bg-[#0a84ff] text-white shadow-sm"
+                ? "bg-[#007aff] dark:bg-[#0a84ff] text-white shadow-sm"
                 : "bg-white dark:bg-[#3a3a3c] text-[#86868b] dark:text-[#98989d] hover:bg-[#f5f5f7] dark:hover:bg-[#48484a] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] border border-black/[0.04] dark:border-white/[0.06]"
             }`}
           >
@@ -56,10 +56,10 @@ export default function ProductFilters({
           {categories.map(cat => (
             <button
               key={cat.id}
-              onClick={() => onCategoryChange(cat.category_id)}
+              onClick={() => onCategoryChange(cat.category_id || cat.id)}
               className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all duration-200 ${
                 categoryFilter === cat.category_id
-                  ? "bg-[#1d1d1f] dark:bg-[#0a84ff] text-white shadow-sm"
+                  ? "bg-[#007aff] dark:bg-[#0a84ff] text-white shadow-sm"
                   : "bg-white dark:bg-[#3a3a3c] text-[#86868b] dark:text-[#98989d] hover:bg-[#f5f5f7] dark:hover:bg-[#48484a] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] border border-black/[0.04] dark:border-white/[0.06]"
               }`}
             >
