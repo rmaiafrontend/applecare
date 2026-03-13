@@ -38,7 +38,7 @@ export default function FooterSection() {
             <ul className="space-y-3.5">
               {['Catálogo', 'Entrega Express', 'WhatsApp Checkout', 'Painel Admin', 'Busca com IA', 'Link da Loja'].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-white/35 text-[13px] sm:text-[14px] hover:text-white/70 transition-colors">{item}</a>
+                  <span className="text-white/25 text-[13px] sm:text-[14px] cursor-default">{item}</span>
                 </li>
               ))}
             </ul>
@@ -50,7 +50,7 @@ export default function FooterSection() {
             <ul className="space-y-3.5">
               {['Sobre nós', 'Blog', 'Carreiras', 'Contato', 'Parceiros'].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-white/35 text-[13px] sm:text-[14px] hover:text-white/70 transition-colors">{item}</a>
+                  <span className="text-white/25 text-[13px] sm:text-[14px] cursor-default">{item}</span>
                 </li>
               ))}
             </ul>
@@ -62,7 +62,7 @@ export default function FooterSection() {
             <ul className="space-y-3.5">
               {['Termos de Uso', 'Privacidade', 'Cookies', 'LGPD'].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-white/35 text-[13px] sm:text-[14px] hover:text-white/70 transition-colors">{item}</a>
+                  <span className="text-white/25 text-[13px] sm:text-[14px] cursor-default">{item}</span>
                 </li>
               ))}
             </ul>

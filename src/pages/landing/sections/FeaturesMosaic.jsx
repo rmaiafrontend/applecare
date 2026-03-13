@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import {
   Sparkles,
   Search,
@@ -11,9 +10,10 @@ import {
   Store,
   ArrowRight,
 } from 'lucide-react';
-import { createPageUrl } from '@/utils';
+import { useWaitlist } from '../components/WaitlistModal';
 
 export default function FeaturesMosaic() {
+  const { setOpen } = useWaitlist();
   return (
     <section className="relative bg-[#f5f5f7] py-24 sm:py-32 overflow-hidden">
       <div className="max-w-[1200px] mx-auto px-5 sm:px-6">
@@ -446,15 +446,15 @@ export default function FeaturesMosaic() {
           transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mt-14 sm:mt-16 text-center"
         >
-          <Link
-            to={createPageUrl('Products')}
+          <button
+            onClick={() => setOpen(true)}
             className="group inline-flex items-center gap-2.5 bg-[#1d1d1f] text-white px-7 py-3.5 sm:py-4 rounded-full text-[15px] font-semibold transition-all hover:bg-black active:scale-[0.97]"
           >
-            Comecar gratis
+            Entrar na lista VIP
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+          </button>
           <p className="mt-4 text-[13px] text-[#86868b]">
-            Setup em 5 minutos. Sem cartao de credito.
+            Vagas limitadas. Garanta seu acesso antecipado.
           </p>
         </motion.div>
       </div>

@@ -7,19 +7,22 @@ import LinktreeSection from './landing/sections/LinktreeSection';
 import PricingSection from './landing/sections/PricingSection';
 import CtaSection from './landing/sections/CtaSection';
 import FooterSection from './landing/sections/FooterSection';
+import { WaitlistProvider } from './landing/components/WaitlistModal';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-black selection:bg-white selection:text-black overflow-x-hidden">
-      <HeroSection />
-      <FeaturesMosaic />
-      <SmartRegistration />
-      <DesignCarousel />
-      <AssistedPurchase />
-      <LinktreeSection />
-      <PricingSection />
-      <CtaSection />
-      <FooterSection />
-    </div>
+    <WaitlistProvider>
+      <div className="min-h-screen bg-black selection:bg-white selection:text-black overflow-x-hidden">
+        <HeroSection />
+        <FeaturesMosaic />
+        <SmartRegistration />
+        <DesignCarousel />
+        <AssistedPurchase />
+        <LinktreeSection />
+        <PricingSection />
+        <CtaSection />
+        <FooterSection />
+      </div>
+    </WaitlistProvider>
   );
 }

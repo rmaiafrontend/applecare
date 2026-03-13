@@ -1,20 +1,16 @@
 import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Menu, X, Sparkles, Bot, Wand2, BarChart3 } from 'lucide-react';
+import { ArrowRight, Menu, X, Sparkles, Crown, Gift, Users } from 'lucide-react';
 import { STORE_INFO } from '@/lib/constants';
 import { useState, useRef } from 'react';
+import { useWaitlist } from '../components/WaitlistModal';
 
 import { fadeUp } from '../animations';
 import GlowBeam from '../components/GlowBeam';
 import Marquee from '../components/Marquee';
 import FloatingCard from '../components/FloatingCard';
 
-const navLinks = [
-  { label: 'Recursos', to: createPageUrl('Products') },
-  { label: 'Precos', to: createPageUrl('Categories') },
-  { label: 'Contato', to: createPageUrl('Profile') },
-];
+const navLinks = [];
 
 const floatingProducts = [
   { name: 'Catalogo com IA', price: 'Automatizado', color: 'from-blue-500/20 to-blue-600/10', x: '-left-16 md:-left-32', y: 'top-[15%]', delay: 0 },
@@ -24,6 +20,7 @@ const floatingProducts = [
 ];
 
 export default function HeroSection() {
+  const { setOpen } = useWaitlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -62,13 +59,13 @@ export default function HeroSection() {
               </nav>
 
               <div className="hidden md:flex items-center">
-                <Link
-                  to={createPageUrl('Products')}
+                <button
+                  onClick={() => setOpen(true)}
                   className="group flex items-center gap-2 bg-white text-black px-5 py-2 rounded-xl text-[13px] font-semibold transition-all hover:bg-white/90 active:scale-[0.97]"
                 >
-                  Comecar gratis
+                  Quero acesso antecipado
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-                </Link>
+                </button>
               </div>
 
               <button
@@ -95,13 +92,13 @@ export default function HeroSection() {
                       {link.label}
                     </Link>
                   ))}
-                  <Link
-                    to={createPageUrl('Products')}
-                    className="mt-2 flex items-center justify-center gap-2 bg-white text-black px-5 py-3 rounded-xl text-sm font-semibold"
+                  <button
+                    onClick={() => { setOpen(true); setMobileMenuOpen(false); }}
+                    className="mt-2 flex items-center justify-center gap-2 bg-white text-black px-5 py-3 rounded-xl text-sm font-semibold w-full"
                   >
-                    Comecar gratis
+                    Quero acesso antecipado
                     <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  </button>
                 </div>
               </motion.div>
             )}
@@ -132,11 +129,11 @@ export default function HeroSection() {
                 >
                   <span className="flex items-center gap-1.5 bg-gradient-to-r from-violet-500 to-blue-600 text-white text-[10px] font-bold tracking-wider uppercase px-2.5 sm:px-3 py-1.5 rounded-full shadow-lg shadow-violet-500/25 shrink-0">
                     <Sparkles className="w-2.5 h-2.5" />
-                    <span className="hidden sm:inline">IA Integrada</span>
-                    <span className="sm:hidden">IA</span>
+                    <span className="hidden sm:inline">Pre-lancamento</span>
+                    <span className="sm:hidden">Em breve</span>
                   </span>
                   <span className="text-[11px] sm:text-[12px] font-medium text-white/50 truncate">
-                    Catalogo inteligente para Apple Stores
+                    Vagas limitadas — cadastre-se agora
                   </span>
                   <ArrowRight className="w-3 h-3 text-white/25 shrink-0" />
                 </motion.span>
@@ -160,36 +157,36 @@ export default function HeroSection() {
                 custom={2}
                 className="mt-5 sm:mt-7 text-[15px] sm:text-[17px] text-white/30 leading-relaxed max-w-[440px] mx-auto"
               >
-                Catalogo inteligente, gestao automatizada e checkout via WhatsApp. Tudo que sua loja Apple precisa em uma unica plataforma.
+                Em breve. Cadastre-se agora para acesso antecipado e uma oferta exclusiva de lancamento.
               </motion.p>
 
               {/* CTAs */}
               <motion.div variants={fadeUp} custom={3} className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link
-                  to={createPageUrl('Products')}
+                <button
+                  onClick={() => setOpen(true)}
                   className="group w-full sm:w-auto relative inline-flex items-center justify-center gap-2.5 bg-white text-black pl-7 pr-5 py-3.5 sm:py-4 rounded-full text-[15px] font-semibold transition-all hover:shadow-[0_0_40px_rgba(255,255,255,0.15)] active:scale-[0.97]"
                 >
-                  Criar minha loja
+                  Garantir minha vaga
                   <span className="flex items-center justify-center w-7 h-7 bg-black/10 rounded-full group-hover:bg-black/15 transition-colors">
                     <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                   </span>
-                </Link>
+                </button>
                 <a
                   href={`https://wa.me/${STORE_INFO.whatsapp}?text=${encodeURIComponent(STORE_INFO.whatsappMessage)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-white/[0.1] text-white/60 px-7 py-3.5 sm:py-4 rounded-full text-[15px] font-medium transition-all hover:bg-white/[0.05] hover:text-white hover:border-white/20 active:scale-[0.97]"
                 >
-                  Ver demonstracao
+                  Falar com a equipe
                 </a>
               </motion.div>
 
               {/* Trust row */}
               <motion.div variants={fadeUp} custom={4} className="mt-10 sm:mt-14 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
                 {[
-                  { icon: Bot, text: 'IA generativa integrada' },
-                  { icon: Wand2, text: 'Setup em 5 minutos' },
-                  { icon: BarChart3, text: 'Analytics em tempo real' },
+                  { icon: Crown, text: 'Acesso antecipado' },
+                  { icon: Gift, text: 'Oferta exclusiva' },
+                  { icon: Users, text: 'Grupo VIP' },
                 ].map((item) => (
                   <div key={item.text} className="flex items-center gap-2">
                     <item.icon className="w-3.5 h-3.5 text-blue-400/70" strokeWidth={2} />
