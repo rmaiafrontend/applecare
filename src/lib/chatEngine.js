@@ -167,7 +167,7 @@ function detectIntent(text, context) {
 export function getGreeting() {
   return {
     role: 'ai',
-    text: 'Ola! Sou o assistente AppleLink. Posso te ajudar a encontrar o produto Apple perfeito pra voce. O que esta procurando?',
+    text: 'Ola! Sou o assistente aLink. Posso te ajudar a encontrar o produto Apple perfeito pra voce. O que esta procurando?',
     quickReplies: ['iPhone', 'MacBook', 'iPad', 'Fone de ouvido', 'Presente', 'Nao sei ainda'],
   };
 }

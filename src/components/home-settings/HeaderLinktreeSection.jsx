@@ -50,8 +50,8 @@ export default function HeaderLinktreeSection({ form, updateField }) {
         />
         <div className="grid grid-cols-2 gap-3">
           <FieldRow label="Nome da loja" required>
-            <Input value={form.header_store_name || ""} onChange={e => updateField("header_store_name", e.target.value)} placeholder="AppleLink Store" maxLength={40} className="h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
-            <SuggestionPills suggestions={["AppleLink Store", "AppleLink Tech", "AppleLink Apple", "AppleLink Shop"]} onSelect={v => updateField("header_store_name", v)} currentValue={form.header_store_name} />
+            <Input value={form.header_store_name || ""} onChange={e => updateField("header_store_name", e.target.value)} placeholder="aLink Store" maxLength={40} className="h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
+            <SuggestionPills suggestions={["aLink Store", "aLink Tech", "aLink Apple", "aLink Shop"]} onSelect={v => updateField("header_store_name", v)} currentValue={form.header_store_name} />
           </FieldRow>
           <FieldRow label="Tagline">
             <Input value={form.header_tagline || ""} onChange={e => updateField("header_tagline", e.target.value)} placeholder="Produtos Apple Originais · SP" maxLength={60} className="h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />

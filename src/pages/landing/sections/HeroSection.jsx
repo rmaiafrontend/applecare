@@ -39,11 +39,8 @@ export default function HeroSection() {
         <div className="mx-3 mt-2.5 sm:mx-5 sm:mt-3">
           <div className="max-w-[1200px] mx-auto bg-black/60 backdrop-blur-2xl border border-white/[0.06] rounded-2xl">
             <div className="px-4 sm:px-5 h-14 md:h-[56px] flex items-center justify-between">
-              <Link to="/" className="flex items-center gap-2 group">
-                <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
-                  <span className="text-[12px] font-bold text-black tracking-tighter">A</span>
-                </div>
-                <span className="text-[15px] font-semibold text-white tracking-tight">AppleLink</span>
+              <Link to="/" className="flex items-center group">
+                <img src="/logo-alink.png" alt="aLink" className="h-16 object-contain" />
               </Link>
 
               <nav className="hidden md:flex items-center gap-1">
@@ -285,7 +282,7 @@ export default function HeroSection() {
               <div className="relative z-10 w-[290px] sm:w-[330px] md:w-[380px] mx-auto">
                 <img
                   src="/exemple-layout/mockup-home.webp"
-                  alt="AppleLink Catalogo"
+                  alt="aLink Catalogo"
                   className="w-full h-auto drop-shadow-[0_50px_120px_rgba(0,0,0,0.7)]"
                 />
               </div>

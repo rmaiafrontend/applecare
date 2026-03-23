@@ -10,11 +10,8 @@ export default function FooterSection() {
 
           {/* Brand column */}
           <div className="col-span-2 sm:col-span-2 lg:col-span-2 lg:pr-8">
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#007aff] to-[#007aff]/70 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">AL</span>
-              </div>
-              <span className="text-white font-semibold text-lg tracking-tight">AppleLink</span>
+            <div className="flex items-center mb-5">
+              <img src="/logo-alink.png" alt="aLink" className="h-16 object-contain" />
             </div>
             <p className="text-white/35 text-[13px] sm:text-[14px] leading-relaxed max-w-xs mb-6">
               A plataforma completa para lojas Apple. Catálogo, entrega express, checkout via WhatsApp e muito mais.
@@ -70,9 +67,9 @@ export default function FooterSection() {
             <h4 className="text-white/60 font-semibold text-[13px] uppercase tracking-wider mb-4 mt-8">Contato</h4>
             <ul className="space-y-3">
               <li>
-                <a href={`mailto:contato@applelink.com.br`} className="flex items-center gap-2 text-white/35 text-[13px] hover:text-white/70 transition-colors">
+                <a href={`mailto:contato@alink.com.br`} className="flex items-center gap-2 text-white/35 text-[13px] hover:text-white/70 transition-colors">
                   <Mail className="w-3.5 h-3.5" />
-                  contato@applelink.com.br
+                  contato@alink.com.br
                 </a>
               </li>
               <li>
@@ -91,7 +88,7 @@ export default function FooterSection() {
       <div className="border-t border-white/[0.06]">
         <div className="max-w-6xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-white/20 text-[12px] sm:text-[13px]">
-            © {new Date().getFullYear()} AppleLink. Todos os direitos reservados.
+            © {new Date().getFullYear()} aLink. Todos os direitos reservados.
           </p>
           <div className="flex items-center gap-1.5 text-white/15 text-[11px] sm:text-[12px]">
             <span>Feito com</span>

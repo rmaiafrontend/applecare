@@ -46,12 +46,9 @@ export default function Header({
               <h1 className="text-[15px] font-semibold text-gray-900 truncate">{title}</h1>
             ) : (
               <Link to={createPageUrl('Home')} className="flex items-center gap-1.5">
-                <div className="w-6 h-6 bg-gray-900 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-[10px] font-black leading-none">AL</span>
+                <div className="w-6 h-6 flex items-center justify-center">
+                  <img src="/logo-alink.png" alt="aLink" className="w-6 h-6 object-contain" />
                 </div>
-                <span className="text-[15px] font-bold tracking-tight text-gray-900">
-                  AppleLink
-                </span>
               </Link>
             )}
           </div>

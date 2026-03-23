@@ -248,7 +248,7 @@ export default function Search() {
           >
             <div className="inline-flex items-center gap-1.5 bg-gray-50 text-gray-500 rounded-full px-3.5 py-2 border border-gray-100">
               <Sparkles className="w-3.5 h-3.5 text-gray-400" strokeWidth={2} />
-              <span className="text-[11px] font-semibold">Assistente de compras AppleLink</span>
+              <span className="text-[11px] font-semibold">Assistente de compras aLink</span>
             </div>
           </motion.div>
         )}

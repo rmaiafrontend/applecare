@@ -50,7 +50,7 @@ export default function ThemePreview({ config }) {
                     <img src={config.logo_url} alt="" className="h-6 object-contain brightness-0 invert" />
                   ) : (
                     <span className="text-[11px] font-bold text-white tracking-tight">
-                      {config.store_name || "AppleLink"}
+                      {config.store_name || "aLink"}
                     </span>
                   )}
                 </div>
@@ -108,7 +108,7 @@ export default function ThemePreview({ config }) {
               {/* Footer */}
               <div className="px-4 py-3 mt-3 border-t" style={{ borderColor: text + "08" }}>
                 <p className="text-[7px] text-center" style={{ color: text + "40" }}>
-                  {config.footer_text || "© 2026 AppleLink"}
+                  {config.footer_text || "© 2026 aLink"}
                 </p>
               </div>
             </div>

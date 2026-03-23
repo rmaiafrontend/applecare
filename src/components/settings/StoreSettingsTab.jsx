@@ -83,7 +83,7 @@ export default function StoreSettingsTab() {
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Nome da Loja</Label>
-                <Input value={form.store_name} onChange={e => updateField("store_name", e.target.value)} placeholder="AppleLink Fast Delivery" className={inputCls} />
+                <Input value={form.store_name} onChange={e => updateField("store_name", e.target.value)} placeholder="aLink Fast Delivery" className={inputCls} />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Slogan</Label>
@@ -136,7 +136,7 @@ export default function StoreSettingsTab() {
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Título SEO</Label>
-                <Input value={form.seo_title} onChange={e => updateField("seo_title", e.target.value)} placeholder="AppleLink - Apple Store Delivery" className={inputCls} />
+                <Input value={form.seo_title} onChange={e => updateField("seo_title", e.target.value)} placeholder="aLink - Apple Store Delivery" className={inputCls} />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Descrição SEO</Label>
@@ -144,7 +144,7 @@ export default function StoreSettingsTab() {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Texto do Rodapé</Label>
-                <Input value={form.footer_text} onChange={e => updateField("footer_text", e.target.value)} placeholder="© 2026 AppleLink. Todos os direitos reservados." className={inputCls} />
+                <Input value={form.footer_text} onChange={e => updateField("footer_text", e.target.value)} placeholder="© 2026 aLink. Todos os direitos reservados." className={inputCls} />
               </div>
             </div>
           </StoreSettingsSection>

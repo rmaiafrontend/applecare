@@ -290,7 +290,7 @@ export default function ProductDetail() {
                       Produto seminovo
                     </span>
                     <span className="text-[11px] text-gray-500">
-                      Verificado e com garantia AppleLink
+                      Verificado e com garantia aLink
                     </span>
                   </div>
                 </motion.div>

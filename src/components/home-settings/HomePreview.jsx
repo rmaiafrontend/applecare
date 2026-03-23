@@ -107,7 +107,7 @@ export default function HomePreview({ form, activeSection, scrollProgress = 0 })
                       </div>
                       <div className="flex-1 pt-0.5">
                         <div className="flex items-center gap-2">
-                          <span className="text-[14px] font-bold text-gray-900">AppleLink</span>
+                          <span className="text-[14px] font-bold text-gray-900">aLink</span>
                           <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full ring-1 ring-emerald-500/20 flex items-center gap-0.5">
                             <span className="w-1 h-1 rounded-full bg-emerald-500" />
                             Aberto

@@ -80,9 +80,7 @@ export default function AdminLayout({ currentView, onNavigate, children }) {
         >
           <Menu className="w-[18px] h-[18px] text-[#1d1d1f] dark:text-[#f5f5f7]" strokeWidth={1.8} />
         </button>
-        <span className="font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] text-[15px] tracking-[-0.01em]">
-          AppleLink
-        </span>
+        <img src="/logo-alink.png" alt="aLink" className="h-6 object-contain" />
         <button
           onClick={toggleTheme}
           className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-all"
@@ -120,12 +118,9 @@ export default function AdminLayout({ currentView, onNavigate, children }) {
         {/* Logo Area */}
         <div className="h-14 px-5 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-[30px] h-[30px] bg-gradient-to-br from-[#1d1d1f] to-[#424245] dark:from-[#0a84ff] dark:to-[#5856d6] rounded-[8px] flex items-center justify-center shadow-sm">
-              <span className="text-white text-[12px] font-bold tracking-tight">A</span>
+            <div className="w-[30px] h-[30px] flex items-center justify-center">
+              <img src="/logo-alink.png" alt="aLink" className="w-[30px] h-[30px] object-contain" />
             </div>
-            <span className="font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] text-[15px] tracking-[-0.02em]">
-              AppleLink
-            </span>
           </div>
           <button
             className="lg:hidden w-7 h-7 flex items-center justify-center rounded-full hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors"

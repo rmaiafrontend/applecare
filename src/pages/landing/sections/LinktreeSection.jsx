@@ -155,7 +155,7 @@ export default function LinktreeSection() {
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
                     <div className="flex items-center gap-2">
-                      <h4 className="text-[15px] font-bold text-gray-900 tracking-tight truncate">AppleLink Loja</h4>
+                      <h4 className="text-[15px] font-bold text-gray-900 tracking-tight truncate">aLink Loja</h4>
                       <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-50 text-green-600">
                         <span className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
                         Aberto

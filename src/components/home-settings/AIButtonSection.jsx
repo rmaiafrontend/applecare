@@ -8,7 +8,7 @@ export default function AIButtonSection({ form, updateField }) {
     <div className="space-y-4">
       <FieldRow label="Título" required>
         <Input value={form.ai_button_title || ""} onChange={e => updateField("ai_button_title", e.target.value)} placeholder="Busca inteligente" className="h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
-        <SuggestionPills suggestions={["Busca inteligente", "Assistente IA", "Encontre o ideal", "Pergunte ao AppleLink"]} onSelect={v => updateField("ai_button_title", v)} currentValue={form.ai_button_title} />
+        <SuggestionPills suggestions={["Busca inteligente", "Assistente IA", "Encontre o ideal", "Pergunte ao aLink"]} onSelect={v => updateField("ai_button_title", v)} currentValue={form.ai_button_title} />
       </FieldRow>
       <FieldRow label="Subtítulo">
         <Input value={form.ai_button_subtitle || ""} onChange={e => updateField("ai_button_subtitle", e.target.value)} placeholder="Descreva o que procura e encontramos pra você" className="h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
