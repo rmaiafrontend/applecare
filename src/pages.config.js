@@ -65,10 +65,14 @@ const Profile = lazy(() => import('./pages/Profile'));
 const Search = lazy(() => import('./pages/Search'));
 const Splash = lazy(() => import('./pages/Splash'));
 const Admin = lazy(() => import('./pages/Admin'));
+const Login = lazy(() => import('./pages/Login'));
+const Registro = lazy(() => import('./pages/Registro'));
 
 
 export const PAGES = {
     "Admin": Admin,
+    "Login": Login,
+    "Registro": Registro,
     "LandingPage": LandingPage,
     "Cart": Cart,
     "Categories": Categories,

@@ -1,31 +1,32 @@
-import React, { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CatalogConfig } from "@/api/dataService";
+import { useState, useEffect } from "react";
 import { uploadFile } from "@/lib/fileUpload";
 import { motion, AnimatePresence } from "framer-motion";
-import { Save, Loader2, Check, AlertCircle, ImagePlay, Lightbulb } from "lucide-react";
+import { Save, Loader2, Check, AlertCircle, ImagePlay, Lightbulb, Plus } from "lucide-react";
 import BannerPreviewCard from "@/components/banners/BannerPreviewCard";
 import BannerFormFields from "@/components/banners/BannerFormFields";
-import { QUERY_KEYS } from '@/lib/constants';
+import {
+  useAdminBanners,
+  useCreateBanner,
+  useUpdateBanner,
+} from "@/api/hooks";
 
-const BANNER_KEYS = ["hero_banner", "promo_banner"];
+const EMPTY_FORM = {
+  tipo: "HERO", imagemUrl: "", link: "", textoCta: "",
+  corTexto: "light", opacidadeOverlay: 40, ativo: true, ordemExibicao: 0,
+};
 
 export default function BannerSettings() {
-  const queryClient = useQueryClient();
   const [selected, setSelected] = useState(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [savedFeedback, setSavedFeedback] = useState(false);
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState(EMPTY_FORM);
 
-  const { data: configs = [] } = useQuery({
-    queryKey: QUERY_KEYS.catalogConfigs,
-    queryFn: () => CatalogConfig.list("display_order"),
-  });
+  const { data: banners = [] } = useAdminBanners();
+  const createMutation = useCreateBanner();
+  const updateMutation = useUpdateBanner();
 
-  const banners = configs.filter(c => BANNER_KEYS.includes(c.config_key));
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (banners.length > 0 && !selected) {
       selectBanner(banners[0]);
     }
@@ -34,14 +35,14 @@ export default function BannerSettings() {
   const selectBanner = (banner) => {
     setSelected(banner);
     setForm({
-      title: banner.title || "",
-      subtitle: banner.subtitle || "",
-      banner_image_url: banner.banner_image_url || "",
-      banner_link: banner.banner_link || "",
-      banner_cta_text: banner.banner_cta_text || "",
-      banner_text_color: banner.banner_text_color || "light",
-      banner_overlay_opacity: banner.banner_overlay_opacity ?? 40,
-      is_active: banner.is_active !== false,
+      tipo: banner.tipo || "HERO",
+      imagemUrl: banner.imagemUrl || "",
+      link: banner.link || "",
+      textoCta: banner.textoCta || "",
+      corTexto: banner.corTexto || "light",
+      opacidadeOverlay: banner.opacidadeOverlay ?? 40,
+      ativo: banner.ativo !== false,
+      ordemExibicao: banner.ordemExibicao || 0,
     });
   };
 
@@ -50,29 +51,40 @@ export default function BannerSettings() {
     if (!file) return;
     setUploading(true);
     const { file_url } = await uploadFile(file);
-    setForm(f => ({ ...f, banner_image_url: file_url }));
+    setForm(f => ({ ...f, imagemUrl: file_url }));
     setUploading(false);
   };
 
   const handleSave = async () => {
-    if (!selected) return;
     setSaving(true);
-    await CatalogConfig.update(selected.id, form);
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.catalogConfigs });
-    setSaving(false);
-    setSavedFeedback(true);
-    setTimeout(() => setSavedFeedback(false), 2000);
-    setSelected(prev => ({ ...prev, ...form }));
+    try {
+      if (selected === 'new') {
+        const created = await createMutation.mutateAsync(form);
+        setSelected(created);
+      } else {
+        await updateMutation.mutateAsync({ id: selected.id, data: form });
+        setSelected(prev => ({ ...prev, ...form }));
+      }
+      setSavedFeedback(true);
+      setTimeout(() => setSavedFeedback(false), 2000);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleNew = () => {
+    setSelected('new');
+    setForm({ ...EMPTY_FORM, ordemExibicao: banners.length });
   };
 
   return (
     <div className="space-y-5 max-w-[1400px] mx-auto">
-      {/* Top bar: Tabs + Save */}
+      {/* Top bar */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        {/* Banner Selector */}
         <div className="flex items-center gap-1.5 bg-[#f5f5f7] p-1 rounded-xl">
           {banners.map(banner => {
             const isActive = selected?.id === banner.id;
+            const tipoLabel = banner.tipo === "HERO" ? "Hero" : banner.tipo === "PROMO" ? "Promo" : "Secundário";
             return (
               <button
                 key={banner.id}
@@ -84,36 +96,43 @@ export default function BannerSettings() {
                 }`}
               >
                 <ImagePlay className="w-4 h-4" strokeWidth={1.8} />
-                <span>{banner.title || banner.config_key}</span>
-                <span className={`w-1.5 h-1.5 rounded-full ${banner.is_active !== false ? "bg-emerald-400" : "bg-[#c7c7cc]"}`} />
+                <span>{tipoLabel}</span>
+                <span className={`w-1.5 h-1.5 rounded-full ${banner.ativo !== false ? "bg-emerald-400" : "bg-[#c7c7cc]"}`} />
               </button>
             );
           })}
         </div>
 
-        {/* Save button */}
-        {selected && (
+        <div className="flex items-center gap-2">
           <button
-            onClick={handleSave}
-            disabled={saving || savedFeedback}
-            className={`h-9 px-5 rounded-full text-[13px] font-medium flex items-center gap-2 transition-all disabled:opacity-70 ${
-              savedFeedback ? "bg-emerald-500 text-white" : "bg-[#007aff] hover:bg-[#0071e3] text-white"
-            }`}
+            onClick={handleNew}
+            className="h-9 px-4 rounded-full text-[13px] font-medium flex items-center gap-2 transition-colors bg-[#f5f5f7] hover:bg-[#e8e8ed] text-[#1d1d1f]"
           >
-            {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Salvando...</>
-             : savedFeedback ? <><Check className="w-3.5 h-3.5" /> Salvo!</>
-             : <><Save className="w-3.5 h-3.5" strokeWidth={1.8} /> Salvar</>}
+            <Plus className="w-3.5 h-3.5" strokeWidth={2.2} /> Novo Banner
           </button>
-        )}
+          {selected && (
+            <button
+              onClick={handleSave}
+              disabled={saving || savedFeedback}
+              className={`h-9 px-5 rounded-full text-[13px] font-medium flex items-center gap-2 transition-all disabled:opacity-70 ${
+                savedFeedback ? "bg-emerald-500 text-white" : "bg-[#007aff] hover:bg-[#0071e3] text-white"
+              }`}
+            >
+              {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Salvando...</>
+               : savedFeedback ? <><Check className="w-3.5 h-3.5" /> Salvo!</>
+               : <><Save className="w-3.5 h-3.5" strokeWidth={1.8} /> Salvar</>}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Empty state */}
-      {banners.length === 0 && (
+      {banners.length === 0 && !selected && (
         <div className="bg-amber-50 border border-amber-200/60 rounded-2xl p-5 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-[13px] font-medium text-amber-800">Nenhum banner configurado</p>
-            <p className="text-[12px] text-amber-600 mt-0.5">Crie seções com chave "hero_banner" ou "promo_banner" em Configurações do Catálogo.</p>
+            <p className="text-[12px] text-amber-600 mt-0.5">Crie banners do tipo Hero, Promo ou Secundário para personalizar sua loja.</p>
           </div>
         </div>
       )}
@@ -122,7 +141,7 @@ export default function BannerSettings() {
       <AnimatePresence mode="wait">
         {selected && (
           <motion.div
-            key={selected.id}
+            key={selected === 'new' ? 'new' : selected.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
@@ -140,7 +159,6 @@ export default function BannerSettings() {
                 />
               </div>
 
-              {/* Tip */}
               <div className="mt-4 flex items-start gap-2.5 bg-[#f5f5f7] rounded-xl p-3.5">
                 <Lightbulb className="w-4 h-4 text-[#ff9500] flex-shrink-0 mt-0.5" strokeWidth={1.8} />
                 <p className="text-[11px] text-[#86868b] leading-relaxed">

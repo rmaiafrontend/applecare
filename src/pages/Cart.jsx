@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { CartItem, Product, Order } from '@/api/dataService';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -47,7 +45,17 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { formatPrice } from '@/lib/format';
-import { WHATSAPP_NUMBER, QUERY_KEYS } from '@/lib/constants';
+import { WHATSAPP_NUMBER } from '@/lib/constants';
+import { mapCartItemFromApi, mapProductFromApi } from '@/api/adapters';
+import {
+  useSlug,
+  usePublicProducts,
+  useCart,
+  useUpdateCartItem,
+  useRemoveCartItem,
+  useClearCart,
+  useCreateOrder,
+} from '@/api/hooks';
 
 const STATES = [
   'AC','AL','AP','AM','BA','CE','DF','ES','GO','MA',
@@ -72,7 +80,7 @@ const fadeSlide = {
 
 export default function Cart() {
   const navigate = useNavigate();
-  const [cartCount, setCartCount] = useState(0);
+  const slug = useSlug();
   const [itemToRemove, setItemToRemove] = useState(null);
   const [updatingItem, setUpdatingItem] = useState(null);
 
@@ -86,59 +94,33 @@ export default function Cart() {
     neighborhood: '', city: '', state: '',
   });
 
-  const { data: cartItems = [], isLoading: loadingCart, refetch: refetchCart } = useQuery({
-    queryKey: QUERY_KEYS.cart,
-    queryFn: () => CartItem.list(),
-  });
+  const { data: cartItemsRaw = [], isLoading: loadingCart } = useCart(slug);
+  const cartItems = useMemo(() => cartItemsRaw.map(mapCartItemFromApi), [cartItemsRaw]);
 
-  const { data: products = [], isLoading: loadingProducts } = useQuery({
-    queryKey: QUERY_KEYS.products,
-    queryFn: () => Product.list(),
-  });
+  const { data: productsPage, isLoading: loadingProducts } = usePublicProducts(slug, { tamanho: 200 });
+  const products = useMemo(() => (productsPage?.conteudo || []).map(mapProductFromApi), [productsPage]);
 
-  useEffect(() => {
-    const total = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    setCartCount(total);
-  }, [cartItems]);
+  const cartCount = cartItemsRaw.reduce((sum, item) => sum + item.quantidade, 0);
 
   const productMap = products.reduce((acc, product) => {
     acc[product.id] = product;
     return acc;
   }, {});
 
-  const updateQuantityMutation = useMutation({
-    mutationFn: async ({ itemId, quantity }) => {
-      if (quantity < 1) return;
-      await CartItem.update(itemId, { quantity });
-    },
-    onSuccess: () => {
-      refetchCart();
-      setUpdatingItem(null);
-    },
-  });
+  const updateCartItemMutation = useUpdateCartItem(slug);
+  const removeCartItemMutation = useRemoveCartItem(slug);
+  const clearCartMutation = useClearCart(slug);
+  const createOrderMutation = useCreateOrder(slug);
 
-  const removeItemMutation = useMutation({
-    mutationFn: async (itemId) => {
-      await CartItem.delete(itemId);
-    },
-    onSuccess: () => {
-      refetchCart();
-      setItemToRemove(null);
-    },
-  });
-
-  const clearCartMutation = useMutation({
-    mutationFn: async () => {
-      await Promise.all(cartItems.map((item) => CartItem.delete(item.id)));
-    },
-    onSuccess: () => {
-      refetchCart();
-    },
-  });
-
-  const handleUpdateQuantity = (itemId, quantity) => {
+  const handleUpdateQuantity = async (itemId, quantity) => {
+    if (quantity < 1) return;
     setUpdatingItem(itemId);
-    updateQuantityMutation.mutate({ itemId, quantity });
+    try {
+      await updateCartItemMutation.mutateAsync({ id: itemId, data: { quantidade: quantity } });
+    } catch (e) {
+      console.error('Error updating quantity:', e);
+    }
+    setUpdatingItem(null);
   };
 
   const handleRemove = (itemId) => {
@@ -147,7 +129,8 @@ export default function Cart() {
 
   const confirmRemove = () => {
     if (itemToRemove) {
-      removeItemMutation.mutate(itemToRemove);
+      removeCartItemMutation.mutate(itemToRemove);
+      setItemToRemove(null);
     }
   };
 
@@ -223,40 +206,22 @@ export default function Cart() {
     const message = `Ola! Gostaria de fazer o seguinte pedido:\n\n${itemLines}\n\nSubtotal: ${formatPrice(subtotal)}\nFrete: ${shipping === 0 ? 'Gratis' : formatPrice(shipping)}\n*Total: ${formatPrice(total)}*\n\nRecebimento: ${deliveryLabel}${addressLine}\nPagamento: ${paymentLabels[paymentMethod] || paymentMethod}\n\nAguardo confirmacao!`;
 
     try {
-      // Save order as ORCAMENTO_WHATSAPP for history
-      const orderNumber = `WPP-${Date.now().toString().slice(-5)}`;
-      const orderItems = cartItems.map((item) => {
-        const product = productMap[item.product_id];
-        return {
-          product_id: item.product_id,
-          product_name: product?.name,
-          product_image: product?.images?.[0],
-          quantity: item.quantity,
-          price: product?.price || 0,
-        };
+      // Save order via the API
+      const orderItems = cartItems.map((item) => ({
+        produtoId: item.product_id,
+        quantidade: item.quantity,
+      }));
+
+      const orderResult = await createOrderMutation.mutateAsync({
+        metodoPagamento: paymentMethod,
+        observacao: deliveryMethod === 'pickup' ? 'Retirada na loja' : `Entrega: ${address.street}, ${address.number}`,
+        itens: orderItems,
       });
 
-      await Order.create({
-        order_number: orderNumber,
-        status: 'ORCAMENTO_WHATSAPP',
-        items: orderItems,
-        subtotal,
-        shipping,
-        total,
-        payment_method: paymentMethod,
-        address: deliveryMethod === 'delivery' ? address : null,
-        express_delivery: allExpressDelivery,
-        estimated_delivery: null,
-        status_history: [{
-          status: 'ORCAMENTO_WHATSAPP',
-          timestamp: new Date().toISOString(),
-          message: 'Pedido enviado via WhatsApp',
-        }],
-      });
+      const orderNumber = orderResult?.numeroPedido || `WPP-${Date.now().toString().slice(-5)}`;
 
       // Clear cart
-      await Promise.all(cartItems.map((item) => CartItem.delete(item.id)));
-      refetchCart();
+      await clearCartMutation.mutateAsync();
 
       // Build WhatsApp URL
       const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;

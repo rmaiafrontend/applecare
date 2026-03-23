@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Tag, Product } from "@/api/dataService";
+import React, { useState, useMemo } from "react";
+import {
+  useAdminTags, useAdminProducts,
+  useCreateTag, useUpdateTag, useDeactivateTag,
+} from "@/api/hooks";
+import { mapTagFromApi, mapProductFromApi } from "@/api/adapters";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Pencil, Trash2, Save, Loader2, Tags as TagsIcon, Hash } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -13,7 +16,6 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { QUERY_KEYS } from '@/lib/constants';
 
 const PRESET_COLORS = [
   "#10B981", "#3B82F6", "#8B5CF6", "#F59E0B", "#EF4444",
@@ -25,22 +27,22 @@ export default function Tags() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [form, setForm] = useState({ name: "", slug: "", color: "#10B981", is_active: true });
   const [saving, setSaving] = useState(false);
-  const queryClient = useQueryClient();
 
-  const { data: tags = [] } = useQuery({
-    queryKey: QUERY_KEYS.tags,
-    queryFn: () => Tag.list(),
-  });
+  const { data: tagsData } = useAdminTags();
+  const { data: productsData } = useAdminProducts({ tamanho: 200 });
 
-  const { data: products = [] } = useQuery({
-    queryKey: QUERY_KEYS.products,
-    queryFn: () => Product.list(),
-  });
+  const tags = useMemo(
+    () => (tagsData || []).map(mapTagFromApi),
+    [tagsData]
+  );
+  const products = useMemo(
+    () => (productsData?.conteudo || []).map(mapProductFromApi),
+    [productsData]
+  );
 
-  const deleteMutation = useMutation({
-    mutationFn: (id) => Tag.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tags }); setDeleteTarget(null); },
-  });
+  const createMutation = useCreateTag();
+  const updateMutation = useUpdateTag();
+  const deleteMutation = useDeactivateTag();
 
   const openNew = () => {
     setForm({ name: "", slug: "", color: "#10B981", is_active: true });
@@ -55,18 +57,26 @@ export default function Tags() {
   const handleSave = async () => {
     setSaving(true);
     const slug = form.slug || form.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-    const data = { ...form, slug };
-    if (editDialog === 'new') {
-      await Tag.create(data);
-    } else {
-      await Tag.update(editDialog.id, data);
+    const apiData = {
+      nome: form.name,
+      slug,
+      cor: form.color,
+      ativo: form.is_active,
+    };
+    try {
+      if (editDialog === 'new') {
+        await createMutation.mutateAsync(apiData);
+      } else {
+        await updateMutation.mutateAsync({ id: editDialog.id, data: apiData });
+      }
+    } catch (err) {
+      console.error('Error saving tag:', err);
     }
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.tags });
     setSaving(false);
     setEditDialog(null);
   };
 
-  const getUsageCount = (slug) => products.filter(p => p.tags?.includes(slug)).length;
+  const getUsageCount = (slug) => products.filter(p => p.tags?.some(t => t.slug === slug)).length;
 
   return (
     <div className="space-y-6">
@@ -218,7 +228,7 @@ export default function Tags() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="rounded-full">Cancelar</AlertDialogCancel>
-            <AlertDialogAction className="bg-red-500 hover:bg-red-600 rounded-full" onClick={() => deleteMutation.mutate(deleteTarget.id)}>
+            <AlertDialogAction className="bg-red-500 hover:bg-red-600 rounded-full" onClick={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}>
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>

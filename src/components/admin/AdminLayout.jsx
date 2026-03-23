@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/lib/AuthContext";
 import {
   LayoutDashboard,
   Package,
@@ -57,6 +59,13 @@ export default function AdminLayout({ currentView, onNavigate, children }) {
   const [user, setUser] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/Login');
+  };
 
   useEffect(() => {
     setUser(null);
@@ -249,7 +258,7 @@ export default function AdminLayout({ currentView, onNavigate, children }) {
             {/* Profile Dropdown */}
             {profileOpen && (
               <div className="absolute bottom-full left-2 right-2 mb-1 bg-white/90 dark:bg-[#3a3a3c]/90 backdrop-blur-2xl rounded-[10px] border border-black/[0.06] dark:border-white/[0.08] shadow-lg shadow-black/[0.06] dark:shadow-black/[0.3] overflow-hidden">
-                <button className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[12px] text-[#ff3b30] dark:text-[#ff453a] hover:bg-[#ff3b30]/[0.06] dark:hover:bg-[#ff453a]/[0.1] transition-colors">
+                <button onClick={handleLogout} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[12px] text-[#ff3b30] dark:text-[#ff453a] hover:bg-[#ff3b30]/[0.06] dark:hover:bg-[#ff453a]/[0.1] transition-colors">
                   <LogOut className="w-3.5 h-3.5" strokeWidth={2} />
                   <span>Sair</span>
                 </button>

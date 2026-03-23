@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { CartItem, Product, Order } from '@/api/dataService';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,7 +26,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { formatPrice } from '@/lib/format';
-import { QUERY_KEYS } from '@/lib/constants';
+import { mapCartItemFromApi, mapProductFromApi } from '@/api/adapters';
+import {
+  useSlug,
+  useCart,
+  usePublicProducts,
+  useClearCart,
+  useCreateOrder,
+} from '@/api/hooks';
 
 const STATES = [
   'AC','AL','AP','AM','BA','CE','DF','ES','GO','MA',
@@ -44,6 +49,7 @@ const fadeSlide = {
 
 export default function Checkout() {
   const navigate = useNavigate();
+  const slug = useSlug();
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [loadingCep, setLoadingCep] = useState(false);
@@ -58,15 +64,14 @@ export default function Checkout() {
     cardCvv: '', installments: '1', document: '', documentType: 'cpf',
   });
 
-  const { data: cartItems = [] } = useQuery({
-    queryKey: QUERY_KEYS.cart,
-    queryFn: () => CartItem.list(),
-  });
+  const { data: cartItemsRaw = [] } = useCart(slug);
+  const cartItems = useMemo(() => cartItemsRaw.map(mapCartItemFromApi), [cartItemsRaw]);
 
-  const { data: products = [] } = useQuery({
-    queryKey: QUERY_KEYS.products,
-    queryFn: () => Product.list(),
-  });
+  const { data: productsPage } = usePublicProducts(slug, { tamanho: 200 });
+  const products = useMemo(() => (productsPage?.conteudo || []).map(mapProductFromApi), [productsPage]);
+
+  const clearCartMutation = useClearCart(slug);
+  const createOrderMutation = useCreateOrder(slug);
 
   const productMap = products.reduce((acc, p) => { acc[p.id] = p; return acc; }, {});
 
@@ -128,43 +133,22 @@ export default function Checkout() {
   const handleSubmit = async () => {
     setIsProcessing(true);
     try {
-      const orderNumber = `APL-${Date.now().toString().slice(-5)}`;
-      const estimatedDelivery = new Date();
-      if (allExpressDelivery) {
-        estimatedDelivery.setHours(estimatedDelivery.getHours() + 1);
-      } else {
-        estimatedDelivery.setDate(estimatedDelivery.getDate() + 3);
-      }
+      const orderItems = cartItems.map((item) => ({
+        produtoId: item.product_id,
+        quantidade: item.quantity,
+      }));
 
-      const orderItems = cartItems.map((item) => {
-        const product = productMap[item.product_id];
-        return {
-          product_id: item.product_id,
-          product_name: product?.name,
-          product_image: product?.images?.[0],
-          quantity: item.quantity,
-          price: product?.price || 0,
-        };
+      const orderResult = await createOrderMutation.mutateAsync({
+        metodoPagamento: payment.method,
+        observacao: `Endereco: ${address.street}, ${address.number} - ${address.city}/${address.state}`,
+        itens: orderItems,
       });
 
-      await Order.create({
-        order_number: orderNumber,
-        status: payment.method === 'pix' ? 'AGUARDANDO_PAGAMENTO' : 'PAGAMENTO_CONFIRMADO',
-        items: orderItems,
-        subtotal, shipping, total,
-        payment_method: payment.method,
-        address,
-        customer_document: payment.document,
-        express_delivery: allExpressDelivery,
-        estimated_delivery: estimatedDelivery.toISOString(),
-        status_history: [{
-          status: 'AGUARDANDO_PAGAMENTO',
-          timestamp: new Date().toISOString(),
-          message: 'Pedido realizado',
-        }],
-      });
+      const orderNumber = orderResult?.numeroPedido || `APL-${Date.now().toString().slice(-5)}`;
 
-      await Promise.all(cartItems.map((item) => CartItem.delete(item.id)));
+      // Clear cart
+      await clearCartMutation.mutateAsync();
+
       navigate(createPageUrl(`OrderConfirmation?order=${orderNumber}`));
     } catch (error) {
       console.error('Error creating order:', error);

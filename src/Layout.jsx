@@ -11,7 +11,7 @@ export default function Layout({ children, currentPageName }) {
   }, [location.pathname]);
 
   // Splash and Admin pages should not have the storefront layout
-  if (currentPageName === 'Splash' || currentPageName === 'LandingPage') {
+  if (currentPageName === 'Splash' || currentPageName === 'LandingPage' || currentPageName === 'Login' || currentPageName === 'Registro') {
     return children;
   }
 

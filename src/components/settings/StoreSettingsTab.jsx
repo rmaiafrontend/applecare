@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { StoreConfig } from "@/api/dataService";
+import { useState, useEffect } from "react";
 import { Save, Loader2, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,10 +7,9 @@ import StoreSettingsSection from "../store/StoreSettingsSection";
 import LogoUploader from "../store/LogoUploader";
 import ColorPicker from "../store/ColorPicker";
 import ThemePreview from "../store/ThemePreview";
-import { QUERY_KEYS } from '@/lib/constants';
+import { useConfigLoja, useSaveConfigLoja } from "@/api/hooks";
 
 const defaultConfig = {
-  config_key: "general",
   store_name: "", store_slogan: "",
   logo_url: "", logo_dark_url: "", favicon_url: "",
   primary_color: "#1d1d1f", secondary_color: "#f5f5f7",
@@ -21,42 +18,78 @@ const defaultConfig = {
   address: "", footer_text: "", seo_title: "", seo_description: "",
 };
 
+function fromApi(data) {
+  if (!data) return {};
+  return {
+    store_name: data.nomeLoja || "",
+    store_slogan: data.sloganLoja || "",
+    logo_url: data.logoUrl || "",
+    logo_dark_url: data.logoEscuroUrl || "",
+    favicon_url: data.faviconUrl || "",
+    primary_color: data.corPrimaria || "#1d1d1f",
+    secondary_color: data.corSecundaria || "#f5f5f7",
+    accent_color: data.corDestaque || "#0071e3",
+    background_color: data.corFundo || "#ffffff",
+    text_color: data.corTexto || "#1d1d1f",
+    whatsapp_number: data.numeroWhatsapp || "",
+    phone_number: data.numeroTelefone || "",
+    instagram_url: data.urlInstagram || "",
+    email_contact: data.emailContato || "",
+    address: data.endereco || "",
+    footer_text: data.textoRodape || "",
+    seo_title: data.tituloSeo || "",
+    seo_description: data.descricaoSeo || "",
+  };
+}
+
+function toApi(form) {
+  return {
+    nomeLoja: form.store_name,
+    sloganLoja: form.store_slogan,
+    logoUrl: form.logo_url,
+    logoEscuroUrl: form.logo_dark_url,
+    faviconUrl: form.favicon_url,
+    corPrimaria: form.primary_color,
+    corSecundaria: form.secondary_color,
+    corDestaque: form.accent_color,
+    corFundo: form.background_color,
+    corTexto: form.text_color,
+    numeroWhatsapp: form.whatsapp_number,
+    numeroTelefone: form.phone_number,
+    urlInstagram: form.instagram_url,
+    emailContato: form.email_contact,
+    endereco: form.address,
+    textoRodape: form.footer_text,
+    tituloSeo: form.seo_title,
+    descricaoSeo: form.seo_description,
+  };
+}
+
 export default function StoreSettingsTab() {
-  const queryClient = useQueryClient();
   const [form, setForm] = useState(defaultConfig);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [configId, setConfigId] = useState(null);
 
-  const { data: configs = [] } = useQuery({
-    queryKey: QUERY_KEYS.storeConfig,
-    queryFn: () => StoreConfig.list(),
-  });
+  const { data: lojaConfig } = useConfigLoja();
+  const saveMutation = useSaveConfigLoja();
 
   useEffect(() => {
-    const general = configs.find(c => c.config_key === "general");
-    if (general) {
-      setConfigId(general.id);
-      setForm(prev => ({
-        ...prev,
-        ...Object.fromEntries(Object.entries(general).filter(([_, v]) => v != null && v !== "")),
-      }));
+    if (lojaConfig) {
+      setForm(prev => ({ ...prev, ...fromApi(lojaConfig) }));
     }
-  }, [configs]);
+  }, [lojaConfig]);
 
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 
   const handleSave = async () => {
     setSaving(true);
-    if (configId) {
-      await StoreConfig.update(configId, form);
-    } else {
-      await StoreConfig.create(form);
+    try {
+      await saveMutation.mutateAsync(toApi(form));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally {
+      setSaving(false);
     }
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.storeConfig });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
   };
 
   const inputCls = "h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]";

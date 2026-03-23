@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Order } from '@/api/dataService';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
@@ -21,7 +19,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatPrice } from '@/lib/format';
-import { QUERY_KEYS } from '@/lib/constants';
+import { mapOrderFromApi } from '@/api/adapters';
+import {
+  useSlug,
+  useOrderByNumber,
+} from '@/api/hooks';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -50,6 +52,7 @@ const COUNTDOWN_SECONDS = 5;
 
 export default function OrderConfirmation() {
   const navigate = useNavigate();
+  const slug = useSlug();
   const urlParams = new URLSearchParams(window.location.search);
   const orderNumber = urlParams.get('order');
   const whatsappUrl = urlParams.get('wa') ? decodeURIComponent(urlParams.get('wa')) : null;
@@ -57,14 +60,8 @@ export default function OrderConfirmation() {
   const [countdown, setCountdown] = useState(whatsappUrl ? COUNTDOWN_SECONDS : null);
   const [redirected, setRedirected] = useState(false);
 
-  const { data: order, isLoading } = useQuery({
-    queryKey: QUERY_KEYS.order(orderNumber),
-    queryFn: async () => {
-      const orders = await Order.filter({ order_number: orderNumber });
-      return orders[0];
-    },
-    enabled: !!orderNumber,
-  });
+  const { data: orderRaw, isLoading } = useOrderByNumber(slug, orderNumber);
+  const order = useMemo(() => orderRaw ? mapOrderFromApi(orderRaw) : null, [orderRaw]);
 
   // Countdown timer for WhatsApp redirect
   useEffect(() => {
@@ -300,7 +297,7 @@ export default function OrderConfirmation() {
                       <span className="text-[11px] text-gray-400">Qtd: {item.quantity}</span>
                     </div>
                     <span className="text-[13px] font-bold text-gray-900 tabular-nums shrink-0">
-                      {formatPrice(item.price * item.quantity)}
+                      {formatPrice(item.unit_price * item.quantity)}
                     </span>
                   </div>
                 ))}
@@ -326,10 +323,10 @@ export default function OrderConfirmation() {
                   <span className="text-[13px] text-gray-500">Frete</span>
                   <span
                     className={`text-[13px] font-semibold tabular-nums ${
-                      order.shipping === 0 ? 'text-green-600' : 'text-gray-900'
+                      order.shipping_cost === 0 ? 'text-green-600' : 'text-gray-900'
                     }`}
                   >
-                    {order.shipping === 0 ? 'Gratis' : formatPrice(order.shipping)}
+                    {order.shipping_cost === 0 ? 'Gratis' : formatPrice(order.shipping_cost)}
                   </span>
                 </div>
                 <div className="pt-3 border-t border-gray-100 flex justify-between items-baseline">

@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCompare } from '@/lib/CompareContext';
-import { Product } from '@/api/dataService';
-import { useQuery } from '@tanstack/react-query';
-import { QUERY_KEYS } from '@/lib/constants';
+import { useSlug, usePublicProducts } from '@/api/hooks';
+import { mapProductFromApi } from '@/api/adapters';
 
 export default function CompareFloatingBar() {
   const navigate = useNavigate();
   const { compareIds, removeFromCompare, clearCompare } = useCompare();
+  const slug = useSlug();
 
-  const { data: products = [] } = useQuery({
-    queryKey: QUERY_KEYS.allProducts,
-    queryFn: () => Product.list(),
-  });
+  const { data: productsData } = usePublicProducts(slug, { tamanho: 200 });
+
+  const products = useMemo(
+    () => (productsData?.conteudo || []).map(mapProductFromApi),
+    [productsData]
+  );
 
   const selectedProducts = compareIds
     .map(id => products.find(p => p.id === id))

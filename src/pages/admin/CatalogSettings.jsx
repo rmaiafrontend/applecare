@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { CatalogConfig, Category } from "@/api/dataService";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Settings2, Layers } from "lucide-react";
 import {
@@ -9,77 +7,78 @@ import {
 } from "@/components/ui/alert-dialog";
 import SectionCard from "@/components/settings/SectionCard";
 import SectionFormDialog from "@/components/settings/SectionFormDialog";
-import { QUERY_KEYS } from '@/lib/constants';
+import {
+  useAdminCatalogSections,
+  useCreateCatalogSection,
+  useUpdateCatalogSection,
+  useDeactivateCatalogSection,
+} from "@/api/hooks";
+import { usePublicCategories } from "@/api/hooks";
+import { useAuth } from "@/lib/AuthContext";
+
+const EMPTY_FORM = {
+  titulo: "", subtitulo: "", ativo: true,
+  ordemExibicao: 0, maxItens: 6, tipoFiltro: "all", valorFiltro: ""
+};
 
 export default function CatalogSettings() {
   const [editDialog, setEditDialog] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [form, setForm] = useState({
-    config_key: "", title: "", subtitle: "", is_active: true,
-    display_order: 0, max_items: 6, filter_type: "all", filter_value: ""
-  });
+  const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
-  const queryClient = useQueryClient();
 
-  const { data: configs = [] } = useQuery({
-    queryKey: QUERY_KEYS.catalogConfigs,
-    queryFn: () => CatalogConfig.list('display_order'),
-  });
+  const { user } = useAuth();
+  const slug = user?.loja?.slug || user?.lojaSlug || "";
 
-  const { data: categories = [] } = useQuery({
-    queryKey: QUERY_KEYS.categories,
-    queryFn: () => Category.list(),
-  });
+  const { data: configs = [] } = useAdminCatalogSections();
+  const { data: categories = [] } = usePublicCategories(slug);
 
-  const deleteMutation = useMutation({
-    mutationFn: (id) => CatalogConfig.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.catalogConfigs }); setDeleteTarget(null); },
-  });
-
-  const toggleMutation = useMutation({
-    mutationFn: ({ id, is_active }) => CatalogConfig.update(id, { is_active }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.catalogConfigs }),
-  });
+  const createMutation = useCreateCatalogSection();
+  const updateMutation = useUpdateCatalogSection();
+  const deactivateMutation = useDeactivateCatalogSection();
 
   const openNew = () => {
-    setForm({
-      config_key: "", title: "", subtitle: "", is_active: true,
-      display_order: configs.length, max_items: 6, filter_type: "all", filter_value: ""
-    });
+    setForm({ ...EMPTY_FORM, ordemExibicao: configs.length });
     setEditDialog('new');
   };
 
   const openEdit = (config) => {
     setForm({
-      config_key: config.config_key || "",
-      title: config.title || "",
-      subtitle: config.subtitle || "",
-      is_active: config.is_active !== false,
-      display_order: config.display_order || 0,
-      max_items: config.max_items || 6,
-      filter_type: config.filter_type || "all",
-      filter_value: config.filter_value || "",
+      titulo: config.titulo || "",
+      subtitulo: config.subtitulo || "",
+      ativo: config.ativo !== false,
+      ordemExibicao: config.ordemExibicao || 0,
+      maxItens: config.maxItens || 6,
+      tipoFiltro: config.tipoFiltro || "all",
+      valorFiltro: config.valorFiltro || "",
     });
     setEditDialog(config);
   };
 
   const handleSave = async () => {
     setSaving(true);
-    if (editDialog === 'new') {
-      await CatalogConfig.create(form);
-    } else {
-      await CatalogConfig.update(editDialog.id, form);
+    try {
+      if (editDialog === 'new') {
+        await createMutation.mutateAsync(form);
+      } else {
+        await updateMutation.mutateAsync({ id: editDialog.id, data: form });
+      }
+      setEditDialog(null);
+    } finally {
+      setSaving(false);
     }
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.catalogConfigs });
-    setSaving(false);
-    setEditDialog(null);
   };
 
   const handleToggle = (config) => {
-    toggleMutation.mutate({ id: config.id, is_active: config.is_active === false });
+    deactivateMutation.mutate(config.id);
   };
 
-  const activeCount = configs.filter(c => c.is_active !== false).length;
+  const handleDelete = (config) => {
+    deactivateMutation.mutate(config.id);
+    setDeleteTarget(null);
+  };
+
+  const activeCount = configs.filter(c => c.ativo !== false).length;
 
   return (
     <div className="space-y-5 max-w-[1400px] mx-auto">
@@ -161,14 +160,14 @@ export default function CatalogSettings() {
           <AlertDialogHeader>
             <AlertDialogTitle className="text-[#1d1d1f]">Excluir Seção</AlertDialogTitle>
             <AlertDialogDescription className="text-[#86868b]">
-              Tem certeza que deseja excluir "{deleteTarget?.title}"? Esta ação não pode ser desfeita.
+              Tem certeza que deseja excluir "{deleteTarget?.titulo}"? Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="rounded-full">Cancelar</AlertDialogCancel>
             <AlertDialogAction
               className="bg-red-500 hover:bg-red-600 rounded-full"
-              onClick={() => deleteMutation.mutate(deleteTarget.id)}
+              onClick={() => handleDelete(deleteTarget)}
             >
               Excluir
             </AlertDialogAction>

@@ -1,5 +1,4 @@
-import React from "react";
-import { Save, Loader2, X } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -37,45 +36,34 @@ export default function SectionFormDialog({ open, onOpenChange, form, setForm, c
 
         {/* Form */}
         <div className="p-6 space-y-5">
-          {/* Row: Key + Order */}
+          {/* Row: Title + Order */}
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2 space-y-1.5">
-              <Label className="text-[11px] text-[#86868b] font-semibold uppercase tracking-wider">Chave</Label>
+              <Label className="text-[11px] text-[#86868b] font-semibold uppercase tracking-wider">Título</Label>
               <Input
-                value={form.config_key}
-                onChange={e => updateField("config_key", e.target.value)}
-                placeholder="hero_banner"
-                className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa] focus:bg-white font-mono"
+                value={form.titulo}
+                onChange={e => updateField("titulo", e.target.value)}
+                placeholder="Entrega Express"
+                className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa] focus:bg-white"
               />
             </div>
             <div className="space-y-1.5">
               <Label className="text-[11px] text-[#86868b] font-semibold uppercase tracking-wider">Ordem</Label>
               <Input
                 type="number"
-                value={form.display_order}
-                onChange={e => updateField("display_order", parseInt(e.target.value) || 0)}
+                value={form.ordemExibicao}
+                onChange={e => updateField("ordemExibicao", parseInt(e.target.value) || 0)}
                 className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa] focus:bg-white text-center"
               />
             </div>
-          </div>
-
-          {/* Title */}
-          <div className="space-y-1.5">
-            <Label className="text-[11px] text-[#86868b] font-semibold uppercase tracking-wider">Título</Label>
-            <Input
-              value={form.title}
-              onChange={e => updateField("title", e.target.value)}
-              placeholder="Entrega Express"
-              className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa] focus:bg-white"
-            />
           </div>
 
           {/* Subtitle */}
           <div className="space-y-1.5">
             <Label className="text-[11px] text-[#86868b] font-semibold uppercase tracking-wider">Subtítulo</Label>
             <Input
-              value={form.subtitle}
-              onChange={e => updateField("subtitle", e.target.value)}
+              value={form.subtitulo}
+              onChange={e => updateField("subtitulo", e.target.value)}
               placeholder="Receba em até 1 hora"
               className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa] focus:bg-white"
             />
@@ -85,7 +73,7 @@ export default function SectionFormDialog({ open, onOpenChange, form, setForm, c
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="text-[11px] text-[#86868b] font-semibold uppercase tracking-wider">Filtro</Label>
-              <Select value={form.filter_type} onValueChange={v => updateField("filter_type", v)}>
+              <Select value={form.tipoFiltro} onValueChange={v => updateField("tipoFiltro", v)}>
                 <SelectTrigger className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa]">
                   <SelectValue />
                 </SelectTrigger>
@@ -100,24 +88,24 @@ export default function SectionFormDialog({ open, onOpenChange, form, setForm, c
               <Label className="text-[11px] text-[#86868b] font-semibold uppercase tracking-wider">Max Itens</Label>
               <Input
                 type="number"
-                value={form.max_items}
-                onChange={e => updateField("max_items", parseInt(e.target.value) || 6)}
+                value={form.maxItens}
+                onChange={e => updateField("maxItens", parseInt(e.target.value) || 6)}
                 className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa] focus:bg-white text-center"
               />
             </div>
           </div>
 
           {/* Category selector */}
-          {form.filter_type === "category" && (
+          {form.tipoFiltro === "category" && (
             <div className="space-y-1.5">
               <Label className="text-[11px] text-[#86868b] font-semibold uppercase tracking-wider">Categoria</Label>
-              <Select value={form.filter_value} onValueChange={v => updateField("filter_value", v)}>
+              <Select value={form.valorFiltro} onValueChange={v => updateField("valorFiltro", v)}>
                 <SelectTrigger className="h-10 rounded-xl text-[13px] border-black/[0.06] bg-[#fafafa]">
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map(cat => (
-                    <SelectItem key={cat.id} value={cat.category_id}>{cat.name}</SelectItem>
+                    <SelectItem key={cat.id} value={String(cat.id)}>{cat.nome}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -130,7 +118,7 @@ export default function SectionFormDialog({ open, onOpenChange, form, setForm, c
               <p className="text-[13px] font-medium text-[#1d1d1f]">Seção Ativa</p>
               <p className="text-[10px] text-[#86868b]">Visível no catálogo</p>
             </div>
-            <Switch checked={form.is_active} onCheckedChange={v => updateField("is_active", v)} />
+            <Switch checked={form.ativo} onCheckedChange={v => updateField("ativo", v)} />
           </div>
         </div>
 

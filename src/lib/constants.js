@@ -16,24 +16,3 @@ export const STORE_INFO = {
     sunday: null,
   },
 };
-
-export const QUERY_KEYS = {
-  products: ['products'],
-  categories: ['categories'],
-  tags: ['tags'],
-  cart: ['cart'],
-  orders: ['orders'],
-  allProducts: ['allProducts'],
-  user: ['user'],
-  currentUser: ['currentUser'],
-  storeConfig: ['store_config'],
-  chatConfig: ['chat_config'],
-  paymentConfig: ['payment_config'],
-  homeConfig: ['home_config'],
-  catalogConfigs: ['catalog_configs'],
-  product: (id) => ['product', id],
-  category: (id) => ['category', id],
-  order: (id) => ['order', id],
-  relatedProducts: (categoryId) => ['relatedProducts', categoryId],
-  productsByCategory: (categoryId) => ['products', categoryId],
-};

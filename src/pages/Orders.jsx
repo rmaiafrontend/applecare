@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Order, CartItem } from '@/api/dataService';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,7 +18,12 @@ import Header from '@/components/navigation/Header';
 import BottomNav from '@/components/navigation/BottomNav';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatPrice } from '@/lib/format';
-import { QUERY_KEYS } from '@/lib/constants';
+import { mapOrderFromApi } from '@/api/adapters';
+import {
+  useSlug,
+  useOrders,
+  useCart,
+} from '@/api/hooks';
 
 const STATUS_CONFIG = {
   AGUARDANDO_PAGAMENTO: {
@@ -89,22 +92,17 @@ const fadeUp = {
 };
 
 export default function Orders() {
+  const slug = useSlug();
   const [filter, setFilter] = useState('all');
-  const [cartCount, setCartCount] = useState(0);
 
-  const { data: orders = [], isLoading } = useQuery({
-    queryKey: QUERY_KEYS.orders,
-    queryFn: () => Order.list('-created_date'),
-  });
+  const { data: ordersPage, isLoading } = useOrders(slug);
+  const orders = useMemo(() => {
+    const raw = ordersPage?.conteudo || [];
+    return raw.map(mapOrderFromApi);
+  }, [ordersPage]);
 
-  const { data: cartItems = [] } = useQuery({
-    queryKey: QUERY_KEYS.cart,
-    queryFn: () => CartItem.list(),
-  });
-
-  useEffect(() => {
-    setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
-  }, [cartItems]);
+  const { data: cartItemsRaw = [] } = useCart(slug);
+  const cartCount = cartItemsRaw.reduce((sum, item) => sum + item.quantidade, 0);
 
   const formatDate = (dateString) =>
     new Date(dateString).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });

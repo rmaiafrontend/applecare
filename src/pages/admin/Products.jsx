@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Product, Category, Tag } from "@/api/dataService";
+import React, { useState, useMemo } from "react";
+import {
+  useAdminProducts, useAdminCategories, useAdminTags,
+  useUpdateProduct, useDeactivateProduct,
+} from "@/api/hooks";
+import { mapProductFromApi, mapCategoryFromApi, mapTagFromApi } from "@/api/adapters";
 import { Plus, Package, LayoutGrid, List, SlidersHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -11,7 +14,6 @@ import AdminProductCard from "@/components/products/AdminProductCard";
 import ProductTable from "@/components/products/ProductTable";
 import ProductFilters from "@/components/products/ProductFilters";
 import ProductFormModal from "@/components/products/ProductFormModal";
-import { QUERY_KEYS } from '@/lib/constants';
 
 export default function Products() {
   const [search, setSearch] = useState("");
@@ -21,35 +23,26 @@ export default function Products() {
   const [viewMode, setViewMode] = useState("grid");
   const [formOpen, setFormOpen] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
-  const queryClient = useQueryClient();
 
-  const { data: products = [] } = useQuery({
-    queryKey: QUERY_KEYS.products,
-    queryFn: () => Product.list('-created_date'),
-  });
+  const { data: productsData } = useAdminProducts({ tamanho: 200, ordenacao: 'recentes' });
+  const { data: categoriesData } = useAdminCategories();
+  const { data: tagsData } = useAdminTags();
 
-  const { data: categories = [] } = useQuery({
-    queryKey: QUERY_KEYS.categories,
-    queryFn: () => Category.list(),
-  });
+  const products = useMemo(
+    () => (productsData?.conteudo || []).map(mapProductFromApi),
+    [productsData]
+  );
+  const categories = useMemo(
+    () => (categoriesData || []).map(mapCategoryFromApi),
+    [categoriesData]
+  );
+  const tags = useMemo(
+    () => (tagsData || []).map(mapTagFromApi),
+    [tagsData]
+  );
 
-  const { data: tags = [] } = useQuery({
-    queryKey: QUERY_KEYS.tags,
-    queryFn: () => Tag.list(),
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => Product.update(id, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products }),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id) => Product.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products });
-      setDeleteTarget(null);
-    },
-  });
+  const updateMutation = useUpdateProduct();
+  const deleteMutation = useDeactivateProduct();
 
   const getCategoryName = (catId) => categories.find(c => (c.category_id || c.id) === catId)?.name || catId;
 
@@ -59,15 +52,15 @@ export default function Products() {
     const matchStatus = statusFilter === "all" ||
       (statusFilter === "active" && p.is_active !== false) ||
       (statusFilter === "inactive" && p.is_active === false) ||
-      (statusFilter === "featured" && p.is_featured) ||
+      (statusFilter === "featured" && p.featured) ||
       (statusFilter === "express" && p.express_delivery) ||
       (statusFilter === "discount" && p.original_price && p.original_price > p.price) ||
       (statusFilter === "low_stock" && (p.stock || 0) <= 2);
     return matchSearch && matchCategory && matchStatus;
   });
 
-  const handleToggleActive = (product) => updateMutation.mutate({ id: product.id, data: { is_active: product.is_active === false ? true : false } });
-  const handleToggleFeatured = (product) => updateMutation.mutate({ id: product.id, data: { is_featured: !product.is_featured } });
+  const handleToggleActive = (product) => updateMutation.mutate({ id: product.id, data: { ativo: product.is_active === false ? true : false } });
+  const handleToggleFeatured = (product) => updateMutation.mutate({ id: product.id, data: { destaque: !product.featured } });
   const handleEdit = (product) => { setEditProduct(product); setFormOpen(true); };
   const handleNew = () => { setEditProduct(null); setFormOpen(true); };
 
@@ -216,7 +209,7 @@ export default function Products() {
             <AlertDialogCancel className="rounded-full dark:bg-[#3a3a3c] dark:text-[#f5f5f7] dark:border-white/[0.06] dark:hover:bg-[#48484a]">Cancelar</AlertDialogCancel>
             <AlertDialogAction
               className="bg-red-500 hover:bg-red-600 rounded-full"
-              onClick={() => deleteMutation.mutate(deleteTarget.id)}
+              onClick={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}
             >
               Excluir
             </AlertDialogAction>

@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { CartItem, Order } from '@/api/dataService';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   User,
@@ -18,10 +16,16 @@ import {
   Settings,
   Smartphone,
 } from 'lucide-react';
-import { WHATSAPP_NUMBER, QUERY_KEYS } from '@/lib/constants';
+import { WHATSAPP_NUMBER } from '@/lib/constants';
 import Header from '@/components/navigation/Header';
 import BottomNav from '@/components/navigation/BottomNav';
 import { Switch } from '@/components/ui/switch';
+import { mapOrderFromApi, mapCartItemFromApi } from '@/api/adapters';
+import {
+  useSlug,
+  useCart,
+  useOrders,
+} from '@/api/hooks';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -72,28 +76,20 @@ const menuSections = [
 ];
 
 export default function Profile() {
-  const [cartCount, setCartCount] = useState(0);
+  const slug = useSlug();
   const [notifications, setNotifications] = useState(true);
 
-  const { data: user } = useQuery({
-    queryKey: QUERY_KEYS.currentUser,
-    queryFn: () => Promise.reject(new Error('Not authenticated')),
-  });
+  const { data: user } = { data: null }; // Placeholder for user auth hook
 
-  const { data: cartItems = [] } = useQuery({
-    queryKey: QUERY_KEYS.cart,
-    queryFn: () => CartItem.list(),
-  });
+  const { data: cartItemsRaw = [] } = useCart(slug);
+  const cartItems = useMemo(() => cartItemsRaw.map(mapCartItemFromApi), [cartItemsRaw]);
+  const cartCount = cartItemsRaw.reduce((sum, item) => sum + item.quantidade, 0);
 
-  const { data: orders = [] } = useQuery({
-    queryKey: QUERY_KEYS.orders,
-    queryFn: () => Order.list(),
-  });
-
-  useEffect(() => {
-    const total = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    setCartCount(total);
-  }, [cartItems]);
+  const { data: ordersPage } = useOrders(slug);
+  const orders = useMemo(() => {
+    const raw = ordersPage?.conteudo || [];
+    return raw.map(mapOrderFromApi);
+  }, [ordersPage]);
 
   const handleLogout = () => {
     window.localStorage.removeItem('app_access_token'); window.localStorage.removeItem('access_token');

@@ -1,6 +1,6 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Product, Category, Tag } from "@/api/dataService";
+import React, { useMemo } from "react";
+import { useAdminProducts, useAdminCategories, useAdminTags } from "@/api/hooks";
+import { mapProductFromApi, mapCategoryFromApi, mapTagFromApi } from "@/api/adapters";
 import { motion } from "framer-motion";
 import {
   Package,
@@ -19,7 +19,6 @@ import CategoryBreakdown from "@/components/dashboard/CategoryBreakdown";
 import QuickActions from "@/components/dashboard/QuickActions";
 import StockAlert from "@/components/dashboard/StockAlert";
 import { formatPrice } from "@/lib/format";
-import { QUERY_KEYS } from "@/lib/constants";
 
 const greetingByHour = () => {
   const h = new Date().getHours();
@@ -39,25 +38,27 @@ const fadeUp = {
 };
 
 export default function Dashboard({ onNavigate }) {
-  const { data: products = [] } = useQuery({
-    queryKey: QUERY_KEYS.products,
-    queryFn: () => Product.list("-created_date"),
-  });
+  const { data: productsData } = useAdminProducts({ tamanho: 200, ordenacao: 'recentes' });
+  const { data: categoriesData } = useAdminCategories();
+  const { data: tagsData } = useAdminTags();
 
-  const { data: categories = [] } = useQuery({
-    queryKey: QUERY_KEYS.categories,
-    queryFn: () => Category.list(),
-  });
-
-  const { data: tags = [] } = useQuery({
-    queryKey: QUERY_KEYS.tags,
-    queryFn: () => Tag.list(),
-  });
+  const products = useMemo(
+    () => (productsData?.conteudo || []).map(mapProductFromApi),
+    [productsData]
+  );
+  const categories = useMemo(
+    () => (categoriesData || []).map(mapCategoryFromApi),
+    [categoriesData]
+  );
+  const tags = useMemo(
+    () => (tagsData || []).map(mapTagFromApi),
+    [tagsData]
+  );
 
   const totalProducts = products.length;
   const activeProducts = products.filter((p) => p.is_active !== false).length;
   const expressProducts = products.filter((p) => p.express_delivery).length;
-  const featuredProducts = products.filter((p) => p.is_featured).length;
+  const featuredProducts = products.filter((p) => p.featured).length;
   const discountProducts = products.filter(
     (p) => p.original_price && p.original_price > p.price
   ).length;

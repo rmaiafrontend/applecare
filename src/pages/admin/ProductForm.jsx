@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Product, Category, Tag } from "@/api/dataService";
+import {
+  useAdminProducts, useAdminCategories, useAdminTags,
+  useCreateProduct, useUpdateProduct,
+} from "@/api/hooks";
+import { mapProductFromApi, mapCategoryFromApi, mapTagFromApi } from "@/api/adapters";
 import { uploadFile } from "@/lib/fileUpload";
 import { motion } from "framer-motion";
 import {
@@ -17,11 +20,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import SmartProductSearch from "@/components/products/SmartProductSearch";
 import FormSection from "@/components/products/FormSection";
 import ConditionChecklist from "@/components/products/ConditionChecklist";
-import { QUERY_KEYS } from '@/lib/constants';
 
 export default function ProductForm({ onNavigate, productId: propProductId }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const queryClient = useQueryClient();
   const productId = propProductId || searchParams.get("id");
   const isEditing = !!productId;
 
@@ -42,17 +43,32 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
   const [saved, setSaved] = useState(false);
   const [aiFilled, setAiFilled] = useState(false);
 
-  const { data: categories = [] } = useQuery({ queryKey: QUERY_KEYS.categories, queryFn: () => Category.list() });
-  const { data: tags = [] } = useQuery({ queryKey: QUERY_KEYS.tags, queryFn: () => Tag.list() });
-  const { data: existingProduct } = useQuery({
-    queryKey: QUERY_KEYS.product(productId),
-    queryFn: () => Product.filter({ id: productId }),
-    enabled: !!productId,
-  });
+  const { data: categoriesData } = useAdminCategories();
+  const { data: tagsData } = useAdminTags();
+  const { data: productsData } = useAdminProducts({ tamanho: 200 });
+
+  const categories = useMemo(
+    () => (categoriesData || []).map(mapCategoryFromApi),
+    [categoriesData]
+  );
+  const tags = useMemo(
+    () => (tagsData || []).map(mapTagFromApi),
+    [tagsData]
+  );
+
+  // Find existing product for editing
+  const existingProduct = useMemo(() => {
+    if (!productId || !productsData?.conteudo) return null;
+    const raw = productsData.conteudo.find(p => String(p.id) === String(productId));
+    return raw ? mapProductFromApi(raw) : null;
+  }, [productId, productsData]);
+
+  const createMutation = useCreateProduct();
+  const updateMutation = useUpdateProduct();
 
   useEffect(() => {
-    if (existingProduct?.[0]) {
-      const p = existingProduct[0];
+    if (existingProduct) {
+      const p = existingProduct;
       setForm({
         product_id: p.product_id || "", name: p.name || "", sku: p.sku || "",
         price: p.price?.toString() || "", original_price: p.original_price?.toString() || "",
@@ -61,7 +77,7 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
         condition_checklist: p.condition_checklist || [],
         images: p.images || [], description: p.description || "",
         specs: p.specs || [], datasheet_url: p.datasheet_url || "",
-        is_featured: p.is_featured || false, is_active: p.is_active !== false,
+        is_featured: p.is_featured || p.featured || false, is_active: p.is_active !== false,
         tags: p.tags || [],
       });
     }
@@ -85,26 +101,65 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
     setTimeout(() => setAiFilled(false), 3000);
   };
 
+  const buildApiBody = () => {
+    const body = {};
+    body.nome = form.name;
+    if (form.sku) body.sku = form.sku;
+    body.preco = parseFloat(form.price) || 0;
+    body.precoOriginal = form.original_price ? parseFloat(form.original_price) : null;
+    body.estoque = parseInt(form.stock) || 0;
+    body.entregaExpressa = form.express_delivery;
+    body.condicao = form.condition;
+    body.descricao = form.description;
+    body.destaque = form.is_featured;
+    body.ativo = form.is_active;
+    if (form.category_id) body.categoriaId = Number(form.category_id);
+    if (form.datasheet_url) body.fichaTecnicaUrl = form.datasheet_url;
+    if (form.images?.length) {
+      body.imagens = form.images.map((img, i) => ({
+        imagemUrl: typeof img === 'string' ? img : img.imagemUrl || img.url,
+        ordemExibicao: i,
+      }));
+    }
+    if (form.specs?.length) {
+      body.especificacoes = form.specs.map((s, i) => ({
+        rotulo: s.label,
+        valor: s.value,
+        ordemExibicao: i,
+      }));
+    }
+    if (form.tags?.length) {
+      body.etiquetaIds = form.tags.map(Number).filter(n => !isNaN(n));
+    }
+    if (form.condition_checklist?.length) {
+      body.checklistCondicao = form.condition_checklist.map((c, i) => ({
+        rotulo: c.label,
+        marcado: c.checked,
+        ordemExibicao: c.order ?? i,
+      }));
+    }
+    return body;
+  };
+
   const handleSave = async () => {
     setSaving(true);
-    const data = {
-      ...form,
-      price: parseFloat(form.price) || 0,
-      original_price: form.original_price ? parseFloat(form.original_price) : null,
-      stock: parseInt(form.stock) || 0,
-    };
-    if (isEditing) {
-      await Product.update(productId, data);
-    } else {
-      await Product.create(data);
+    try {
+      const apiBody = buildApiBody();
+      if (isEditing) {
+        await updateMutation.mutateAsync({ id: Number(productId), data: apiBody });
+      } else {
+        await createMutation.mutateAsync(apiBody);
+      }
+      setSaving(false);
+      setSaved(true);
+      setTimeout(() => {
+        setSaved(false);
+        goToProducts();
+      }, 1000);
+    } catch (err) {
+      setSaving(false);
+      console.error('Error saving product:', err);
     }
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => {
-      setSaved(false);
-      goToProducts();
-    }, 1000);
   };
 
   const addTag = () => { if (newTag && !form.tags.includes(newTag)) { setForm({ ...form, tags: [...form.tags, newTag] }); setNewTag(""); } };
@@ -133,7 +188,7 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
         </button>
         <button
           onClick={handleSave}
-          disabled={saving || saved || !form.name || !form.product_id || !form.price || !form.category_id}
+          disabled={saving || saved || !form.name || !form.price || !form.category_id}
           className={`h-9 px-5 rounded-full text-[13px] font-medium flex items-center gap-2 transition-all disabled:opacity-40 ${
             saved ? "bg-emerald-500 text-white" : "bg-[#007aff] hover:bg-[#0071e3] text-white"
           }`}
@@ -212,10 +267,10 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
           <div className="space-y-4">
             <div className="space-y-1.5">
               <Label className="text-[11px] text-[#86868b] font-medium">Categoria *</Label>
-              <Select value={form.category_id} onValueChange={v => updateField("category_id", v)}>
+              <Select value={String(form.category_id || "")} onValueChange={v => updateField("category_id", v)}>
                 <SelectTrigger className="h-11 rounded-2xl text-[13px] border-black/[0.06] bg-[#f5f5f7]/50"><SelectValue placeholder="Selecione" /></SelectTrigger>
                 <SelectContent>
-                  {categories.map(cat => <SelectItem key={cat.id} value={cat.category_id}>{cat.name}</SelectItem>)}
+                  {categories.map(cat => <SelectItem key={cat.id} value={String(cat.id)}>{cat.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -354,7 +409,7 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
         </button>
         <button
           onClick={handleSave}
-          disabled={saving || saved || !form.name || !form.product_id || !form.price || !form.category_id}
+          disabled={saving || saved || !form.name || !form.price || !form.category_id}
           className={`h-11 px-6 rounded-full text-[13px] font-semibold flex items-center gap-2 transition-all shadow-sm disabled:opacity-40 ${
             saved ? "bg-emerald-500 text-white" : "bg-[#0071e3] hover:bg-[#0077ED] text-white"
           }`}

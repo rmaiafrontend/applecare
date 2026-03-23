@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChatConfig } from "@/api/dataService";
-import { Save, Loader2, Check, Plus, X, MessageCircle, Eye, EyeOff } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Save, Loader2, Check, Plus, X, MessageCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ChatPreview from "@/components/chat/ChatPreview";
-import { QUERY_KEYS } from '@/lib/constants';
+import { useConfigChat, useSaveConfigChat } from "@/api/hooks";
 
 const TONES = [
   { value: "formal", label: "Formal", desc: "Linguagem corporativa e profissional" },
@@ -18,10 +16,8 @@ const TONES = [
 ];
 
 const DEFAULT_FORM = {
-  config_key: "main",
   assistant_name: "Assistente aLink",
   welcome_message: "Olá! Sou o assistente aLink. Como posso ajudar você hoje?",
-  system_prompt: "Você é um assistente de vendas especializado em produtos Apple. Ajude os clientes a encontrar o produto ideal, tire dúvidas técnicas e ofereça recomendações personalizadas. Seja sempre prestativo e conhecedor dos produtos.",
   tone: "amigavel",
   primary_color: "#1d1d1f",
   chat_position: "bottom-right",
@@ -35,50 +31,62 @@ const DEFAULT_FORM = {
   ],
 };
 
+function fromApi(data) {
+  if (!data) return {};
+  return {
+    assistant_name: data.nomeAssistente || DEFAULT_FORM.assistant_name,
+    welcome_message: data.mensagemBoasVindas || DEFAULT_FORM.welcome_message,
+    tone: data.tom || DEFAULT_FORM.tone,
+    primary_color: data.corPrimaria || DEFAULT_FORM.primary_color,
+    chat_position: data.posicaoChat || DEFAULT_FORM.chat_position,
+    is_active: data.ativo !== false,
+    show_product_suggestions: data.mostrarSugestoesProdutos !== false,
+    max_messages_per_session: data.maxMensagensPorSessao || 50,
+    suggested_questions: (data.perguntasSugeridas || []).map(p => p.pergunta),
+  };
+}
+
+function toApi(form) {
+  return {
+    nomeAssistente: form.assistant_name,
+    mensagemBoasVindas: form.welcome_message,
+    tom: form.tone,
+    corPrimaria: form.primary_color,
+    posicaoChat: form.chat_position,
+    ativo: form.is_active,
+    mostrarSugestoesProdutos: form.show_product_suggestions,
+    maxMensagensPorSessao: form.max_messages_per_session,
+    perguntasSugeridas: (form.suggested_questions || []).map((q, i) => ({
+      pergunta: q,
+      ordemExibicao: i,
+    })),
+  };
+}
+
 export default function ChatSettings() {
-  const queryClient = useQueryClient();
   const [form, setForm] = useState(DEFAULT_FORM);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [configId, setConfigId] = useState(null);
   const [newQuestion, setNewQuestion] = useState("");
 
-  const { data: configs = [] } = useQuery({
-    queryKey: QUERY_KEYS.chatConfig,
-    queryFn: () => ChatConfig.list(),
-  });
+  const { data: chatConfig } = useConfigChat();
+  const saveMutation = useSaveConfigChat();
 
   useEffect(() => {
-    if (configs.length > 0) {
-      const c = configs[0];
-      setConfigId(c.id);
-      setForm({
-        config_key: c.config_key || "main",
-        assistant_name: c.assistant_name || DEFAULT_FORM.assistant_name,
-        welcome_message: c.welcome_message || DEFAULT_FORM.welcome_message,
-        system_prompt: c.system_prompt || DEFAULT_FORM.system_prompt,
-        tone: c.tone || DEFAULT_FORM.tone,
-        primary_color: c.primary_color || DEFAULT_FORM.primary_color,
-        chat_position: c.chat_position || DEFAULT_FORM.chat_position,
-        is_active: c.is_active !== false,
-        show_product_suggestions: c.show_product_suggestions !== false,
-        max_messages_per_session: c.max_messages_per_session || 50,
-        suggested_questions: c.suggested_questions || DEFAULT_FORM.suggested_questions,
-      });
+    if (chatConfig) {
+      setForm(prev => ({ ...prev, ...fromApi(chatConfig) }));
     }
-  }, [configs]);
+  }, [chatConfig]);
 
   const handleSave = async () => {
     setSaving(true);
-    if (configId) {
-      await ChatConfig.update(configId, form);
-    } else {
-      await ChatConfig.create(form);
+    try {
+      await saveMutation.mutateAsync(toApi(form));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally {
+      setSaving(false);
     }
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.chatConfig });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
   };
 
   const addQuestion = () => {
@@ -135,16 +143,6 @@ export default function ChatSettings() {
 
           {/* Behavior */}
           <Section title="Comportamento da IA">
-            <div className="space-y-1.5">
-              <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Prompt do Sistema</Label>
-              <p className="text-[10px] text-[#b0b0b5] dark:text-[#636366]">Define a personalidade, conhecimento e regras do assistente</p>
-              <Textarea
-                value={form.system_prompt}
-                onChange={e => updateField("system_prompt", e.target.value)}
-                className="rounded-xl text-[13px] min-h-[120px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]"
-                placeholder="Você é um assistente de vendas..."
-              />
-            </div>
             <div className="space-y-1.5">
               <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Tom de Voz</Label>
               <div className="grid grid-cols-2 gap-2">

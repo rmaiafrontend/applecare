@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Product, CartItem } from '@/api/dataService';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,7 +22,15 @@ import ProductCard from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatPrice } from '@/lib/format';
-import { QUERY_KEYS } from '@/lib/constants';
+import { mapProductFromApi, mapCartItemFromApi } from '@/api/adapters';
+import {
+  useSlug,
+  useProductDetail,
+  useRelatedProducts,
+  useCart,
+  useAddToCart,
+  useUpdateCartItem,
+} from '@/api/hooks';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -37,9 +43,9 @@ const fadeUp = {
 
 export default function ProductDetail() {
   const navigate = useNavigate();
+  const slug = useSlug();
   const { addToCompare, isInCompare, isFull } = useCompare();
   const [quantity, setQuantity] = useState(1);
-  const [cartCount, setCartCount] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -47,36 +53,35 @@ export default function ProductDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get('id');
 
-  const { data: product, isLoading } = useQuery({
-    queryKey: QUERY_KEYS.product(productId),
-    queryFn: async () => {
-      const products = await Product.filter({ id: productId });
-      return products[0];
-    },
-    enabled: !!productId,
-  });
+  const { data: productRaw, isLoading } = useProductDetail(slug, Number(productId));
+  const product = useMemo(() => productRaw ? mapProductFromApi(productRaw) : null, [productRaw]);
 
-  const { data: relatedProducts = [] } = useQuery({
-    queryKey: QUERY_KEYS.relatedProducts(product?.category_id),
-    queryFn: async () => {
-      if (!product?.category_id) return [];
-      const products = await Product.filter({
-        category_id: product.category_id,
-      });
-      return products.filter((p) => p.id !== productId).slice(0, 6);
-    },
-    enabled: !!product?.category_id,
-  });
+  // Map specs from API format
+  const specs = useMemo(() => {
+    if (!productRaw?.especificacoes) return [];
+    return productRaw.especificacoes.map(s => ({ label: s.rotulo, value: s.valor }));
+  }, [productRaw]);
 
-  const { data: cartItems = [], refetch: refetchCart } = useQuery({
-    queryKey: QUERY_KEYS.cart,
-    queryFn: () => CartItem.list(),
-  });
+  // Map datasheet_url from API format
+  const datasheetUrl = productRaw?.fichaTecnicaUrl || null;
 
-  useEffect(() => {
-    const total = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    setCartCount(total);
-  }, [cartItems]);
+  const { data: relatedRaw = [] } = useRelatedProducts(slug, Number(productId), 6);
+  const relatedProducts = useMemo(() => {
+    // relatedRaw is ProdutoResumoResponse[] — map to local format
+    return relatedRaw.map(p => ({
+      id: p.id,
+      name: p.nome,
+      price: p.preco,
+      images: p.imagemUrl ? [p.imagemUrl] : [],
+    }));
+  }, [relatedRaw]);
+
+  const { data: cartItemsRaw = [] } = useCart(slug);
+  const cartItems = useMemo(() => cartItemsRaw.map(mapCartItemFromApi), [cartItemsRaw]);
+  const cartCount = cartItemsRaw.reduce((sum, item) => sum + item.quantidade, 0);
+
+  const addToCartMutation = useAddToCart(slug);
+  const updateCartItemMutation = useUpdateCartItem(slug);
 
   const isAvailable = product?.stock > 0;
   const maxQuantity = product?.stock || 1;
@@ -87,16 +92,16 @@ export default function ProductDetail() {
     try {
       const existingItem = cartItems.find((item) => item.product_id === product.id);
       if (existingItem) {
-        await CartItem.update(existingItem.id, {
-          quantity: existingItem.quantity + quantity,
+        await updateCartItemMutation.mutateAsync({
+          id: existingItem.id,
+          data: { quantidade: existingItem.quantity + quantity },
         });
       } else {
-        await CartItem.create({
-          product_id: product.id,
-          quantity: quantity,
+        await addToCartMutation.mutateAsync({
+          produtoId: product.id,
+          quantidade: quantity,
         });
       }
-      refetchCart();
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 2000);
     } catch (error) {
@@ -387,7 +392,7 @@ export default function ProductDetail() {
         )}
 
         {/* ── Specs Grid ── */}
-        {product.specs && product.specs.length > 0 && (
+        {specs && specs.length > 0 && (
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -402,7 +407,7 @@ export default function ProductDetail() {
                 </h2>
               </div>
               <div className="px-5 pb-5 grid grid-cols-2 gap-2.5">
-                {product.specs.map((spec, index) => (
+                {specs.map((spec, index) => (
                   <motion.div
                     key={index}
                     variants={fadeUp}
@@ -423,7 +428,7 @@ export default function ProductDetail() {
         )}
 
         {/* ── Datasheet ── */}
-        {product.datasheet_url && (
+        {datasheetUrl && (
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -432,7 +437,7 @@ export default function ProductDetail() {
             className="px-4 mt-4"
           >
             <a
-              href={product.datasheet_url}
+              href={datasheetUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 bg-white rounded-3xl border border-gray-100 shadow-sm p-5 group hover:border-gray-200 transition-colors"

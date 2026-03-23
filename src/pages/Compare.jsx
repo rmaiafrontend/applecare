@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Product, Category } from '@/api/dataService';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Sparkles, Trophy, Truck, Tag, Cpu, X } from 'lucide-react';
@@ -11,7 +9,12 @@ import { Button } from '@/components/ui/button';
 import { useCompare } from '@/lib/CompareContext';
 import { generateComparison } from '@/lib/smartCompare';
 import { formatPrice } from '@/lib/format';
-import { QUERY_KEYS } from '@/lib/constants';
+import { mapProductFromApi, mapCategoryFromApi } from '@/api/adapters';
+import {
+  useSlug,
+  usePublicProducts,
+  usePublicCategories,
+} from '@/api/hooks';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -30,18 +33,15 @@ const highlightIcons = {
 
 export default function Compare() {
   const navigate = useNavigate();
+  const slug = useSlug();
   const { compareIds, removeFromCompare, clearCompare } = useCompare();
   const [showRecommendation, setShowRecommendation] = useState(false);
 
-  const { data: allProducts = [] } = useQuery({
-    queryKey: QUERY_KEYS.allProducts,
-    queryFn: () => Product.list(),
-  });
+  const { data: productsPage } = usePublicProducts(slug, { tamanho: 200 });
+  const allProducts = useMemo(() => (productsPage?.conteudo || []).map(mapProductFromApi), [productsPage]);
 
-  const { data: categories = [] } = useQuery({
-    queryKey: QUERY_KEYS.categories,
-    queryFn: () => Category.list(),
-  });
+  const { data: categoriesRaw = [] } = usePublicCategories(slug);
+  const categories = useMemo(() => categoriesRaw.map(mapCategoryFromApi), [categoriesRaw]);
 
   const products = compareIds
     .map(id => allProducts.find(p => p.id === id))

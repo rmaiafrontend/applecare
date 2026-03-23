@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Product, Category, CartItem } from '@/api/dataService';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,7 +11,13 @@ import {
 import Header from '@/components/navigation/Header';
 import { getGreeting, processMessage } from '@/lib/chatEngine';
 import { formatPrice } from '@/lib/format';
-import { QUERY_KEYS } from '@/lib/constants';
+import { mapProductFromApi, mapCategoryFromApi } from '@/api/adapters';
+import {
+  useSlug,
+  usePublicProducts,
+  usePublicCategories,
+  useCart,
+} from '@/api/hooks';
 
 function TypingIndicator() {
   return (
@@ -164,32 +168,22 @@ function UserBubble({ message }) {
 }
 
 export default function Search() {
+  const slug = useSlug();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [context, setContext] = useState({});
-  const [cartCount, setCartCount] = useState(0);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  const { data: products = [] } = useQuery({
-    queryKey: QUERY_KEYS.allProducts,
-    queryFn: () => Product.list(),
-  });
+  const { data: productsPage } = usePublicProducts(slug, { tamanho: 200 });
+  const products = useMemo(() => (productsPage?.conteudo || []).map(mapProductFromApi), [productsPage]);
 
-  const { data: categories = [] } = useQuery({
-    queryKey: QUERY_KEYS.categories,
-    queryFn: () => Category.list(),
-  });
+  const { data: categoriesRaw = [] } = usePublicCategories(slug);
+  const categories = useMemo(() => categoriesRaw.map(mapCategoryFromApi), [categoriesRaw]);
 
-  const { data: cartItems = [] } = useQuery({
-    queryKey: QUERY_KEYS.cart,
-    queryFn: () => CartItem.list(),
-  });
-
-  useEffect(() => {
-    setCartCount(cartItems.reduce((sum, item) => sum + item.quantity, 0));
-  }, [cartItems]);
+  const { data: cartItemsRaw = [] } = useCart(slug);
+  const cartCount = cartItemsRaw.reduce((sum, item) => sum + item.quantidade, 0);
 
   // Greeting on mount
   useEffect(() => {

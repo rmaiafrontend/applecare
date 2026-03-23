@@ -1,16 +1,15 @@
-import React from "react";
 import { ChevronRight, Monitor, Smartphone, Maximize2 } from "lucide-react";
 
 export default function BannerPreviewCard({ form }) {
-  const textColor = form.banner_text_color === "light" ? "text-white" : "text-gray-900";
-  const overlayBg = form.banner_text_color === "light"
-    ? `rgba(0,0,0,${(form.banner_overlay_opacity ?? 40) / 100})`
-    : `rgba(255,255,255,${(form.banner_overlay_opacity ?? 40) / 100})`;
+  const textColor = form.corTexto === "light" ? "text-white" : "text-gray-900";
+  const overlayBg = form.corTexto === "light"
+    ? `rgba(0,0,0,${(form.opacidadeOverlay ?? 40) / 100})`
+    : `rgba(255,255,255,${(form.opacidadeOverlay ?? 40) / 100})`;
 
   const Preview = ({ aspect, className }) => (
     <div className={`relative w-full ${aspect} rounded-2xl overflow-hidden bg-[#f5f5f7] ${className || ""}`}>
-      {form.banner_image_url ? (
-        <img src={form.banner_image_url} alt="Preview" className="absolute inset-0 w-full h-full object-cover" />
+      {form.imagemUrl ? (
+        <img src={form.imagemUrl} alt="Preview" className="absolute inset-0 w-full h-full object-cover" />
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-[#c7c7cc] to-[#aeaeb2] flex items-center justify-center">
           <div className="text-center">
@@ -21,21 +20,19 @@ export default function BannerPreviewCard({ form }) {
       )}
       <div className="absolute inset-0" style={{ backgroundColor: overlayBg }} />
       <div className={`absolute inset-0 flex flex-col justify-end p-5 ${textColor}`}>
-        {form.title && <p className="font-bold text-sm leading-tight drop-shadow-sm">{form.title}</p>}
-        {form.subtitle && <p className="text-xs opacity-80 mt-0.5 drop-shadow-sm">{form.subtitle}</p>}
-        {form.banner_cta_text && (
+        {form.textoCta && (
           <div className="mt-2.5">
             <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-3 py-1.5 rounded-full ${
-              form.banner_text_color === "light" ? "bg-white text-gray-900" : "bg-gray-900 text-white"
+              form.corTexto === "light" ? "bg-white text-gray-900" : "bg-gray-900 text-white"
             }`}>
-              {form.banner_cta_text}
+              {form.textoCta}
               <ChevronRight className="w-3 h-3" />
             </span>
           </div>
         )}
       </div>
       <div className="absolute top-2.5 right-2.5">
-        {form.is_active ? (
+        {form.ativo ? (
           <span className="text-[9px] font-semibold bg-emerald-500 text-white px-2 py-0.5 rounded-full shadow-sm">Ativo</span>
         ) : (
           <span className="text-[9px] font-semibold bg-gray-400/80 text-white px-2 py-0.5 rounded-full">Inativo</span>

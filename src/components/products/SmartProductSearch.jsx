@@ -1,6 +1,63 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Sparkles, Loader2, Search, Zap, ChevronRight, Cpu } from "lucide-react";
 
+// Banco de dados local com especificações e preços de referência
+const productDatabase = {
+  // iPhones
+  "iPhone 16e": { sku: "IPHONE-16E", price: 4499, category: "iPhone", condition: "new", description: "iPhone 16e com chip A18, tela OLED de 6,1 polegadas, câmera de 48MP e suporte a Apple Intelligence.", specs: [{ label: "Chip", value: "A18" }, { label: "Tela", value: "6,1\" OLED" }, { label: "Câmera", value: "48MP" }, { label: "Bateria", value: "Até 26h de vídeo" }, { label: "Armazenamento", value: "128GB / 256GB / 512GB" }, { label: "Face ID", value: "Sim" }] },
+  "iPhone 16": { sku: "IPHONE-16", price: 5999, category: "iPhone", condition: "new", description: "iPhone 16 com chip A18, câmera dupla de 48MP, botão de Ação e Controle de Câmera. Design em alumínio com Ceramic Shield.", specs: [{ label: "Chip", value: "A18" }, { label: "Tela", value: "6,1\" Super Retina XDR" }, { label: "Câmera", value: "48MP + 12MP Ultra Wide" }, { label: "Bateria", value: "Até 22h de vídeo" }, { label: "Armazenamento", value: "128GB / 256GB / 512GB" }, { label: "Face ID", value: "Sim" }] },
+  "iPhone 16 Plus": { sku: "IPHONE-16-PLUS", price: 6999, category: "iPhone", condition: "new", description: "iPhone 16 Plus com tela maior de 6,7 polegadas, chip A18, câmera de 48MP e bateria de longa duração.", specs: [{ label: "Chip", value: "A18" }, { label: "Tela", value: "6,7\" Super Retina XDR" }, { label: "Câmera", value: "48MP + 12MP Ultra Wide" }, { label: "Bateria", value: "Até 27h de vídeo" }, { label: "Armazenamento", value: "128GB / 256GB / 512GB" }, { label: "Face ID", value: "Sim" }] },
+  "iPhone 16 Pro": { sku: "IPHONE-16-PRO", price: 7999, category: "iPhone", condition: "new", description: "iPhone 16 Pro com chip A18 Pro, câmera de 48MP com zoom óptico 5x, tela de 6,3\" Always-On e corpo em titânio.", specs: [{ label: "Chip", value: "A18 Pro" }, { label: "Tela", value: "6,3\" Super Retina XDR ProMotion" }, { label: "Câmera", value: "48MP + 48MP Ultra Wide + 12MP Telephoto 5x" }, { label: "Bateria", value: "Até 27h de vídeo" }, { label: "Armazenamento", value: "128GB / 256GB / 512GB / 1TB" }, { label: "Material", value: "Titânio" }] },
+  "iPhone 16 Pro Max": { sku: "IPHONE-16-PRO-MAX", price: 9499, category: "iPhone", condition: "new", description: "iPhone 16 Pro Max com a maior tela de 6,9\", chip A18 Pro, câmera de 48MP com zoom 5x e a maior bateria de todos os iPhones.", specs: [{ label: "Chip", value: "A18 Pro" }, { label: "Tela", value: "6,9\" Super Retina XDR ProMotion" }, { label: "Câmera", value: "48MP + 48MP Ultra Wide + 12MP Telephoto 5x" }, { label: "Bateria", value: "Até 33h de vídeo" }, { label: "Armazenamento", value: "256GB / 512GB / 1TB" }, { label: "Material", value: "Titânio" }] },
+  "iPhone 15": { sku: "IPHONE-15", price: 4999, category: "iPhone", condition: "new", description: "iPhone 15 com chip A16 Bionic, câmera de 48MP, Dynamic Island e conector USB-C.", specs: [{ label: "Chip", value: "A16 Bionic" }, { label: "Tela", value: "6,1\" Super Retina XDR" }, { label: "Câmera", value: "48MP + 12MP" }, { label: "Bateria", value: "Até 20h de vídeo" }, { label: "Armazenamento", value: "128GB / 256GB / 512GB" }, { label: "Face ID", value: "Sim" }] },
+  "iPhone 15 Plus": { sku: "IPHONE-15-PLUS", price: 5999, category: "iPhone", condition: "new", description: "iPhone 15 Plus com tela de 6,7\", chip A16 Bionic e câmera de 48MP.", specs: [{ label: "Chip", value: "A16 Bionic" }, { label: "Tela", value: "6,7\" Super Retina XDR" }, { label: "Câmera", value: "48MP + 12MP" }, { label: "Bateria", value: "Até 26h de vídeo" }, { label: "Armazenamento", value: "128GB / 256GB / 512GB" }, { label: "Face ID", value: "Sim" }] },
+  "iPhone 15 Pro": { sku: "IPHONE-15-PRO", price: 6999, category: "iPhone", condition: "new", description: "iPhone 15 Pro com chip A17 Pro, corpo em titânio e câmera de 48MP com zoom óptico 3x.", specs: [{ label: "Chip", value: "A17 Pro" }, { label: "Tela", value: "6,1\" Super Retina XDR ProMotion" }, { label: "Câmera", value: "48MP + 12MP Ultra Wide + 12MP Telephoto 3x" }, { label: "Bateria", value: "Até 23h de vídeo" }, { label: "Armazenamento", value: "128GB / 256GB / 512GB / 1TB" }, { label: "Material", value: "Titânio" }] },
+  "iPhone 15 Pro Max": { sku: "IPHONE-15-PRO-MAX", price: 8499, category: "iPhone", condition: "new", description: "iPhone 15 Pro Max com chip A17 Pro, tela de 6,7\", corpo em titânio e câmera com zoom óptico 5x.", specs: [{ label: "Chip", value: "A17 Pro" }, { label: "Tela", value: "6,7\" Super Retina XDR ProMotion" }, { label: "Câmera", value: "48MP + 12MP Ultra Wide + 12MP Telephoto 5x" }, { label: "Bateria", value: "Até 29h de vídeo" }, { label: "Armazenamento", value: "256GB / 512GB / 1TB" }, { label: "Material", value: "Titânio" }] },
+  "iPhone 14": { sku: "IPHONE-14", price: 3999, category: "iPhone", condition: "new", description: "iPhone 14 com chip A15 Bionic, câmera dupla de 12MP e detecção de acidente.", specs: [{ label: "Chip", value: "A15 Bionic" }, { label: "Tela", value: "6,1\" Super Retina XDR" }, { label: "Câmera", value: "12MP + 12MP" }, { label: "Bateria", value: "Até 20h de vídeo" }, { label: "Armazenamento", value: "128GB / 256GB / 512GB" }] },
+  "iPhone SE (3ª geração)": { sku: "IPHONE-SE-3", price: 2999, category: "iPhone", condition: "new", description: "iPhone SE com chip A15 Bionic, Touch ID, tela de 4,7\" e câmera de 12MP.", specs: [{ label: "Chip", value: "A15 Bionic" }, { label: "Tela", value: "4,7\" Retina HD" }, { label: "Câmera", value: "12MP" }, { label: "Touch ID", value: "Sim" }, { label: "Armazenamento", value: "64GB / 128GB / 256GB" }] },
+  // MacBooks
+  "MacBook Air M4 13\"": { sku: "MBA-M4-13", price: 8999, category: "MacBook", condition: "new", description: "MacBook Air 13\" com chip M4, tela Liquid Retina, até 18h de bateria e design ultrafino.", specs: [{ label: "Chip", value: "Apple M4" }, { label: "Tela", value: "13,6\" Liquid Retina" }, { label: "Memória", value: "16GB / 24GB / 32GB" }, { label: "Armazenamento", value: "256GB / 512GB / 1TB / 2TB" }, { label: "Bateria", value: "Até 18h" }, { label: "Peso", value: "1,24 kg" }] },
+  "MacBook Air M4 15\"": { sku: "MBA-M4-15", price: 10499, category: "MacBook", condition: "new", description: "MacBook Air 15\" com chip M4, tela Liquid Retina maior e sistema de áudio com 6 alto-falantes.", specs: [{ label: "Chip", value: "Apple M4" }, { label: "Tela", value: "15,3\" Liquid Retina" }, { label: "Memória", value: "16GB / 24GB / 32GB" }, { label: "Armazenamento", value: "256GB / 512GB / 1TB / 2TB" }, { label: "Bateria", value: "Até 18h" }, { label: "Peso", value: "1,51 kg" }] },
+  "MacBook Air M3 13\"": { sku: "MBA-M3-13", price: 7499, category: "MacBook", condition: "new", description: "MacBook Air 13\" com chip M3, tela Liquid Retina e design fino em alumínio.", specs: [{ label: "Chip", value: "Apple M3" }, { label: "Tela", value: "13,6\" Liquid Retina" }, { label: "Memória", value: "8GB / 16GB / 24GB" }, { label: "Armazenamento", value: "256GB / 512GB / 1TB / 2TB" }, { label: "Bateria", value: "Até 18h" }, { label: "Peso", value: "1,24 kg" }] },
+  "MacBook Pro M4 14\"": { sku: "MBP-M4-14", price: 11499, category: "MacBook", condition: "new", description: "MacBook Pro 14\" com chip M4, tela Liquid Retina XDR com ProMotion e até 24h de bateria.", specs: [{ label: "Chip", value: "Apple M4" }, { label: "Tela", value: "14,2\" Liquid Retina XDR" }, { label: "Memória", value: "16GB / 24GB / 32GB" }, { label: "Armazenamento", value: "512GB / 1TB / 2TB" }, { label: "Bateria", value: "Até 24h" }, { label: "Portas", value: "3x Thunderbolt 4, HDMI, MagSafe" }] },
+  "MacBook Pro M4 Pro 16\"": { sku: "MBP-M4P-16", price: 18999, category: "MacBook", condition: "new", description: "MacBook Pro 16\" com chip M4 Pro, tela XDR de 16,2\" e desempenho profissional.", specs: [{ label: "Chip", value: "Apple M4 Pro" }, { label: "Tela", value: "16,2\" Liquid Retina XDR" }, { label: "Memória", value: "24GB / 48GB" }, { label: "Armazenamento", value: "512GB / 1TB / 2TB / 4TB" }, { label: "Bateria", value: "Até 24h" }, { label: "Portas", value: "3x Thunderbolt 5, HDMI, MagSafe, SD" }] },
+  // iPads
+  "iPad Pro M4 11\"": { sku: "IPADPRO-M4-11", price: 8999, category: "iPad", condition: "new", description: "iPad Pro 11\" com chip M4, tela Ultra Retina XDR tandem OLED e Apple Pencil Pro.", specs: [{ label: "Chip", value: "Apple M4" }, { label: "Tela", value: "11\" Ultra Retina XDR OLED" }, { label: "Câmera", value: "12MP Wide + 10MP Ultra Wide + LiDAR" }, { label: "Armazenamento", value: "256GB / 512GB / 1TB / 2TB" }, { label: "Face ID", value: "Sim" }, { label: "Apple Pencil", value: "Pro / USB-C" }] },
+  "iPad Pro M4 13\"": { sku: "IPADPRO-M4-13", price: 11999, category: "iPad", condition: "new", description: "iPad Pro 13\" com chip M4 e tela Ultra Retina XDR tandem OLED.", specs: [{ label: "Chip", value: "Apple M4" }, { label: "Tela", value: "13\" Ultra Retina XDR OLED" }, { label: "Câmera", value: "12MP Wide + 10MP Ultra Wide + LiDAR" }, { label: "Armazenamento", value: "256GB / 512GB / 1TB / 2TB" }, { label: "Face ID", value: "Sim" }] },
+  "iPad Air M3 11\"": { sku: "IPADAIR-M3-11", price: 5499, category: "iPad", condition: "new", description: "iPad Air 11\" com chip M3, tela Liquid Retina e suporte a Apple Pencil Pro.", specs: [{ label: "Chip", value: "Apple M3" }, { label: "Tela", value: "11\" Liquid Retina" }, { label: "Armazenamento", value: "128GB / 256GB / 512GB / 1TB" }, { label: "Touch ID", value: "Sim (botão superior)" }] },
+  "iPad (10ª geração)": { sku: "IPAD-10", price: 3499, category: "iPad", condition: "new", description: "iPad 10ª geração com chip A14 Bionic, tela Liquid Retina de 10,9\" e USB-C.", specs: [{ label: "Chip", value: "A14 Bionic" }, { label: "Tela", value: "10,9\" Liquid Retina" }, { label: "Câmera", value: "12MP" }, { label: "Armazenamento", value: "64GB / 256GB" }, { label: "Touch ID", value: "Sim (botão superior)" }] },
+  // Apple Watch
+  "Apple Watch Series 10 42mm": { sku: "AW-S10-42", price: 3299, category: "Apple Watch", condition: "new", description: "Apple Watch Series 10 com a tela mais fina e leve, detecção de apneia do sono e carregamento rápido.", specs: [{ label: "Tamanho", value: "42mm" }, { label: "Tela", value: "Always-On LTPO3 OLED" }, { label: "Resistência", value: "50m água" }, { label: "Sensores", value: "SpO2, ECG, temperatura" }, { label: "Bateria", value: "Até 18h" }] },
+  "Apple Watch Ultra 2": { sku: "AW-ULTRA2", price: 5799, category: "Apple Watch", condition: "new", description: "Apple Watch Ultra 2 com chip S9, GPS de dupla frequência, caixa de titânio e 36h de bateria.", specs: [{ label: "Chip", value: "S9 SiP" }, { label: "Tamanho", value: "49mm" }, { label: "Material", value: "Titânio" }, { label: "Resistência", value: "100m água / EN13319" }, { label: "Bateria", value: "Até 36h" }, { label: "GPS", value: "L1 + L5 dupla frequência" }] },
+  // AirPods
+  "AirPods 4": { sku: "AIRPODS-4", price: 999, category: "AirPods", condition: "new", description: "AirPods 4 com design aberto, áudio personalizado e chip H2.", specs: [{ label: "Chip", value: "H2" }, { label: "Áudio", value: "Áudio Espacial personalizado" }, { label: "Bateria", value: "Até 30h com estojo" }, { label: "Resistência", value: "IP54" }] },
+  "AirPods 4 com ANC": { sku: "AIRPODS-4-ANC", price: 1499, category: "AirPods", condition: "new", description: "AirPods 4 com Cancelamento Ativo de Ruído, Modo Transparência e chip H2.", specs: [{ label: "Chip", value: "H2" }, { label: "ANC", value: "Cancelamento Ativo de Ruído" }, { label: "Modo", value: "Transparência Adaptativa" }, { label: "Bateria", value: "Até 30h com estojo" }, { label: "Resistência", value: "IP54" }] },
+  "AirPods Pro 2 (USB-C)": { sku: "AIRPODS-PRO2", price: 1899, category: "AirPods", condition: "new", description: "AirPods Pro 2 com chip H2, cancelamento de ruído adaptativo, modo de conversa e USB-C.", specs: [{ label: "Chip", value: "H2" }, { label: "ANC", value: "Adaptativo" }, { label: "Áudio", value: "Espacial personalizado" }, { label: "Bateria", value: "Até 30h com estojo" }, { label: "Proteção auditiva", value: "Sim" }] },
+  "AirPods Max (USB-C)": { sku: "AIRPODS-MAX", price: 4299, category: "AirPods", condition: "new", description: "AirPods Max com chip H2, ANC de alta fidelidade, Áudio Espacial e design em alumínio.", specs: [{ label: "Chip", value: "H2" }, { label: "ANC", value: "Alta Fidelidade" }, { label: "Áudio", value: "Espacial com rastreamento dinâmico" }, { label: "Bateria", value: "Até 20h" }, { label: "Material", value: "Alumínio anodizado + aço" }] },
+  // Mac
+  "Mac Mini M4": { sku: "MACMINI-M4", price: 4999, category: "Mac", condition: "new", description: "Mac Mini com chip M4, design compacto, até 32GB de memória e 3 portas Thunderbolt 4.", specs: [{ label: "Chip", value: "Apple M4" }, { label: "Memória", value: "16GB / 24GB / 32GB" }, { label: "Armazenamento", value: "256GB / 512GB / 1TB / 2TB" }, { label: "Portas", value: "3x Thunderbolt 4, 2x USB-C, HDMI, Ethernet" }] },
+  "Mac Mini M4 Pro": { sku: "MACMINI-M4P", price: 10499, category: "Mac", condition: "new", description: "Mac Mini com chip M4 Pro, até 64GB de memória e 3 portas Thunderbolt 5.", specs: [{ label: "Chip", value: "Apple M4 Pro" }, { label: "Memória", value: "24GB / 48GB / 64GB" }, { label: "Armazenamento", value: "512GB / 1TB / 2TB / 4TB" }, { label: "Portas", value: "3x Thunderbolt 5, 2x USB-C, HDMI, Ethernet 10Gb" }] },
+  "iMac M4 24\"": { sku: "IMAC-M4-24", price: 10499, category: "iMac", condition: "new", description: "iMac 24\" com chip M4, tela Retina 4.5K, câmera Center Stage de 12MP e design em 7 cores.", specs: [{ label: "Chip", value: "Apple M4" }, { label: "Tela", value: "24\" Retina 4.5K" }, { label: "Memória", value: "16GB / 24GB / 32GB" }, { label: "Armazenamento", value: "256GB / 512GB / 1TB / 2TB" }, { label: "Câmera", value: "12MP Center Stage" }] },
+  // Acessórios
+  "Apple Pencil Pro": { sku: "PENCIL-PRO", price: 999, category: "Acessórios", condition: "new", description: "Apple Pencil Pro com sensor de aperto, barril roll e feedback tátil. Compatível com iPad Pro e iPad Air.", specs: [{ label: "Sensor", value: "Aperto + Barril Roll" }, { label: "Feedback", value: "Tátil" }, { label: "Carregamento", value: "Magnético" }, { label: "Precisão", value: "Detecção de inclinação e pressão" }] },
+  "AirTag": { sku: "AIRTAG-1", price: 249, category: "Acessórios", condition: "new", description: "AirTag para rastreamento de itens com a rede Buscar da Apple e Busca de Precisão com Ultra Wideband.", specs: [{ label: "Chip", value: "U1 Ultra Wideband" }, { label: "Bateria", value: "CR2032 (1 ano)" }, { label: "Resistência", value: "IP67" }, { label: "Rede", value: "Buscar da Apple" }] },
+  "Magic Keyboard com Touch ID": { sku: "MAGIC-KB-TID", price: 1099, category: "Acessórios", condition: "new", description: "Magic Keyboard com Touch ID, layout em português, carregamento USB-C e design em alumínio.", specs: [{ label: "Touch ID", value: "Sim" }, { label: "Carregamento", value: "USB-C" }, { label: "Conexão", value: "Bluetooth / Lightning" }] },
+};
+
+// Mapeamento de família para nome de categoria
+const familyCategoryMap = {
+  "iPhone": "iPhone",
+  "iPad": "iPad",
+  "MacBook": "MacBook",
+  "Mac": "Mac",
+  "iMac": "Mac",
+  "Apple Watch": "Apple Watch",
+  "AirPods": "AirPods",
+  "Apple TV": "Apple TV",
+  "HomePod": "HomePod",
+  "Acessórios": "Acessórios",
+};
+
 const appleProducts = {
   "iPhone": [
     "iPhone 16e",
@@ -99,12 +156,50 @@ export default function SmartProductSearch({ onProductData, categories = [] }) {
     setShowDropdown(false);
     setLoading(true);
 
-    const catNames = categories.map(c => c.name).join(", ");
+    // Simula delay de "busca IA"
+    await new Promise(r => setTimeout(r, 800));
 
-    const result = { result: '' };
+    const dbEntry = productDatabase[productName];
 
-    setLoading(false);
-    onProductData(result);
+    if (dbEntry) {
+      // Tenta encontrar a categoria correspondente
+      const categoryFamily = dbEntry.category;
+      const matchedCategory = categories.find(c => {
+        const cName = (c.name || c.nome || '').toLowerCase();
+        const target = (familyCategoryMap[categoryFamily] || categoryFamily).toLowerCase();
+        return cName.includes(target) || target.includes(cName);
+      });
+
+      const result = {
+        product_id: dbEntry.sku,
+        name: productName,
+        sku: dbEntry.sku,
+        price: dbEntry.price,
+        category_id: matchedCategory?.id || matchedCategory?.category_id || '',
+        condition: dbEntry.condition || 'new',
+        description: dbEntry.description || '',
+        specs: dbEntry.specs || [],
+        tags: [],
+      };
+
+      setLoading(false);
+      onProductData(result);
+    } else {
+      // Produto não encontrado no banco local — gera dados básicos
+      const sku = productName.toUpperCase().replace(/[^A-Z0-9]/g, '-').replace(/-+/g, '-');
+      const result = {
+        product_id: sku,
+        name: productName,
+        sku: sku,
+        condition: 'new',
+        description: `${productName} — produto Apple original com garantia.`,
+        specs: [],
+        tags: [],
+      };
+
+      setLoading(false);
+      onProductData(result);
+    }
   };
 
   return (

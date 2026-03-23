@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Category, Product } from "@/api/dataService";
+import React, { useState, useMemo } from "react";
+import {
+  useAdminCategories, useAdminProducts,
+  useCreateCategory, useUpdateCategory, useDeactivateCategory,
+} from "@/api/hooks";
+import { mapCategoryFromApi, mapProductFromApi } from "@/api/adapters";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Pencil, Trash2, Save, Loader2, Grid3X3, Package, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -13,7 +16,6 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { QUERY_KEYS } from '@/lib/constants';
 
 const ICON_MAP = {
   Smartphone: "📱", Laptop: "💻", Tablet: "📟", Watch: "⌚",
@@ -28,22 +30,22 @@ export default function Categories() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [form, setForm] = useState({ category_id: "", name: "", icon: "Smartphone", has_promotion: false, display_order: 0, is_active: true, image_url: "" });
   const [saving, setSaving] = useState(false);
-  const queryClient = useQueryClient();
 
-  const { data: categories = [] } = useQuery({
-    queryKey: QUERY_KEYS.categories,
-    queryFn: () => Category.list('display_order'),
-  });
+  const { data: categoriesData } = useAdminCategories();
+  const { data: productsData } = useAdminProducts({ tamanho: 200 });
 
-  const { data: products = [] } = useQuery({
-    queryKey: QUERY_KEYS.products,
-    queryFn: () => Product.list(),
-  });
+  const categories = useMemo(
+    () => (categoriesData || []).map(mapCategoryFromApi),
+    [categoriesData]
+  );
+  const products = useMemo(
+    () => (productsData?.conteudo || []).map(mapProductFromApi),
+    [productsData]
+  );
 
-  const deleteMutation = useMutation({
-    mutationFn: (id) => Category.delete(id),
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: QUERY_KEYS.categories }); setDeleteTarget(null); },
-  });
+  const createMutation = useCreateCategory();
+  const updateMutation = useUpdateCategory();
+  const deleteMutation = useDeactivateCategory();
 
   const openNew = () => {
     setForm({ category_id: "", name: "", icon: "Smartphone", has_promotion: false, display_order: categories.length, is_active: true, image_url: "" });
@@ -61,12 +63,23 @@ export default function Categories() {
 
   const handleSave = async () => {
     setSaving(true);
-    if (editDialog === 'new') {
-      await Category.create(form);
-    } else {
-      await Category.update(editDialog.id, form);
+    const apiData = {
+      nome: form.name,
+      icone: form.icon,
+      imagemUrl: form.image_url,
+      ordemExibicao: Number(form.display_order),
+      temPromocao: form.has_promotion,
+      ativo: form.is_active,
+    };
+    try {
+      if (editDialog === 'new') {
+        await createMutation.mutateAsync(apiData);
+      } else {
+        await updateMutation.mutateAsync({ id: editDialog.id, data: apiData });
+      }
+    } catch (err) {
+      console.error('Error saving category:', err);
     }
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.categories });
     setSaving(false);
     setEditDialog(null);
   };
@@ -240,7 +253,7 @@ export default function Categories() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="rounded-full">Cancelar</AlertDialogCancel>
-            <AlertDialogAction className="bg-red-500 hover:bg-red-600 rounded-full" onClick={() => deleteMutation.mutate(deleteTarget.id)}>
+            <AlertDialogAction className="bg-red-500 hover:bg-red-600 rounded-full" onClick={() => { deleteMutation.mutate(deleteTarget.id); setDeleteTarget(null); }}>
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>

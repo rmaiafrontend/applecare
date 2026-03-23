@@ -1,11 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { StoreConfig } from "@/api/dataService";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Save, Loader2, Check, Link2, Image, Award, Sparkles, FolderOpen, LayoutGrid, ScrollText, Info, ShoppingBag } from "lucide-react";
 
 import SectionWrapper from "@/components/home-settings/SectionWrapper";
 import HeaderLinktreeSection from "@/components/home-settings/HeaderLinktreeSection";
-
 import HeroBannerSection from "@/components/home-settings/HeroBannerSection";
 import DifferentialsSection from "@/components/home-settings/DifferentialsSection";
 import AIButtonSection from "@/components/home-settings/AIButtonSection";
@@ -15,7 +12,8 @@ import CarouselsSection from "@/components/home-settings/CarouselsSection";
 import InfoCardSection from "@/components/home-settings/InfoCardSection";
 import ProductListSection from "@/components/home-settings/ProductListSection";
 import HomePreview from "@/components/home-settings/HomePreview";
-import { QUERY_KEYS } from '@/lib/constants';
+import { useConfigHome, useSaveConfigHome } from "@/api/hooks";
+import { deserializeHomeConfig, serializeHomeConfig } from "@/lib/homeConfigSerializer";
 
 const DEFAULT_CONFIG = {
   config_key: "home_layout",
@@ -85,15 +83,16 @@ const SECTIONS = [
 ];
 
 export default function HomeSettings() {
-  const queryClient = useQueryClient();
   const [form, setForm] = useState(DEFAULT_CONFIG);
-  const [configId, setConfigId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [openSections, setOpenSections] = useState({});
   const [activeSection, setActiveSection] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const sectionsRef = useRef(null);
+
+  const { data: homeConfig } = useConfigHome();
+  const saveMutation = useSaveConfigHome();
 
   const handleScroll = useCallback(() => {
     const el = sectionsRef.current;
@@ -111,37 +110,24 @@ export default function HomeSettings() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  const { data: configs = [] } = useQuery({
-    queryKey: QUERY_KEYS.homeConfig,
-    queryFn: () => StoreConfig.list(),
-  });
-
   useEffect(() => {
-    if (configs.length > 0) {
-      const c = configs[0];
-      setConfigId(c.id);
-      setForm(prev => ({
-        ...prev,
-        ...Object.fromEntries(
-          Object.entries(c).filter(([k, v]) => v != null && k !== "id" && k !== "created_date" && k !== "updated_date" && k !== "created_by")
-        ),
-      }));
+    if (homeConfig) {
+      const flat = deserializeHomeConfig(homeConfig);
+      setForm(prev => ({ ...prev, ...flat }));
     }
-  }, [configs]);
+  }, [homeConfig]);
 
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 
   const handleSave = async () => {
     setSaving(true);
-    if (configId) {
-      await StoreConfig.update(configId, form);
-    } else {
-      await StoreConfig.create(form);
+    try {
+      await saveMutation.mutateAsync(serializeHomeConfig(form));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally {
+      setSaving(false);
     }
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.homeConfig });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
   };
 
   const toggleSection = (key) => {

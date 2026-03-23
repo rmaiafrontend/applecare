@@ -1,6 +1,5 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { Pencil, Trash2, Star, Zap, Tag, Sparkles, FolderOpen, LayoutGrid, Eye, EyeOff, Hash, Layers } from "lucide-react";
+import { Pencil, Trash2, Star, Zap, Tag, Sparkles, FolderOpen, LayoutGrid, Eye, EyeOff, Layers } from "lucide-react";
 
 const FILTER_META = {
   featured: { label: "Destaques", icon: Star, color: "#af52de", bg: "bg-purple-50" },
@@ -12,9 +11,9 @@ const FILTER_META = {
 };
 
 export default function SectionCard({ config, index, onEdit, onDelete, onToggle }) {
-  const meta = FILTER_META[config.filter_type] || FILTER_META.all;
+  const meta = FILTER_META[config.tipoFiltro] || FILTER_META.all;
   const FilterIcon = meta.icon;
-  const isActive = config.is_active !== false;
+  const isActive = config.ativo !== false;
 
   return (
     <motion.div
@@ -42,32 +41,28 @@ export default function SectionCard({ config, index, onEdit, onDelete, onToggle 
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h3 className="text-[14px] font-semibold text-[#1d1d1f] truncate">{config.title}</h3>
+              <h3 className="text-[14px] font-semibold text-[#1d1d1f] truncate">{config.titulo}</h3>
               <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isActive ? "bg-emerald-400" : "bg-[#c7c7cc]"}`} />
             </div>
-            {config.subtitle && (
-              <p className="text-[12px] text-[#86868b] mt-0.5 truncate">{config.subtitle}</p>
+            {config.subtitulo && (
+              <p className="text-[12px] text-[#86868b] mt-0.5 truncate">{config.subtitulo}</p>
             )}
 
             {/* Meta pills */}
             <div className="flex items-center gap-1.5 mt-2.5 flex-wrap">
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#86868b] bg-[#f5f5f7] px-2 py-1 rounded-md">
-                <Hash className="w-3 h-3" />
-                {config.config_key}
-              </span>
               <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-1 rounded-md"
                 style={{ backgroundColor: meta.color + "12", color: meta.color }}
               >
                 {meta.label}
               </span>
-              {config.max_items && (
+              {config.maxItens && (
                 <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#86868b] bg-[#f5f5f7] px-2 py-1 rounded-md">
                   <Layers className="w-3 h-3" />
-                  {config.max_items} itens
+                  {config.maxItens} itens
                 </span>
               )}
               <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#86868b] bg-[#f5f5f7] px-2 py-1 rounded-md">
-                Ordem: {config.display_order}
+                Ordem: {config.ordemExibicao}
               </span>
             </div>
           </div>

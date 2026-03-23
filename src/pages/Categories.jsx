@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Category, Product, CartItem } from '@/api/dataService';
-import { useQuery } from '@tanstack/react-query';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
@@ -17,7 +15,13 @@ import {
 import Header from '@/components/navigation/Header';
 import BottomNav from '@/components/navigation/BottomNav';
 import { Skeleton } from '@/components/ui/skeleton';
-import { QUERY_KEYS } from '@/lib/constants';
+import { mapProductFromApi, mapCategoryFromApi } from '@/api/adapters';
+import {
+  useSlug,
+  usePublicCategories,
+  usePublicProducts,
+  useCart,
+} from '@/api/hooks';
 
 const iconMap = {
   Smartphone,
@@ -39,27 +43,16 @@ const fadeUp = {
 };
 
 export default function Categories() {
-  const [cartCount, setCartCount] = useState(0);
+  const slug = useSlug();
 
-  const { data: categories = [], isLoading } = useQuery({
-    queryKey: QUERY_KEYS.categories,
-    queryFn: () => Category.list('order'),
-  });
+  const { data: categoriesRaw = [], isLoading } = usePublicCategories(slug);
+  const categories = useMemo(() => categoriesRaw.map(mapCategoryFromApi), [categoriesRaw]);
 
-  const { data: products = [] } = useQuery({
-    queryKey: QUERY_KEYS.products,
-    queryFn: () => Product.list(),
-  });
+  const { data: productsPage } = usePublicProducts(slug, { tamanho: 200 });
+  const products = useMemo(() => (productsPage?.conteudo || []).map(mapProductFromApi), [productsPage]);
 
-  const { data: cartItems = [] } = useQuery({
-    queryKey: QUERY_KEYS.cart,
-    queryFn: () => CartItem.list(),
-  });
-
-  useEffect(() => {
-    const total = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    setCartCount(total);
-  }, [cartItems]);
+  const { data: cartItemsRaw = [] } = useCart(slug);
+  const cartCount = cartItemsRaw.reduce((sum, item) => sum + item.quantidade, 0);
 
   const productCountByCategory = products.reduce((acc, product) => {
     if (product.category_id) {

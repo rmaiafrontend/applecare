@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { Product } from "@/api/dataService";
+import { useCreateProduct, useUpdateProduct } from "@/api/hooks";
 import { uploadFile } from "@/lib/fileUpload";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -17,7 +16,6 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SmartProductSearch from "./SmartProductSearch";
 import FormSection from "./FormSection";
-import { QUERY_KEYS } from '@/lib/constants';
 
 const emptyForm = {
   product_id: "", name: "", sku: "", price: "", original_price: "",
@@ -29,7 +27,6 @@ const emptyForm = {
 const inputClass = "h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e] transition-colors";
 
 export default function ProductFormModal({ open, onOpenChange, editProduct, categories = [], tags = [] }) {
-  const queryClient = useQueryClient();
   const isEditing = !!editProduct;
 
   const [form, setForm] = useState(emptyForm);
@@ -41,6 +38,9 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
   const [saved, setSaved] = useState(false);
   const [aiFilled, setAiFilled] = useState(false);
 
+  const createMutation = useCreateProduct();
+  const updateMutation = useUpdateProduct();
+
   useEffect(() => {
     if (open) {
       if (editProduct) {
@@ -51,7 +51,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
           category_id: editProduct.category_id || "", condition: editProduct.condition || "new",
           images: editProduct.images || [], description: editProduct.description || "",
           specs: editProduct.specs || [], datasheet_url: editProduct.datasheet_url || "",
-          is_featured: editProduct.is_featured || false, is_active: editProduct.is_active !== false,
+          is_featured: editProduct.is_featured || editProduct.featured || false, is_active: editProduct.is_active !== false,
           tags: editProduct.tags || [],
         });
       } else {
@@ -85,23 +85,55 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
     setTimeout(() => setAiFilled(false), 3000);
   };
 
+  const buildApiBody = () => {
+    const body = {};
+    body.nome = form.name;
+    if (form.sku) body.sku = form.sku;
+    body.preco = parseFloat(form.price) || 0;
+    body.precoOriginal = form.original_price ? parseFloat(form.original_price) : null;
+    body.estoque = parseInt(form.stock) || 0;
+    body.entregaExpressa = form.express_delivery;
+    body.condicao = form.condition;
+    body.descricao = form.description;
+    body.destaque = form.is_featured;
+    body.ativo = form.is_active;
+    if (form.category_id) body.categoriaId = Number(form.category_id);
+    if (form.datasheet_url) body.fichaTecnicaUrl = form.datasheet_url;
+    if (form.images?.length) {
+      body.imagens = form.images.map((img, i) => ({
+        imagemUrl: typeof img === 'string' ? img : img.imagemUrl || img.url,
+        ordemExibicao: i,
+      }));
+    }
+    if (form.specs?.length) {
+      body.especificacoes = form.specs.map((s, i) => ({
+        rotulo: s.label,
+        valor: s.value,
+        ordemExibicao: i,
+      }));
+    }
+    if (form.tags?.length) {
+      body.etiquetaIds = form.tags.map(Number).filter(n => !isNaN(n));
+    }
+    return body;
+  };
+
   const handleSave = async () => {
     setSaving(true);
-    const data = {
-      ...form,
-      price: parseFloat(form.price) || 0,
-      original_price: form.original_price ? parseFloat(form.original_price) : null,
-      stock: parseInt(form.stock) || 0,
-    };
-    if (isEditing) {
-      await Product.update(editProduct.id, data);
-    } else {
-      await Product.create(data);
+    try {
+      const apiBody = buildApiBody();
+      if (isEditing) {
+        await updateMutation.mutateAsync({ id: editProduct.id, data: apiBody });
+      } else {
+        await createMutation.mutateAsync(apiBody);
+      }
+      setSaving(false);
+      setSaved(true);
+      setTimeout(() => { onOpenChange(false); }, 800);
+    } catch (err) {
+      setSaving(false);
+      console.error('Error saving product:', err);
     }
-    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => { onOpenChange(false); }, 800);
   };
 
   const addTag = () => { if (newTag && !form.tags.includes(newTag)) { setForm({ ...form, tags: [...form.tags, newTag] }); setNewTag(""); } };
@@ -226,10 +258,10 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
 
               <FormSection title="Classificação" icon={Package} accent="#af52de">
                 <FieldGroup label="Categoria *">
-                  <Select value={form.category_id} onValueChange={v => updateField("category_id", v)}>
+                  <Select value={String(form.category_id || "")} onValueChange={v => updateField("category_id", v)}>
                     <SelectTrigger className={inputClass}><SelectValue placeholder="Selecione" /></SelectTrigger>
                     <SelectContent className="dark:bg-[#2c2c2e] dark:border-white/[0.08]">
-                      {categories.map(cat => <SelectItem key={cat.id} value={cat.category_id}>{cat.name}</SelectItem>)}
+                      {categories.map(cat => <SelectItem key={cat.id} value={String(cat.id)}>{cat.name}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </FieldGroup>
