@@ -1,3 +1,5 @@
+const PAYMENT_METHOD_MAP = { pix: 'PIX', credit_card: 'CARTAO', boleto: 'DINHEIRO' };
+
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -47,6 +49,7 @@ import {
 import { formatPrice } from '@/lib/format';
 import { WHATSAPP_NUMBER } from '@/lib/constants';
 import { mapCartItemFromApi, mapProductFromApi } from '@/api/adapters';
+import { utilsService } from '@/api/services';
 import {
   useSlug,
   usePublicProducts,
@@ -156,15 +159,14 @@ export default function Cart() {
     if (clean.length !== 8) return;
     setLoadingCep(true);
     try {
-      const res = await fetch(`https://viacep.com.br/ws/${clean}/json/`);
-      const data = await res.json();
-      if (!data.erro) {
+      const data = await utilsService.consultarCep(clean);
+      if (data) {
         setAddress((prev) => ({
           ...prev,
-          street: data.logradouro,
+          street: data.rua,
           neighborhood: data.bairro,
-          city: data.localidade,
-          state: data.uf,
+          city: data.cidade,
+          state: data.estado,
         }));
       }
     } catch (e) {
@@ -213,7 +215,7 @@ export default function Cart() {
       }));
 
       const orderResult = await createOrderMutation.mutateAsync({
-        metodoPagamento: paymentMethod,
+        metodoPagamento: PAYMENT_METHOD_MAP[paymentMethod] || paymentMethod,
         observacao: deliveryMethod === 'pickup' ? 'Retirada na loja' : `Entrega: ${address.street}, ${address.number}`,
         itens: orderItems,
       });

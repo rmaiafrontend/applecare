@@ -1,3 +1,5 @@
+const PAYMENT_METHOD_MAP = { pix: 'PIX', credit_card: 'CARTAO', boleto: 'DINHEIRO' };
+
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -27,6 +29,7 @@ import {
 } from '@/components/ui/select';
 import { formatPrice } from '@/lib/format';
 import { mapCartItemFromApi, mapProductFromApi } from '@/api/adapters';
+import { utilsService } from '@/api/services';
 import {
   useSlug,
   useCart,
@@ -60,8 +63,7 @@ export default function Checkout() {
   });
 
   const [payment, setPayment] = useState({
-    method: 'pix', cardNumber: '', cardName: '', cardExpiry: '',
-    cardCvv: '', installments: '1', document: '', documentType: 'cpf',
+    method: 'pix', document: '', documentType: 'cpf',
   });
 
   const { data: cartItemsRaw = [] } = useCart(slug);
@@ -94,15 +96,14 @@ export default function Checkout() {
     if (clean.length !== 8) return;
     setLoadingCep(true);
     try {
-      const res = await fetch(`https://viacep.com.br/ws/${clean}/json/`);
-      const data = await res.json();
-      if (!data.erro) {
+      const data = await utilsService.consultarCep(clean);
+      if (data) {
         setAddress((prev) => ({
           ...prev,
-          street: data.logradouro,
+          street: data.rua,
           neighborhood: data.bairro,
-          city: data.localidade,
-          state: data.uf,
+          city: data.cidade,
+          state: data.estado,
         }));
       }
     } catch (e) {
@@ -124,9 +125,6 @@ export default function Checkout() {
 
   const isPaymentValid = () => {
     if (!payment.document) return false;
-    if (payment.method === 'credit_card') {
-      return payment.cardNumber && payment.cardName && payment.cardExpiry && payment.cardCvv;
-    }
     return true;
   };
 
@@ -139,7 +137,7 @@ export default function Checkout() {
       }));
 
       const orderResult = await createOrderMutation.mutateAsync({
-        metodoPagamento: payment.method,
+        metodoPagamento: PAYMENT_METHOD_MAP[payment.method] || payment.method,
         observacao: `Endereco: ${address.street}, ${address.number} - ${address.city}/${address.state}`,
         itens: orderItems,
       });
@@ -414,34 +412,7 @@ export default function Checkout() {
                         </div>
                       </label>
 
-                      {/* Credit Card */}
-                      <label
-                        className={`flex items-center gap-3.5 p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
-                          payment.method === 'credit_card'
-                            ? 'border-gray-900 bg-gray-50'
-                            : 'border-gray-100 hover:border-gray-200'
-                        }`}
-                      >
-                        <RadioGroupItem value="credit_card" className="sr-only" />
-                        <div className="w-10 h-10 rounded-xl bg-violet-500 flex items-center justify-center shrink-0">
-                          <CreditCard className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <span className="text-[13px] font-semibold text-gray-900">Cartao de Credito</span>
-                          <p className="text-[11px] text-gray-400 mt-0.5">Parcele em ate 12x</p>
-                        </div>
-                        <div
-                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                            payment.method === 'credit_card' ? 'border-gray-900' : 'border-gray-300'
-                          }`}
-                        >
-                          {payment.method === 'credit_card' && (
-                            <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />
-                          )}
-                        </div>
-                      </label>
-
-                      {/* Boleto */}
+                      {/* Dinheiro */}
                       <label
                         className={`flex items-center gap-3.5 p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
                           payment.method === 'boleto'
@@ -469,90 +440,6 @@ export default function Checkout() {
                       </label>
                     </RadioGroup>
 
-                    {/* Credit Card Form */}
-                    <AnimatePresence>
-                      {payment.method === 'credit_card' && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="space-y-3.5 pt-4 mt-4 border-t border-gray-100">
-                            <div>
-                              <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
-                                Numero do cartao
-                              </label>
-                              <Input
-                                value={payment.cardNumber}
-                                onChange={(e) => setPayment((p) => ({ ...p, cardNumber: e.target.value }))}
-                                placeholder="0000 0000 0000 0000"
-                                maxLength={19}
-                                className="h-11 rounded-xl border-gray-200 text-[14px] placeholder:text-gray-300"
-                              />
-                            </div>
-                            <div>
-                              <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
-                                Nome no cartao
-                              </label>
-                              <Input
-                                value={payment.cardName}
-                                onChange={(e) => setPayment((p) => ({ ...p, cardName: e.target.value }))}
-                                placeholder="Como esta no cartao"
-                                className="h-11 rounded-xl border-gray-200 text-[14px] placeholder:text-gray-300"
-                              />
-                            </div>
-                            <div className="grid grid-cols-2 gap-3">
-                              <div>
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
-                                  Validade
-                                </label>
-                                <Input
-                                  value={payment.cardExpiry}
-                                  onChange={(e) => setPayment((p) => ({ ...p, cardExpiry: e.target.value }))}
-                                  placeholder="MM/AA"
-                                  maxLength={5}
-                                  className="h-11 rounded-xl border-gray-200 text-[14px] placeholder:text-gray-300"
-                                />
-                              </div>
-                              <div>
-                                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
-                                  CVV
-                                </label>
-                                <Input
-                                  value={payment.cardCvv}
-                                  onChange={(e) => setPayment((p) => ({ ...p, cardCvv: e.target.value }))}
-                                  placeholder="123"
-                                  maxLength={4}
-                                  type="password"
-                                  className="h-11 rounded-xl border-gray-200 text-[14px] placeholder:text-gray-300"
-                                />
-                              </div>
-                            </div>
-                            <div>
-                              <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block mb-1.5">
-                                Parcelas
-                              </label>
-                              <Select
-                                value={payment.installments}
-                                onValueChange={(v) => setPayment((p) => ({ ...p, installments: v }))}
-                              >
-                                <SelectTrigger className="h-11 rounded-xl border-gray-200 text-[14px]">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {[1,2,3,4,5,6,7,8,9,10,11,12].map((n) => (
-                                    <SelectItem key={n} value={n.toString()}>
-                                      {n}x de {formatPrice(total / n)} {n === 1 ? '(a vista)' : ''}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </div>
                 </div>
 

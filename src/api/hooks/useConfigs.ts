@@ -10,6 +10,7 @@ import type {
 const KEYS = {
   loja: ['admin', 'config', 'loja'] as const,
   home: ['admin', 'config', 'home'] as const,
+  publicHome: (slug: string) => ['store', slug, 'config', 'home'] as const,
   chat: ['admin', 'config', 'chat'] as const,
   pagamento: ['admin', 'config', 'pagamento'] as const,
 };
@@ -24,6 +25,15 @@ export function useSaveConfigLoja() {
   return useMutation({
     mutationFn: (data: SalvarConfiguracaoLojaRequest) => configService.saveLoja(data),
     onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.loja }),
+  });
+}
+
+// Public Home (no auth)
+export function usePublicHomeConfig(slug: string) {
+  return useQuery({
+    queryKey: KEYS.publicHome(slug),
+    queryFn: () => configService.getPublicHome(slug),
+    enabled: !!slug,
   });
 }
 

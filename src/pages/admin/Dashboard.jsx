@@ -1,6 +1,5 @@
-import React, { useMemo } from "react";
-import { useAdminProducts, useAdminCategories, useAdminTags } from "@/api/hooks";
-import { mapProductFromApi, mapCategoryFromApi, mapTagFromApi } from "@/api/adapters";
+import React from "react";
+import { useDashboardStats } from "@/api/hooks";
 import { motion } from "framer-motion";
 import {
   Package,
@@ -8,10 +7,8 @@ import {
   Star,
   TrendingDown,
   Grid3X3,
-  Tags,
+  ShoppingBag,
   DollarSign,
-  BarChart3,
-  ArrowUpRight,
 } from "lucide-react";
 import StatsCard from "@/components/dashboard/StatsCard";
 import RecentProducts from "@/components/dashboard/RecentProducts";
@@ -38,35 +35,28 @@ const fadeUp = {
 };
 
 export default function Dashboard({ onNavigate }) {
-  const { data: productsData } = useAdminProducts({ tamanho: 200, ordenacao: 'recentes' });
-  const { data: categoriesData } = useAdminCategories();
-  const { data: tagsData } = useAdminTags();
+  const { data: stats } = useDashboardStats();
 
-  const products = useMemo(
-    () => (productsData?.conteudo || []).map(mapProductFromApi),
-    [productsData]
-  );
-  const categories = useMemo(
-    () => (categoriesData || []).map(mapCategoryFromApi),
-    [categoriesData]
-  );
-  const tags = useMemo(
-    () => (tagsData || []).map(mapTagFromApi),
-    [tagsData]
-  );
+  // Adaptar dados da API para os componentes existentes
+  const lowStockProducts = (stats?.produtosEstoqueBaixo || []).map((p) => ({
+    id: p.id,
+    name: p.nome,
+    stock: p.estoque,
+    is_active: true,
+  }));
 
-  const totalProducts = products.length;
-  const activeProducts = products.filter((p) => p.is_active !== false).length;
-  const expressProducts = products.filter((p) => p.express_delivery).length;
-  const featuredProducts = products.filter((p) => p.featured).length;
-  const discountProducts = products.filter(
-    (p) => p.original_price && p.original_price > p.price
-  ).length;
-  const totalStock = products.reduce((sum, p) => sum + (p.stock || 0), 0);
-  const totalValue = products.reduce(
-    (sum, p) => sum + p.price * (p.stock || 0),
-    0
-  );
+  const recentProducts = (stats?.produtosRecentes || []).map((p) => ({
+    id: p.id,
+    name: p.nome,
+    price: p.preco,
+    images: [],
+  }));
+
+  const categoriesData = (stats?.categoriasResumo || []).map((c) => ({
+    id: c.id,
+    name: c.nome,
+    count: c.totalProdutos,
+  }));
 
   return (
     <div className="space-y-6 max-w-[1400px] mx-auto">
@@ -92,28 +82,28 @@ export default function Dashboard({ onNavigate }) {
           <div className="flex items-center gap-2 bg-white/80 dark:bg-[#2c2c2e]/80 backdrop-blur-xl border border-black/[0.04] dark:border-white/[0.06] rounded-full px-3.5 py-[6px] shadow-[0_1px_4px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_4px_rgba(0,0,0,0.2)]">
             <div className="w-[6px] h-[6px] rounded-full bg-[#34c759] animate-pulse" />
             <span className="text-[11px] font-medium text-[#48484a] dark:text-[#aeaeb2] tabular-nums">
-              {totalStock} unidades em estoque
+              {stats?.unidadesEmEstoque ?? 0} unidades em estoque
             </span>
           </div>
         </motion.div>
       </motion.div>
 
       {/* Stock Alert */}
-      <StockAlert products={products} onNavigate={onNavigate} />
+      <StockAlert products={lowStockProducts} onNavigate={onNavigate} />
 
       {/* Primary Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatsCard
           title="Produtos"
-          value={totalProducts}
+          value={stats?.totalProdutos ?? 0}
           icon={Package}
-          subtitle={`${activeProducts} ativos`}
+          subtitle={`${stats?.produtosAtivos ?? 0} ativos`}
           accent="#007aff"
           delay={0}
         />
         <StatsCard
           title="Express"
-          value={expressProducts}
+          value={stats?.produtosExpressa ?? 0}
           icon={Zap}
           subtitle="Entrega rápida"
           accent="#ff9500"
@@ -121,7 +111,7 @@ export default function Dashboard({ onNavigate }) {
         />
         <StatsCard
           title="Destaques"
-          value={featuredProducts}
+          value={stats?.produtosDestaque ?? 0}
           icon={Star}
           subtitle="Na vitrine"
           accent="#af52de"
@@ -129,7 +119,7 @@ export default function Dashboard({ onNavigate }) {
         />
         <StatsCard
           title="Em Oferta"
-          value={discountProducts}
+          value={stats?.produtosComDesconto ?? 0}
           icon={TrendingDown}
           subtitle="Com desconto"
           accent="#ff3b30"
@@ -141,23 +131,23 @@ export default function Dashboard({ onNavigate }) {
       <div className="grid grid-cols-3 gap-3">
         <StatsCard
           title="Categorias"
-          value={categories.length}
+          value={categoriesData.length}
           icon={Grid3X3}
           compact
           accent="#34c759"
           delay={0.2}
         />
         <StatsCard
-          title="Tags"
-          value={tags.length}
-          icon={Tags}
+          title="Pedidos"
+          value={stats?.totalPedidos ?? 0}
+          icon={ShoppingBag}
           compact
           accent="#5ac8fa"
           delay={0.25}
         />
         <StatsCard
           title="Valor Total"
-          value={formatPrice(totalValue)}
+          value={formatPrice(stats?.valorTotalEstoque ?? 0)}
           icon={DollarSign}
           compact
           accent="#30d158"
@@ -171,10 +161,10 @@ export default function Dashboard({ onNavigate }) {
           <QuickActions onNavigate={onNavigate} />
         </div>
         <div className="lg:col-span-5">
-          <RecentProducts products={products} onNavigate={onNavigate} />
+          <RecentProducts products={recentProducts} onNavigate={onNavigate} />
         </div>
         <div className="lg:col-span-3">
-          <CategoryBreakdown categories={categories} products={products} />
+          <CategoryBreakdown categories={categoriesData} />
         </div>
       </div>
     </div>

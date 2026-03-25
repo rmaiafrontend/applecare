@@ -15,9 +15,11 @@ import {
   usePublicProducts,
   usePublicBanners,
   usePublicCatalogSections,
+  usePublicHomeConfig,
   useCart,
   useAddToCart,
 } from '@/api/hooks';
+import { deserializeHomeConfig } from '@/lib/homeConfigSerializer';
 import {
   Smartphone,
   Laptop,
@@ -62,8 +64,11 @@ export default function Home() {
   const { data: productsPage, isLoading: loadingProducts } = usePublicProducts(slug, { tamanho: 200 });
   const { data: heroBanners = [] } = usePublicBanners(slug, 'HERO');
   const { data: catalogSections = [] } = usePublicCatalogSections(slug);
+  const { data: homeConfigRaw } = usePublicHomeConfig(slug);
   const { data: cartItems = [] } = useCart(slug);
   const addToCartMutation = useAddToCart(slug);
+
+  const homeConfig = useMemo(() => deserializeHomeConfig(homeConfigRaw), [homeConfigRaw]);
 
   const config = store?.configuracao;
   const storeName = config?.nomeLoja || 'Apple Link';
@@ -88,6 +93,31 @@ export default function Home() {
     .slice(0, 6);
 
   const heroBanner = heroBanners.find(b => b.ativo) || null;
+
+  // Home config sections
+  const heroTitle = homeConfig.hero_title || 'Produtos Apple.';
+  const heroSubtitle = homeConfig.hero_subtitle || 'Direto pra você.';
+  const heroCta = homeConfig.hero_cta_text || heroBanner?.textoCta || 'Explorar produtos';
+  const heroCtaLink = homeConfig.hero_cta_link || heroBanner?.link || createPageUrl('Products');
+  const heroImage = homeConfig.hero_image_url || heroBanner?.imagemUrl || "https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/article/Apple-iPhone-15-Pro-lineup-hero-230912_Full-Bleed-Image.jpg.xlarge.jpg";
+  const heroBadgeText = homeConfig.hero_badge_text || 'Entrega em 1 hora';
+  const heroBadgeActive = homeConfig.hero_badge_active !== false;
+
+  const differentialsActive = homeConfig.differentials_active !== false;
+  const differentialsItems = Array.isArray(homeConfig.differentials_items)
+    ? homeConfig.differentials_items
+    : [
+        { icon: 'Truck', label: 'Entrega 1h' },
+        { icon: 'Shield', label: 'Garantia Apple' },
+        { icon: 'Zap', label: '100% Original' },
+      ];
+
+  const aiButtonActive = homeConfig.ai_button_active !== false;
+  const aiButtonTitle = homeConfig.ai_button_title || 'Compra Assistida';
+  const aiButtonSubtitle = homeConfig.ai_button_subtitle || 'Converse com a IA e descubra o produto ideal pra você';
+
+  const categoriesActive = homeConfig.categories_active !== false;
+  const categoriesTitle = homeConfig.categories_title || 'Categorias';
 
   const handleAddToCart = async (product) => {
     try {
@@ -189,7 +219,7 @@ export default function Home() {
         >
           <div className="relative p-6 pb-7">
             <img
-              src={heroBanner?.imagemUrl || "https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/article/Apple-iPhone-15-Pro-lineup-hero-230912_Full-Bleed-Image.jpg.xlarge.jpg"}
+              src={heroImage}
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -197,25 +227,27 @@ export default function Home() {
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(3,7,18,0.8), transparent 60%)' }} />
 
             <div className="relative z-10">
-              <motion.div
-                variants={fadeUp}
-                custom={0}
-                className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5 mb-4 border border-white/[0.08]"
-              >
-                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                <span className="font-medium text-white/90 text-[11px] tracking-widest uppercase">
-                  Entrega em 1 hora
-                </span>
-              </motion.div>
+              {heroBadgeActive && (
+                <motion.div
+                  variants={fadeUp}
+                  custom={0}
+                  className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5 mb-4 border border-white/[0.08]"
+                >
+                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                  <span className="font-medium text-white/90 text-[11px] tracking-widest uppercase">
+                    {heroBadgeText}
+                  </span>
+                </motion.div>
+              )}
 
               <motion.h1
                 variants={fadeUp}
                 custom={1}
                 className="text-[28px] font-bold mb-2 leading-[1.15] text-white tracking-tight"
               >
-                Produtos Apple.
+                {heroTitle}
                 <br />
-                <span className="text-white/60">Direto pra você.</span>
+                <span className="text-white/60">{heroSubtitle}</span>
               </motion.h1>
 
               <motion.p
@@ -228,10 +260,10 @@ export default function Home() {
 
               <motion.div variants={fadeUp} custom={3}>
                 <Link
-                  to={heroBanner?.link || createPageUrl('Products')}
+                  to={heroCtaLink}
                   className="group inline-flex items-center gap-2.5 bg-white text-gray-900 px-5 py-3 rounded-2xl font-semibold text-sm transition-all hover:bg-white/95 active:scale-[0.97]"
                 >
-                  {heroBanner?.textoCta || 'Explorar produtos'}
+                  {heroCta}
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </motion.div>
@@ -240,66 +272,69 @@ export default function Home() {
         </motion.section>
 
         {/* ── Benefits Strip ── */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          className="flex items-center gap-2 px-4 mt-5 overflow-x-auto no-scrollbar"
-        >
-          {[
-            { icon: Truck, label: 'Entrega 1h' },
-            { icon: Shield, label: 'Garantia Apple' },
-            { icon: Zap, label: '100% Original' },
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              variants={fadeUp}
-              custom={i}
-              className="flex items-center gap-2 bg-white border border-gray-100 rounded-full px-4 py-2.5 shrink-0"
-            >
-              <item.icon className="w-4 h-4 text-gray-900" strokeWidth={2} />
-              <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">{item.label}</span>
-            </motion.div>
-          ))}
-        </motion.div>
+        {differentialsActive && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+            className="flex items-center gap-2 px-4 mt-5 overflow-x-auto no-scrollbar"
+          >
+            {differentialsItems.map((item, i) => {
+              const IconComp = { Truck, Shield, Zap }[item.icon] || Shield;
+              return (
+                <motion.div
+                  key={i}
+                  variants={fadeUp}
+                  custom={i}
+                  className="flex items-center gap-2 bg-white border border-gray-100 rounded-full px-4 py-2.5 shrink-0"
+                >
+                  <IconComp className="w-4 h-4 text-gray-900" strokeWidth={2} />
+                  <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">{item.label}</span>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
 
         {/* ── Smart Search Banner ── */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          custom={2}
-          className="px-4 mt-5"
-        >
-          <button
-            onClick={() => navigate('/Search')}
-            className="w-full relative overflow-hidden bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-2xl p-4 text-left group active:scale-[0.98] transition-transform"
+        {aiButtonActive && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={2}
+            className="px-4 mt-5"
           >
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-              <div className="absolute bottom-0 left-1/4 w-24 h-24 bg-white/5 rounded-full blur-xl" />
-            </div>
-            <div className="relative z-10 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shrink-0 border border-white/10">
-                <Sparkles className="w-5 h-5 text-white" strokeWidth={2} />
+            <button
+              onClick={() => navigate('/Search')}
+              className="w-full relative overflow-hidden bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-2xl p-4 text-left group active:scale-[0.98] transition-transform"
+            >
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+                <div className="absolute bottom-0 left-1/4 w-24 h-24 bg-white/5 rounded-full blur-xl" />
               </div>
-              <div className="flex-1 min-w-0">
-                <span className="text-[13px] font-bold text-white block leading-tight">
-                  Compra Assistida
-                </span>
-                <span className="text-[11px] text-white/60 block mt-0.5">
-                  Converse com a IA e descubra o produto ideal pra você
-                </span>
+              <div className="relative z-10 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shrink-0 border border-white/10">
+                  <Sparkles className="w-5 h-5 text-white" strokeWidth={2} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-[13px] font-bold text-white block leading-tight">
+                    {aiButtonTitle}
+                  </span>
+                  <span className="text-[11px] text-white/60 block mt-0.5">
+                    {aiButtonSubtitle}
+                  </span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-white/50 shrink-0 group-hover:translate-x-0.5 transition-transform" />
               </div>
-              <ArrowRight className="w-4 h-4 text-white/50 shrink-0 group-hover:translate-x-0.5 transition-transform" />
-            </div>
-          </button>
-        </motion.div>
+            </button>
+          </motion.div>
+        )}
 
         {/* ── Categories ── */}
-        <section className="mt-8">
+        {categoriesActive && <section className="mt-8">
           <div className="flex items-center justify-between px-4 mb-4">
-            <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">Categorias</h2>
+            <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{categoriesTitle}</h2>
             <Link
               to={createPageUrl('Categories')}
               className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors"
@@ -347,7 +382,7 @@ export default function Home() {
               })}
             </div>
           )}
-        </section>
+        </section>}
 
         {/* ── Dynamic Catalog Sections ── */}
         {catalogSections.map((section) => (

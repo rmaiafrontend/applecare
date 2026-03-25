@@ -65,21 +65,31 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
-    // Polling para detectar remoção manual do token na mesma aba
-    // (o evento 'storage' só dispara em outras abas)
-    const interval = setInterval(() => {
+    // Agendar logout baseado no exp do JWT (em vez de polling a cada 2s)
+    let expiryTimeout;
+    if (isAuthenticated) {
       const token = localStorage.getItem('app_access_token');
-      if (isAuthenticated && (!token || isTokenExpired(token))) {
+      if (!token) {
         logout();
+      } else {
+        const payload = decodeToken(token);
+        if (payload?.exp) {
+          const msUntilExpiry = payload.exp * 1000 - Date.now();
+          if (msUntilExpiry <= 0) {
+            logout();
+          } else {
+            expiryTimeout = setTimeout(logout, Math.min(msUntilExpiry, 2147483647));
+          }
+        }
       }
-    }, 2000);
+    }
 
     window.addEventListener('auth:logout', handleForceLogout);
     window.addEventListener('storage', handleStorageChange);
     return () => {
       window.removeEventListener('auth:logout', handleForceLogout);
       window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
+      if (expiryTimeout) clearTimeout(expiryTimeout);
     };
   }, [logout, isAuthenticated]);
 

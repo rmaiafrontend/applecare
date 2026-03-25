@@ -11,6 +11,10 @@ import type {
 } from '../types';
 
 export const configService = {
+  // Public Home
+  getPublicHome: (slug: string) =>
+    apiClient<ConfiguracaoHomeResponse>({ method: 'GET', path: `/api/v1/lojas/${slug}/configuracoes/home` }),
+
   // Loja
   getLoja: () =>
     apiClient<ConfiguracaoLojaResponse>({ method: 'GET', path: '/api/v1/admin/configuracoes/loja' }),

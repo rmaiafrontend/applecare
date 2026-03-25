@@ -15,7 +15,7 @@ const COLORS = [
 export default function CategoryBreakdown({ categories = [], products = [] }) {
   const data = categories
     .map((cat, i) => {
-      const count = products.filter(
+      const count = cat.count ?? products.filter(
         (p) => p.category_id === cat.category_id
       ).length;
       return { ...cat, count, color: COLORS[i % COLORS.length] };
