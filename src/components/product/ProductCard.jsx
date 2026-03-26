@@ -6,7 +6,7 @@ import { formatPrice } from '@/lib/format';
 
 export default function ProductCard({ product, onAddToCart, isAdding }) {
   const isAvailable = product.stock > 0;
-  const isUsed = product.condition === 'used';
+  const isUsed = product.condition === 'USADO';
   const hasDiscount = product.original_price && product.original_price > product.price;
   const discountPercent = hasDiscount
     ? Math.round((1 - product.price / product.original_price) * 100)

@@ -138,7 +138,14 @@ export default function Checkout() {
 
       const orderResult = await createOrderMutation.mutateAsync({
         metodoPagamento: PAYMENT_METHOD_MAP[payment.method] || payment.method,
-        observacao: `Endereco: ${address.street}, ${address.number} - ${address.city}/${address.state}`,
+        paraEntrega: true,
+        enderecoCep: address.cep.replace(/\D/g, ''),
+        enderecoRua: address.street,
+        enderecoNumero: address.number,
+        enderecoComplemento: address.complement || undefined,
+        enderecoBairro: address.neighborhood,
+        enderecoCidade: address.city,
+        enderecoEstado: address.state,
         itens: orderItems,
       });
 

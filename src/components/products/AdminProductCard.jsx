@@ -33,7 +33,7 @@ export default function AdminProductCard({ product, categoryName, onDelete, onTo
               <Truck className="w-2.5 h-2.5" /> Express
             </span>
           )}
-          {product.condition === "used" && (
+          {product.condition === "USADO" && (
             <span className="text-[10px] font-bold bg-orange-500 text-white px-2 py-0.5 rounded-md shadow-sm">Usado</span>
           )}
         </div>

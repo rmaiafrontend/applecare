@@ -214,9 +214,20 @@ export default function Cart() {
         quantidade: item.quantity,
       }));
 
+      const isDelivery = deliveryMethod === 'delivery';
       const orderResult = await createOrderMutation.mutateAsync({
         metodoPagamento: PAYMENT_METHOD_MAP[paymentMethod] || paymentMethod,
-        observacao: deliveryMethod === 'pickup' ? 'Retirada na loja' : `Entrega: ${address.street}, ${address.number}`,
+        paraEntrega: isDelivery,
+        ...(isDelivery ? {
+          enderecoCep: address.cep.replace(/\D/g, ''),
+          enderecoRua: address.street,
+          enderecoNumero: address.number,
+          enderecoComplemento: address.complement || undefined,
+          enderecoBairro: address.neighborhood,
+          enderecoCidade: address.city,
+          enderecoEstado: address.state,
+        } : {}),
+        observacao: !isDelivery ? 'Retirada na loja' : undefined,
         itens: orderItems,
       });
 

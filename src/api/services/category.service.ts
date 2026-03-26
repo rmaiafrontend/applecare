@@ -10,6 +10,9 @@ import type {
 
 export const categoryService = {
   // Admin
+  adminList: () =>
+    apiClient<CategoriaResponse[]>({ method: 'GET', path: '/api/v1/admin/categorias' }),
+
   create: (data: CadastrarCategoriaRequest) =>
     apiClient<CategoriaResponse>({ method: 'POST', path: '/api/v1/admin/categorias', body: data }),
 

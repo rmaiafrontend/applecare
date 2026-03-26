@@ -115,7 +115,7 @@ export default function ProductDetail() {
       ? product.images
       : ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop'];
 
-  const isUsed = product?.condition === 'used';
+  const isUsed = product?.condition === 'USADO';
   const hasDiscount = product?.original_price && product.original_price > product.price;
   const discountPercent = hasDiscount
     ? Math.round((1 - product.price / product.original_price) * 100)

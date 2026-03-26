@@ -7,6 +7,14 @@ export interface ItemPedidoRequest {
 
 export interface CriarPedidoRequest {
   metodoPagamento?: string;
+  paraEntrega?: boolean;
+  enderecoCep?: string;
+  enderecoRua?: string;
+  enderecoNumero?: string;
+  enderecoComplemento?: string;
+  enderecoBairro?: string;
+  enderecoCidade?: string;
+  enderecoEstado?: string;
   observacao?: string;
   itens: ItemPedidoRequest[];
 }
@@ -24,6 +32,14 @@ export interface PedidoResponse {
   id: number;
   numeroPedido: string;
   metodoPagamento?: string;
+  paraEntrega?: boolean;
+  enderecoCep?: string;
+  enderecoRua?: string;
+  enderecoNumero?: string;
+  enderecoComplemento?: string;
+  enderecoBairro?: string;
+  enderecoCidade?: string;
+  enderecoEstado?: string;
   subtotal: number;
   custoFrete: number;
   total: number;

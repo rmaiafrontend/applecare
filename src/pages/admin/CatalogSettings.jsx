@@ -18,7 +18,7 @@ import { useAuth } from "@/lib/AuthContext";
 
 const EMPTY_FORM = {
   titulo: "", subtitulo: "", ativo: true,
-  ordemExibicao: 0, maxItens: 6, tipoFiltro: "all", valorFiltro: ""
+  ordemExibicao: 0, maxItens: 6, tipoFiltro: "TODOS", valorFiltro: ""
 };
 
 export default function CatalogSettings() {
@@ -49,7 +49,7 @@ export default function CatalogSettings() {
       ativo: config.ativo !== false,
       ordemExibicao: config.ordemExibicao || 0,
       maxItens: config.maxItens || 6,
-      tipoFiltro: config.tipoFiltro || "all",
+      tipoFiltro: config.tipoFiltro || "TODOS",
       valorFiltro: config.valorFiltro || "",
     });
     setEditDialog(config);

@@ -8,58 +8,67 @@ import type {
 import { useSlug } from './useSlug';
 
 const KEYS = {
-  all: (slug: string) => ['store', slug, 'categories'] as const,
+  admin: () => ['admin', 'categories'] as const,
+  public: (slug: string) => ['store', slug, 'categories'] as const,
   detail: (slug: string, id: number) => ['store', slug, 'category', id] as const,
 };
 
 export function useAdminCategories() {
-  const slug = useSlug();
   return useQuery({
-    queryKey: KEYS.all(slug),
-    queryFn: () => categoryService.publicList(slug),
-    enabled: !!slug,
+    queryKey: KEYS.admin(),
+    queryFn: () => categoryService.adminList(),
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 }
 
 export function useCreateCategory() {
-  const slug = useSlug();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: CadastrarCategoriaRequest) => categoryService.create(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.all(slug) }),
+    onSettled: () => {
+      qc.refetchQueries({ queryKey: KEYS.admin() });
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 
 export function useUpdateCategory() {
-  const slug = useSlug();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: AtualizarCategoriaRequest }) => categoryService.update(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.all(slug) }),
+    onSettled: () => {
+      qc.refetchQueries({ queryKey: KEYS.admin() });
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 
 export function useDeactivateCategory() {
-  const slug = useSlug();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => categoryService.deactivate(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.all(slug) }),
+    onSettled: () => {
+      qc.refetchQueries({ queryKey: KEYS.admin() });
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 
 export function useReorderCategories() {
-  const slug = useSlug();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: ReordenarCategoriasRequest) => categoryService.reorder(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.all(slug) }),
+    onSettled: () => {
+      qc.refetchQueries({ queryKey: KEYS.admin() });
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 
 export function usePublicCategories(slug: string) {
   return useQuery({
-    queryKey: KEYS.all(slug),
+    queryKey: KEYS.public(slug),
     queryFn: () => categoryService.publicList(slug),
     enabled: !!slug,
   });

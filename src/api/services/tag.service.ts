@@ -8,6 +8,9 @@ import type {
 
 export const tagService = {
   // Admin
+  adminList: () =>
+    apiClient<EtiquetaResponse[]>({ method: 'GET', path: '/api/v1/admin/etiquetas' }),
+
   create: (data: CadastrarEtiquetaRequest) =>
     apiClient<EtiquetaResponse>({ method: 'POST', path: '/api/v1/admin/etiquetas', body: data }),
 

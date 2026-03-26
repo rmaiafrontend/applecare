@@ -11,6 +11,8 @@ export function useAdminCatalogSections() {
   return useQuery({
     queryKey: KEYS.admin,
     queryFn: () => catalogSectionService.list(),
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 }
 
@@ -18,7 +20,10 @@ export function useCreateCatalogSection() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: CadastrarSecaoCatalogoRequest) => catalogSectionService.create(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.admin }),
+    onSettled: () => {
+      qc.refetchQueries({ queryKey: KEYS.admin });
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 
@@ -26,7 +31,10 @@ export function useUpdateCatalogSection() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: AtualizarSecaoCatalogoRequest }) => catalogSectionService.update(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.admin }),
+    onSettled: () => {
+      qc.refetchQueries({ queryKey: KEYS.admin });
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 
@@ -34,7 +42,10 @@ export function useDeactivateCatalogSection() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => catalogSectionService.deactivate(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.admin }),
+    onSettled: () => {
+      qc.refetchQueries({ queryKey: KEYS.admin });
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 

@@ -196,7 +196,7 @@ export function smartSearch(query, products, categories) {
 
       // Condition match
       if (wantUsed) {
-        if (product.condition === 'used') score += 5;
+        if (product.condition === 'USADO') score += 5;
         else score -= 3;
       }
 

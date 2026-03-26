@@ -20,6 +20,8 @@ export function useAdminProducts(params?: AdminProdutoListParams) {
   return useQuery({
     queryKey: KEYS.admin(params),
     queryFn: () => productService.list(params),
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 }
 
@@ -27,7 +29,12 @@ export function useCreateProduct() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: CadastrarProdutoRequest) => productService.create(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'products'] }),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'products'] });
+      qc.refetchQueries({ queryKey: ['admin', 'products'] });
+      qc.invalidateQueries({ queryKey: ['store'] });
+      qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+    },
   });
 }
 
@@ -35,7 +42,12 @@ export function useUpdateProduct() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: AtualizarProdutoRequest }) => productService.update(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'products'] }),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'products'] });
+      qc.refetchQueries({ queryKey: ['admin', 'products'] });
+      qc.invalidateQueries({ queryKey: ['store'] });
+      qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+    },
   });
 }
 
@@ -43,7 +55,12 @@ export function useDeactivateProduct() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => productService.deactivate(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'products'] }),
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'products'] });
+      qc.refetchQueries({ queryKey: ['admin', 'products'] });
+      qc.invalidateQueries({ queryKey: ['store'] });
+      qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+    },
   });
 }
 

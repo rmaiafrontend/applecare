@@ -7,6 +7,7 @@ import type {
 } from '../types';
 
 export const orderService = {
+  // Public
   list: (slug: string, params?: PaginationParams) =>
     apiClient<PedidoPaginadoResponse>({ method: 'GET', path: `/api/v1/lojas/${slug}/pedidos`, params: params as Record<string, string | number | boolean | undefined> }),
 
@@ -18,4 +19,11 @@ export const orderService = {
 
   create: (slug: string, data: CriarPedidoRequest) =>
     apiClient<PedidoResponse>({ method: 'POST', path: `/api/v1/lojas/${slug}/pedidos`, body: data }),
+
+  // Admin
+  adminList: (params?: PaginationParams) =>
+    apiClient<PedidoPaginadoResponse>({ method: 'GET', path: '/api/v1/admin/pedidos', params: params as Record<string, string | number | boolean | undefined> }),
+
+  adminGetById: (id: number) =>
+    apiClient<PedidoResponse>({ method: 'GET', path: `/api/v1/admin/pedidos/${id}` }),
 };

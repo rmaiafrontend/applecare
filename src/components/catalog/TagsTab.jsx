@@ -69,11 +69,11 @@ export default function TagsTab() {
       } else {
         await updateMutation.mutateAsync({ id: editDialog.id, data: apiData });
       }
+      setEditDialog(null);
     } catch (err) {
       console.error('Error saving tag:', err);
     }
     setSaving(false);
-    setEditDialog(null);
   };
 
   const getUsageCount = (slug) => products.filter(p => p.tags?.some(t => t.slug === slug)).length;

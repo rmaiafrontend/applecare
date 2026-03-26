@@ -8,12 +8,10 @@ import {
 } from "@/components/ui/dialog";
 
 const FILTER_TYPES = [
-  { value: "featured", label: "Destaques" },
-  { value: "express", label: "Entrega Express" },
-  { value: "discount", label: "Com Desconto" },
-  { value: "new", label: "Novos Produtos" },
-  { value: "category", label: "Por Categoria" },
-  { value: "all", label: "Todos" },
+  { value: "DESTAQUE", label: "Destaques" },
+  { value: "ETIQUETA", label: "Por Etiqueta" },
+  { value: "CATEGORIA", label: "Por Categoria" },
+  { value: "TODOS", label: "Todos" },
 ];
 
 export default function SectionFormDialog({ open, onOpenChange, form, setForm, categories, saving, onSave, isNew }) {
@@ -96,7 +94,7 @@ export default function SectionFormDialog({ open, onOpenChange, form, setForm, c
           </div>
 
           {/* Category selector */}
-          {form.tipoFiltro === "category" && (
+          {form.tipoFiltro === "CATEGORIA" && (
             <div className="space-y-1.5">
               <Label className="text-[11px] text-[#86868b] font-semibold uppercase tracking-wider">Categoria</Label>
               <Select value={form.valorFiltro} onValueChange={v => updateField("valorFiltro", v)}>

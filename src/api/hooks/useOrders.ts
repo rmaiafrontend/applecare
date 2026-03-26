@@ -6,6 +6,8 @@ const KEYS = {
   list: (slug: string, params?: PaginationParams) => ['store', slug, 'orders', params] as const,
   detail: (slug: string, id: number) => ['store', slug, 'order', id] as const,
   byNumber: (slug: string, numero: string) => ['store', slug, 'order', 'numero', numero] as const,
+  adminList: (params?: PaginationParams) => ['admin', 'orders', params] as const,
+  adminDetail: (id: number) => ['admin', 'order', id] as const,
 };
 
 export function useOrders(slug: string, params?: PaginationParams) {
@@ -37,5 +39,20 @@ export function useCreateOrder(slug: string) {
   return useMutation({
     mutationFn: (data: CriarPedidoRequest) => orderService.create(slug, data),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['store', slug, 'orders'] }),
+  });
+}
+
+export function useAdminOrders(params?: PaginationParams) {
+  return useQuery({
+    queryKey: KEYS.adminList(params),
+    queryFn: () => orderService.adminList(params),
+  });
+}
+
+export function useAdminOrderById(id: number) {
+  return useQuery({
+    queryKey: KEYS.adminDetail(id),
+    queryFn: () => orderService.adminGetById(id),
+    enabled: !!id,
   });
 }

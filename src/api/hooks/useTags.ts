@@ -4,48 +4,55 @@ import type { CadastrarEtiquetaRequest, AtualizarEtiquetaRequest } from '../type
 import { useSlug } from './useSlug';
 
 const KEYS = {
-  all: (slug: string) => ['store', slug, 'tags'] as const,
+  admin: () => ['admin', 'tags'] as const,
+  public: (slug: string) => ['store', slug, 'tags'] as const,
 };
 
 export function useAdminTags() {
-  const slug = useSlug();
   return useQuery({
-    queryKey: KEYS.all(slug),
-    queryFn: () => tagService.publicList(slug),
-    enabled: !!slug,
+    queryKey: KEYS.admin(),
+    queryFn: () => tagService.adminList(),
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 }
 
 export function useCreateTag() {
-  const slug = useSlug();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: CadastrarEtiquetaRequest) => tagService.create(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.all(slug) }),
+    onSettled: () => {
+      qc.refetchQueries({ queryKey: KEYS.admin() });
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 
 export function useUpdateTag() {
-  const slug = useSlug();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: AtualizarEtiquetaRequest }) => tagService.update(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.all(slug) }),
+    onSettled: () => {
+      qc.refetchQueries({ queryKey: KEYS.admin() });
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 
 export function useDeactivateTag() {
-  const slug = useSlug();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => tagService.deactivate(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.all(slug) }),
+    onSettled: () => {
+      qc.refetchQueries({ queryKey: KEYS.admin() });
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 
 export function usePublicTags(slug: string) {
   return useQuery({
-    queryKey: KEYS.all(slug),
+    queryKey: KEYS.public(slug),
     queryFn: () => tagService.publicList(slug),
     enabled: !!slug,
   });

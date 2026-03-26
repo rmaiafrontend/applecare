@@ -34,19 +34,8 @@ const fadeUp = {
   }),
 };
 
-const paymentIcons = {
-  pix: QrCode,
-  credit_card: CreditCard,
-  debit_card: CreditCard,
-  boleto: FileText,
-};
-
-const paymentLabels = {
-  pix: 'PIX',
-  credit_card: 'Cartao de Credito',
-  debit_card: 'Cartao de Debito',
-  boleto: 'Boleto Bancario',
-};
+const paymentIcons = { PIX: QrCode, CARTAO: CreditCard, DINHEIRO: FileText };
+const paymentLabels = { PIX: 'PIX', CARTAO: 'Cartão de Crédito', DINHEIRO: 'Dinheiro' };
 
 const COUNTDOWN_SECONDS = 5;
 

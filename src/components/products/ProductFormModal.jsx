@@ -19,7 +19,7 @@ import FormSection from "./FormSection";
 
 const emptyForm = {
   product_id: "", name: "", sku: "", price: "", original_price: "",
-  stock: "0", express_delivery: false, category_id: "", condition: "new",
+  stock: "0", express_delivery: false, category_id: "", condition: "NOVO",
   images: [], description: "", specs: [], datasheet_url: "",
   is_featured: false, is_active: true, tags: [],
 };
@@ -48,7 +48,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
           product_id: editProduct.product_id || "", name: editProduct.name || "", sku: editProduct.sku || "",
           price: editProduct.price?.toString() || "", original_price: editProduct.original_price?.toString() || "",
           stock: editProduct.stock?.toString() || "0", express_delivery: editProduct.express_delivery || false,
-          category_id: editProduct.category_id || "", condition: editProduct.condition || "new",
+          category_id: editProduct.category_id || "", condition: editProduct.condition || "NOVO",
           images: editProduct.images || [], description: editProduct.description || "",
           specs: editProduct.specs || [], datasheet_url: editProduct.datasheet_url || "",
           is_featured: editProduct.is_featured || editProduct.featured || false, is_active: editProduct.is_active !== false,
@@ -269,8 +269,8 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
                   <Select value={form.condition} onValueChange={v => updateField("condition", v)}>
                     <SelectTrigger className={inputClass}><SelectValue /></SelectTrigger>
                     <SelectContent className="dark:bg-[#2c2c2e] dark:border-white/[0.08]">
-                      <SelectItem value="new">Novo / Lacrado</SelectItem>
-                      <SelectItem value="used">Usado / Seminovo</SelectItem>
+                      <SelectItem value="NOVO">Novo / Lacrado</SelectItem>
+                      <SelectItem value="USADO">Usado / Seminovo</SelectItem>
                     </SelectContent>
                   </Select>
                 </FieldGroup>

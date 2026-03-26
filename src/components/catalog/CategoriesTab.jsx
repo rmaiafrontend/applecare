@@ -77,11 +77,11 @@ export default function CategoriesTab() {
       } else {
         await updateMutation.mutateAsync({ id: editDialog.id, data: apiData });
       }
+      setEditDialog(null);
     } catch (err) {
       console.error('Error saving category:', err);
     }
     setSaving(false);
-    setEditDialog(null);
   };
 
   const getProductCount = (catId) => products.filter(p => p.category_id === catId).length;

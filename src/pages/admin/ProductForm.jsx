@@ -30,7 +30,7 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
 
   const [form, setForm] = useState({
     product_id: "", name: "", sku: "", price: "", original_price: "",
-    stock: "0", express_delivery: false, category_id: "", condition: "new",
+    stock: "0", express_delivery: false, category_id: "", condition: "NOVO",
     condition_checklist: [],
     images: [], description: "", specs: [], datasheet_url: "",
     is_featured: false, is_active: true, tags: [],
@@ -73,7 +73,7 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
         product_id: p.product_id || "", name: p.name || "", sku: p.sku || "",
         price: p.price?.toString() || "", original_price: p.original_price?.toString() || "",
         stock: p.stock?.toString() || "0", express_delivery: p.express_delivery || false,
-        category_id: p.category_id || "", condition: p.condition || "new",
+        category_id: p.category_id || "", condition: p.condition || "NOVO",
         condition_checklist: p.condition_checklist || [],
         images: p.images || [], description: p.description || "",
         specs: p.specs || [], datasheet_url: p.datasheet_url || "",
@@ -279,8 +279,8 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
               <Select value={form.condition} onValueChange={v => updateField("condition", v)}>
                 <SelectTrigger className="h-11 rounded-2xl text-[13px] border-black/[0.06] bg-[#f5f5f7]/50"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="new">Novo / Lacrado</SelectItem>
-                  <SelectItem value="used">Usado / Seminovo</SelectItem>
+                  <SelectItem value="NOVO">Novo / Lacrado</SelectItem>
+                  <SelectItem value="USADO">Usado / Seminovo</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -289,7 +289,7 @@ export default function ProductForm({ onNavigate, productId: propProductId }) {
       </div>
 
       {/* Condition Checklist - only for used */}
-      {form.condition === "used" && (
+      {form.condition === "USADO" && (
         <FormSection title="Checklist de Condições" subtitle="Informe o estado de cada item do aparelho" icon={ClipboardCheck}>
           <ConditionChecklist
             checklist={form.condition_checklist}
