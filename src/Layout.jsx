@@ -1,21 +1,20 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import CompareFloatingBar from '@/components/compare/CompareFloatingBar';
+import { NO_LAYOUT_ROUTES, MINIMAL_LAYOUT_ROUTES } from './pages.config';
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
 
-  // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // Splash and Admin pages should not have the storefront layout
-  if (currentPageName === 'Splash' || currentPageName === 'LandingPage' || currentPageName === 'Login' || currentPageName === 'Registro') {
+  if (NO_LAYOUT_ROUTES.has(currentPageName)) {
     return children;
   }
 
-  if (currentPageName === 'Admin') {
+  if (MINIMAL_LAYOUT_ROUTES.has(currentPageName)) {
     return <div className="min-h-screen">{children}</div>;
   }
 

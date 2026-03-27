@@ -100,6 +100,19 @@ export const PROTECTED_ROUTES = new Set([
     "OrderConfirmation",
 ]);
 
+/** Páginas sem layout de storefront (sem CompareFloatingBar, sem estilos globais) */
+export const NO_LAYOUT_ROUTES = new Set([
+    "Splash",
+    "LandingPage",
+    "Login",
+    "Registro",
+]);
+
+/** Páginas com layout mínimo (sem storefront, mas com wrapper) */
+export const MINIMAL_LAYOUT_ROUTES = new Set([
+    "Admin",
+]);
+
 export const pagesConfig = {
     mainPage: "LandingPage",
     Pages: PAGES,
