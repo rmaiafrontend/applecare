@@ -13,6 +13,13 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			store: {
+  				primary: 'var(--store-primary)',
+  				secondary: 'var(--store-secondary)',
+  				accent: 'var(--store-accent)',
+  				bg: 'var(--store-bg)',
+  				text: 'var(--store-text)',
+  			},
   			apple: {
   				dark: '#1d1d1f',
   				light: '#f5f5f7',

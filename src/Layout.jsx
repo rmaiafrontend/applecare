@@ -19,7 +19,7 @@ export default function Layout({ children, currentPageName }) {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-store-bg">
       <style>{`
         :root {
           --apple-black: #1d1d1f;

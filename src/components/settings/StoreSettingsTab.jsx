@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Save, Loader2, Check } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Save, Loader2, Check, Palette } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,7 @@ import LogoUploader from "../store/LogoUploader";
 import ColorPicker from "../store/ColorPicker";
 import HomePreview from "../home-settings/HomePreview";
 import { useConfigLoja, useSaveConfigLoja } from "@/api/hooks";
+import { storeThemes } from "@/lib/storeThemes";
 
 const defaultConfig = {
   store_name: "", store_slogan: "",
@@ -131,6 +132,54 @@ export default function StoreSettingsTab() {
           </StoreSettingsSection>
 
           <StoreSettingsSection title="Tema e Cores" subtitle="Personalize a aparência do catálogo">
+            {/* Theme presets */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Palette className="w-3.5 h-3.5 text-[#86868b] dark:text-[#98989d]" strokeWidth={1.8} />
+                <span className="text-[11px] font-semibold text-[#86868b] dark:text-[#98989d] uppercase tracking-wider">Temas</span>
+              </div>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                {storeThemes.map((theme) => {
+                  const c = theme.colors;
+                  const isActive =
+                    form.primary_color === c.primary_color &&
+                    form.accent_color === c.accent_color &&
+                    form.background_color === c.background_color;
+                  return (
+                    <button
+                      key={theme.id}
+                      onClick={() => setForm(prev => ({ ...prev, ...c }))}
+                      className={`group relative rounded-xl border-2 p-2.5 transition-all hover:scale-[1.03] active:scale-[0.97] ${
+                        isActive
+                          ? "border-[#007aff] dark:border-[#0a84ff] shadow-[0_0_0_1px_rgba(0,122,255,0.3)]"
+                          : "border-black/[0.06] dark:border-white/[0.08] hover:border-black/[0.12] dark:hover:border-white/[0.15]"
+                      }`}
+                    >
+                      {/* Color swatches */}
+                      <div className="flex gap-1 mb-2 justify-center">
+                        {[c.primary_color, c.accent_color, c.background_color, c.text_color].map((color, i) => (
+                          <div
+                            key={i}
+                            className="w-4 h-4 rounded-full border border-black/10 dark:border-white/10"
+                            style={{ backgroundColor: color }}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-[10px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] block text-center leading-tight">
+                        {theme.name}
+                      </span>
+                      {isActive && (
+                        <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#007aff] dark:bg-[#0a84ff] rounded-full flex items-center justify-center">
+                          <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Custom color pickers */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
               <ColorPicker label="Primária" value={form.primary_color} onChange={v => updateField("primary_color", v)} />
               <ColorPicker label="Secundária" value={form.secondary_color} onChange={v => updateField("secondary_color", v)} />

@@ -25,7 +25,7 @@ export default function StoreProfile({
   return (
     <motion.section initial="hidden" animate="visible" variants={stagger} className="px-5 pt-6 pb-5">
       <motion.div variants={fadeUp} custom={0} className="flex items-start gap-3.5">
-        <div className="w-[64px] h-[64px] rounded-[18px] bg-gray-900 flex items-center justify-center shadow-lg shadow-gray-900/20 shrink-0 overflow-hidden">
+        <div className="w-[64px] h-[64px] rounded-[18px] bg-store-primary flex items-center justify-center shadow-lg shadow-store-primary/20 shrink-0 overflow-hidden">
           {logoUrl ? (
             <img src={logoUrl} alt={storeName} className="w-full h-full object-cover" />
           ) : (
@@ -57,7 +57,7 @@ export default function StoreProfile({
             href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white rounded-2xl h-11 font-semibold text-[13px] transition-all hover:bg-gray-800 active:scale-[0.97]"
+            className="flex-1 flex items-center justify-center gap-2 bg-store-primary text-white rounded-2xl h-11 font-semibold text-[13px] transition-all hover:opacity-90 active:scale-[0.97]"
           >
             <MessageCircle className="w-4 h-4" strokeWidth={2} />
             WhatsApp
@@ -98,7 +98,7 @@ export default function StoreProfile({
               rel={link.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
               className={`flex items-center gap-1.5 border rounded-full px-4 py-2 text-[12px] font-semibold hover:bg-gray-200 active:scale-[0.96] transition-all shrink-0 ${
                 link.is_highlight
-                  ? 'bg-gray-900 text-white border-gray-900 hover:bg-gray-800'
+                  ? 'bg-store-primary text-white border-store-primary hover:opacity-90'
                   : 'bg-gray-100 text-gray-700 border-gray-200'
               }`}
             >

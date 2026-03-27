@@ -90,7 +90,7 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
           </div>
         )}
 
-        <h3 className="text-[13px] font-semibold text-gray-900 line-clamp-2 leading-snug">
+        <h3 className="text-[13px] font-semibold text-store-text line-clamp-2 leading-snug">
           {product.name}
         </h3>
 
@@ -101,7 +101,7 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
               {formatPrice(product.original_price)}
             </span>
           )}
-          <span className={`text-[14px] font-bold tabular-nums text-gray-900`}>
+          <span className={`text-[14px] font-bold tabular-nums text-store-text`}>
             {formatPrice(product.price)}
           </span>
         </div>

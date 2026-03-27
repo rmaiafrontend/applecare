@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import PageNotFound from '@/components/PageNotFound';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { CompareProvider } from '@/contexts/CompareContext';
+import { StoreThemeProvider } from '@/contexts/StoreThemeContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -87,8 +88,10 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <CompareProvider>
           <Router>
-            <NavigationTracker />
-            <AuthenticatedApp />
+            <StoreThemeProvider>
+              <NavigationTracker />
+              <AuthenticatedApp />
+            </StoreThemeProvider>
           </Router>
         </CompareProvider>
         <Toaster />

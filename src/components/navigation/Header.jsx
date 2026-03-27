@@ -38,12 +38,12 @@ export default function Header({
                 onClick={handleBack}
                 className="w-8 h-8 -ml-1 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-95 transition-all"
               >
-                <ArrowLeft className="w-[18px] h-[18px] text-gray-900" strokeWidth={2} />
+                <ArrowLeft className="w-[18px] h-[18px] text-store-text" strokeWidth={2} />
               </button>
             )}
 
             {title ? (
-              <h1 className="text-[15px] font-semibold text-gray-900 truncate">{title}</h1>
+              <h1 className="text-[15px] font-semibold text-store-text truncate">{title}</h1>
             ) : (
               <Link to={createPageUrl('Home')} className="flex items-center gap-1.5">
                 <div className="w-6 h-6 flex items-center justify-center">

@@ -4,6 +4,13 @@
 
 @layer base {
   :root {
+    /* Store theme colors (overridden at runtime by StoreThemeProvider) */
+    --store-primary: #1d1d1f;
+    --store-secondary: #f5f5f7;
+    --store-accent: #0071e3;
+    --store-bg: #ffffff;
+    --store-text: #1d1d1f;
+
     /* Apple Store: tema preto sofisticado */
     --background: 0 0% 98%;
     --foreground: 0 0% 7%;

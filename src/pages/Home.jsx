@@ -251,7 +251,7 @@ export default function Home() {
                   return (
                     <motion.div key={cat.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.4 }}>
                       <Link to={createPageUrl(`Products?category=${cat.id}`)} className={`group flex flex-col items-center gap-2.5 ${categoriesLayout === 'grid' ? '' : 'w-[88px] shrink-0'}`}>
-                        <div className="w-16 h-16 rounded-2xl bg-gray-900 flex items-center justify-center transition-all duration-200 group-hover:bg-gray-800 group-hover:scale-105 group-active:scale-95">
+                        <div className="w-16 h-16 rounded-2xl bg-store-primary flex items-center justify-center transition-all duration-200 group-hover:opacity-90 group-hover:scale-105 group-active:scale-95">
                           <Icon className="w-7 h-7 text-white" strokeWidth={1.5} />
                         </div>
                         <span className="text-xs font-semibold text-gray-800 block leading-tight text-center">{cat.name}</span>
