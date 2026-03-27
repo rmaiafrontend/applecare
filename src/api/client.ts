@@ -38,11 +38,12 @@ export async function apiClient<T>(config: RequestConfig): Promise<T> {
   const token = getToken();
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
-  }
 
-  const clienteId = localStorage.getItem('cliente_id');
-  if (clienteId) {
-    headers['X-Cliente-Id'] = clienteId;
+    // Só envia cliente_id se autenticado (mitigação IDOR)
+    const clienteId = sessionStorage.getItem('cliente_id');
+    if (clienteId) {
+      headers['X-Cliente-Id'] = clienteId;
+    }
   }
 
   if (!isMultipart && body) {
