@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
 import { authService } from '@/api/services';
 import { getToken, setToken, clearToken } from '@/lib/tokenStore';
 
@@ -24,16 +24,38 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [authError, setAuthError] = useState(null);
+  const expiryTimeoutRef = useRef(null);
+
+  const clearExpiryTimer = useCallback(() => {
+    if (expiryTimeoutRef.current) {
+      clearTimeout(expiryTimeoutRef.current);
+      expiryTimeoutRef.current = null;
+    }
+  }, []);
+
+  const scheduleExpiryLogout = useCallback((token, logoutFn) => {
+    clearExpiryTimer();
+    const payload = decodeToken(token);
+    if (payload?.exp) {
+      const msUntilExpiry = payload.exp * 1000 - Date.now();
+      if (msUntilExpiry <= 0) {
+        logoutFn();
+      } else {
+        expiryTimeoutRef.current = setTimeout(logoutFn, Math.min(msUntilExpiry, 2147483647));
+      }
+    }
+  }, [clearExpiryTimer]);
 
   const logout = useCallback(() => {
     setUser(null);
     setIsAuthenticated(false);
+    clearExpiryTimer();
     clearToken();
     try {
       sessionStorage.removeItem('auth_user');
       localStorage.removeItem('store_slug');
     } catch (_) {}
-  }, []);
+  }, [clearExpiryTimer]);
 
   // Restaurar sessão do tokenStore (memória + sessionStorage)
   // Apenas id e nome são persistidos — o objeto completo vive só em memória
@@ -54,40 +76,29 @@ export const AuthProvider = ({ children }) => {
     setIsLoadingAuth(false);
   }, [logout]);
 
-  // Agendar logout por expiração do JWT + escutar evento de logout forçado (401)
+  // Agendar logout por expiração do JWT na restauração de sessão
   useEffect(() => {
-    const handleForceLogout = () => logout();
-
-    let expiryTimeout;
     if (isAuthenticated) {
       const token = getToken();
-      if (!token) {
-        logout();
-      } else {
-        const payload = decodeToken(token);
-        if (payload?.exp) {
-          const msUntilExpiry = payload.exp * 1000 - Date.now();
-          if (msUntilExpiry <= 0) {
-            logout();
-          } else {
-            expiryTimeout = setTimeout(logout, Math.min(msUntilExpiry, 2147483647));
-          }
-        }
+      if (token) {
+        scheduleExpiryLogout(token, logout);
       }
     }
+  }, [isAuthenticated, logout, scheduleExpiryLogout]);
 
+  // Escutar evento de logout forçado (401 do apiClient)
+  useEffect(() => {
+    const handleForceLogout = () => logout();
     window.addEventListener('auth:logout', handleForceLogout);
-    return () => {
-      window.removeEventListener('auth:logout', handleForceLogout);
-      if (expiryTimeout) clearTimeout(expiryTimeout);
-    };
-  }, [logout, isAuthenticated]);
+    return () => window.removeEventListener('auth:logout', handleForceLogout);
+  }, [logout]);
 
   const login = async (email, senha) => {
     setAuthError(null);
     try {
       const response = await authService.login({ email, senha });
       setToken(response.token);
+      scheduleExpiryLogout(response.token, logout);
       const { id, nome } = response.usuario;
       sessionStorage.setItem('auth_user', JSON.stringify({ id, nome }));
       if (response.loja?.slug) {
@@ -108,6 +119,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authService.registro(data);
       setToken(response.token);
+      scheduleExpiryLogout(response.token, logout);
       const { id, nome } = response.usuario;
       sessionStorage.setItem('auth_user', JSON.stringify({ id, nome }));
       if (response.loja?.slug) {
