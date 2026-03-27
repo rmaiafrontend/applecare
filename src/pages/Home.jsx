@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useRef, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Clock, ChevronRight, Zap, Truck, Shield, ArrowRight, Sparkles, MessageCircle, Tag, HelpCircle, Instagram, Package } from 'lucide-react';
+import { ChevronRight, Zap, Truck, Shield, ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import BottomNav from '@/components/navigation/BottomNav';
 import ProductCard from '@/components/product/ProductCard';
@@ -19,31 +19,19 @@ import {
   useAddToCart,
 } from '@/api/hooks';
 import { deserializeHomeConfig } from '@/lib/homeConfigSerializer';
-import {
-  Smartphone,
-  Laptop,
-  Tablet,
-  Watch,
-  Headphones,
-  Monitor,
-  Cable,
-} from 'lucide-react';
+import { Smartphone, Laptop, Tablet, Watch, Headphones, Monitor, Cable } from 'lucide-react';
 
-const categoryIconMap = {
-  Smartphone,
-  Laptop,
-  Tablet,
-  Watch,
-  Headphones,
-  Monitor,
-  Cable,
-};
+import StoreProfile from './home/sections/StoreProfile';
+import HeroBanner from './home/sections/HeroBanner';
+import ProductCarousel from './home/sections/ProductCarousel';
+import InfoCard from './home/sections/InfoCard';
+
+const categoryIconMap = { Smartphone, Laptop, Tablet, Watch, Headphones, Monitor, Cable };
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
+    opacity: 1, y: 0,
     transition: { delay: i * 0.06, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
   }),
 };
@@ -69,7 +57,7 @@ export default function Home() {
 
   const homeConfig = useMemo(() => deserializeHomeConfig(homeConfigRaw), [homeConfigRaw]);
 
-  // Campos base: fonte única = ConfigLoja (Configurações da Loja)
+  // Store config
   const config = store?.configuracao;
   const storeName = config?.nomeLoja || 'Apple Link';
   const storeSlogan = config?.sloganLoja || '';
@@ -77,26 +65,20 @@ export default function Home() {
   const instagramUrl = config?.urlInstagram || '';
   const logoUrl = config?.logoUrl || '';
 
-  // Campos exclusivos do Layout Home (ConfigHome)
+  // Home layout config
   const tiktokUrl = homeConfig.header_tiktok || '';
   const youtubeUrl = homeConfig.header_youtube || '';
   const facebookUrl = homeConfig.header_facebook || '';
   const quickLinks = Array.isArray(homeConfig.header_quick_links) && homeConfig.header_quick_links.length > 0
-    ? homeConfig.header_quick_links
-    : null;
+    ? homeConfig.header_quick_links : null;
   const headerHours = homeConfig.header_hours || {};
 
   const categories = categoriesRaw.map(mapCategoryFromApi);
-
-  const products = useMemo(() => {
-    return (productsPage?.conteudo || []).map(mapProductFromApi);
-  }, [productsPage]);
-
+  const products = useMemo(() => (productsPage?.conteudo || []).map(mapProductFromApi), [productsPage]);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
-
   const heroBanner = heroBanners.find(b => b.ativo) || null;
 
-  // Home config sections
+  // Hero config
   const heroTitle = homeConfig.hero_title || 'Produtos Apple.';
   const heroSubtitle = homeConfig.hero_subtitle || 'Direto pra você.';
   const heroCta = homeConfig.hero_cta_text || heroBanner?.textoCta || 'Explorar produtos';
@@ -104,31 +86,25 @@ export default function Home() {
   const heroImage = homeConfig.hero_image_url || heroBanner?.imagemUrl || "https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/article/Apple-iPhone-15-Pro-lineup-hero-230912_Full-Bleed-Image.jpg.xlarge.jpg";
   const heroBadgeText = homeConfig.hero_badge_text || 'Entrega em 1 hora';
   const heroBadgeActive = homeConfig.hero_badge_active !== false;
+  const heroBadgeAnimated = homeConfig.hero_badge_animated !== false;
 
+  // Differentials
   const differentialsActive = homeConfig.differentials_active !== false;
   const differentialsItems = Array.isArray(homeConfig.differentials_items)
     ? homeConfig.differentials_items
-    : [
-        { icon: 'Truck', label: 'Entrega 1h' },
-        { icon: 'Shield', label: 'Garantia Apple' },
-        { icon: 'Zap', label: '100% Original' },
-      ];
+    : [{ icon: 'Truck', label: 'Entrega 1h' }, { icon: 'Shield', label: 'Garantia Apple' }, { icon: 'Zap', label: '100% Original' }];
 
+  // AI Button
   const aiButtonActive = homeConfig.ai_button_active !== false;
   const aiButtonTitle = homeConfig.ai_button_title || 'Compra Assistida';
   const aiButtonSubtitle = homeConfig.ai_button_subtitle || 'Converse com a IA e descubra o produto ideal pra você';
-
-  const categoriesActive = homeConfig.categories_active !== false;
-  const categoriesTitle = homeConfig.categories_title || 'Categorias';
-  const categoriesLayout = homeConfig.categories_layout || 'carousel';
-
-  // AI Button extras
-  const aiButtonCtaText = homeConfig.ai_button_cta_text || '';
   const aiButtonGradientFrom = homeConfig.ai_button_gradient_from || '#6366f1';
   const aiButtonGradientTo = homeConfig.ai_button_gradient_to || '#a855f7';
 
-  // Hero extras
-  const heroBadgeAnimated = homeConfig.hero_badge_animated !== false;
+  // Categories
+  const categoriesActive = homeConfig.categories_active !== false;
+  const categoriesTitle = homeConfig.categories_title || 'Categorias';
+  const categoriesLayout = homeConfig.categories_layout || 'carousel';
 
   // Secondary Banner
   const secondaryBannerActive = homeConfig.secondary_banner_active !== false;
@@ -138,12 +114,6 @@ export default function Home() {
 
   // Info Card
   const infoCardActive = homeConfig.info_card_active === true;
-  const infoCardEmoji = homeConfig.info_card_emoji || '';
-  const infoCardTitle = homeConfig.info_card_title || '';
-  const infoCardDescription = homeConfig.info_card_description || '';
-  const infoCardCtaText = homeConfig.info_card_cta_text || '';
-  const infoCardCtaLink = homeConfig.info_card_cta_link || '';
-  const infoCardBgColor = homeConfig.info_card_bg_color || '#1c1c1e';
 
   // Carousels
   const carousels = Array.isArray(homeConfig.carousels) ? homeConfig.carousels.filter(c => c.is_active !== false) : [];
@@ -166,16 +136,12 @@ export default function Home() {
     if (productListTemplate === 'curated') {
       return products.filter(p => productListCuratedIds.includes(p.id)).slice(0, productListMaxItems);
     }
-    // launches — most recent
     return [...products].sort((a, b) => (b.id || 0) - (a.id || 0)).slice(0, productListMaxItems);
   }, [products, productListTemplate, productListMaxItems, productListCuratedIds]);
 
   const handleAddToCart = async (product) => {
     try {
-      await addToCartMutation.mutateAsync({
-        produtoId: product.id,
-        quantidade: 1,
-      });
+      await addToCartMutation.mutateAsync({ produtoId: product.id, quantidade: 1 });
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
@@ -184,202 +150,42 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background pb-24">
       <main className="max-w-lg mx-auto">
-        {/* ── Store Profile (Linktree) ── */}
-        <motion.section
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          className="px-5 pt-6 pb-5"
-        >
-          <motion.div variants={fadeUp} custom={0} className="flex items-start gap-3.5">
-            <div className="w-[64px] h-[64px] rounded-[18px] bg-gray-900 flex items-center justify-center shadow-lg shadow-gray-900/20 shrink-0 overflow-hidden">
-              {logoUrl ? (
-                <img src={logoUrl} alt={storeName} className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-xl font-black text-white tracking-tighter">AL</span>
-              )}
-            </div>
-            <div className="flex-1 min-w-0 pt-0.5">
-              <div className="flex items-center gap-2">
-                <h2 className="text-[17px] font-bold text-gray-900 tracking-tight truncate">
-                  {storeName}
-                </h2>
-              </div>
-              {storeSlogan && (
-                <p className="text-[12px] text-gray-400 mt-0.5 leading-snug">
-                  {storeSlogan}
-                </p>
-              )}
-              {(() => {
-                const hoursEntries = Object.values(headerHours).filter(v => v);
-                if (hoursEntries.length === 0) return null;
-                const summary = hoursEntries[0];
-                return (
-                  <div className="flex items-center gap-2 mt-2">
-                    <div className="flex items-center gap-1.5 text-[11px] text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">
-                      <Clock className="w-3 h-3 text-gray-400" strokeWidth={2} />
-                      <span>{summary}</span>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-          </motion.div>
+        {/* Store Profile */}
+        <StoreProfile
+          storeName={storeName}
+          storeSlogan={storeSlogan}
+          logoUrl={logoUrl}
+          whatsapp={whatsapp}
+          instagramUrl={instagramUrl}
+          tiktokUrl={tiktokUrl}
+          youtubeUrl={youtubeUrl}
+          facebookUrl={facebookUrl}
+          quickLinks={quickLinks}
+          headerHours={headerHours}
+        />
 
-          {/* Actions row: WhatsApp + Socials */}
-          <motion.div variants={fadeUp} custom={2} className="flex items-center gap-2 mt-5">
-            {whatsapp && (
-              <a
-                href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white rounded-2xl h-11 font-semibold text-[13px] transition-all hover:bg-gray-800 active:scale-[0.97]"
-              >
-                <MessageCircle className="w-4 h-4" strokeWidth={2} />
-                WhatsApp
-              </a>
-            )}
-            <div className="flex items-center gap-1.5">
-              {instagramUrl && (
-                <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
-                  <Instagram className="w-[18px] h-[18px]" strokeWidth={1.75} />
-                </a>
-              )}
-              {tiktokUrl && (
-                <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
-                  <span className="text-[13px] font-bold">TT</span>
-                </a>
-              )}
-              {youtubeUrl && (
-                <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
-                  <span className="text-[13px] font-bold">YT</span>
-                </a>
-              )}
-              {facebookUrl && (
-                <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
-                  <span className="text-[13px] font-bold">FB</span>
-                </a>
-              )}
-            </div>
-          </motion.div>
+        {/* Hero Banner */}
+        <HeroBanner
+          image={heroImage}
+          title={heroTitle}
+          subtitle={heroSubtitle}
+          ctaText={heroCta}
+          ctaLink={heroCtaLink}
+          badgeText={heroBadgeText}
+          badgeActive={heroBadgeActive}
+          badgeAnimated={heroBadgeAnimated}
+        />
 
-          {/* Quick Links */}
-          <motion.div variants={fadeUp} custom={3} className="flex items-center gap-2 mt-4 overflow-x-auto no-scrollbar -mx-5 px-5">
-            {quickLinks ? (
-              quickLinks.map((link, i) => (
-                <a
-                  key={i}
-                  href={link.url || '#'}
-                  target={link.url?.startsWith('http') ? '_blank' : undefined}
-                  rel={link.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className={`flex items-center gap-1.5 border rounded-full px-4 py-2 text-[12px] font-semibold hover:bg-gray-200 active:scale-[0.96] transition-all shrink-0 ${
-                    link.is_highlight
-                      ? 'bg-gray-900 text-white border-gray-900 hover:bg-gray-800'
-                      : 'bg-gray-100 text-gray-700 border-gray-200'
-                  }`}
-                >
-                  {link.emoji && <span className="text-[14px]">{link.emoji}</span>}
-                  {link.label}
-                </a>
-              ))
-            ) : (
-              [
-                { label: 'Catálogo', icon: Tag, to: createPageUrl('Products') },
-                { label: 'Ofertas', icon: Zap, to: createPageUrl('Products') },
-                { label: 'Rastreio', icon: Package, to: createPageUrl('Orders') },
-                { label: 'FAQ', icon: HelpCircle, to: createPageUrl('Profile') },
-              ].map((link) => (
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className="flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-full px-4 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-200 active:scale-[0.96] transition-all shrink-0"
-                >
-                  <link.icon className="w-3.5 h-3.5 text-gray-400" strokeWidth={2} />
-                  {link.label}
-                </Link>
-              ))
-            )}
-          </motion.div>
-        </motion.section>
-
-        {/* ── Hero Banner ── */}
-        <motion.section
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          className="relative mx-4 mt-4 rounded-3xl overflow-hidden"
-        >
-          <div className="relative p-6 pb-7">
-            <img
-              src={heroImage}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(3,7,18,0.97), rgba(17,24,39,0.92), rgba(31,41,55,0.7))' }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(3,7,18,0.8), transparent 60%)' }} />
-
-            <div className="relative z-10">
-              {heroBadgeActive && (
-                <motion.div
-                  variants={fadeUp}
-                  custom={0}
-                  className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5 mb-4 border border-white/[0.08]"
-                >
-                  <div className={`w-1.5 h-1.5 bg-green-400 rounded-full ${heroBadgeAnimated ? 'animate-pulse' : ''}`} />
-                  <span className="font-medium text-white/90 text-[11px] tracking-widest uppercase">
-                    {heroBadgeText}
-                  </span>
-                </motion.div>
-              )}
-
-              <motion.h1
-                variants={fadeUp}
-                custom={1}
-                className="text-[28px] font-bold mb-2 leading-[1.15] text-white tracking-tight"
-              >
-                {heroTitle}
-                <br />
-                <span className="text-white/60">{heroSubtitle}</span>
-              </motion.h1>
-
-              <motion.p
-                variants={fadeUp}
-                custom={2}
-                className="text-white/50 text-sm mb-6 leading-relaxed max-w-[240px]"
-              >
-                Originais com garantia. Entrega express na sua porta.
-              </motion.p>
-
-              <motion.div variants={fadeUp} custom={3}>
-                <Link
-                  to={heroCtaLink}
-                  className="group inline-flex items-center gap-2.5 bg-white text-gray-900 px-5 py-3 rounded-2xl font-semibold text-sm transition-all hover:bg-white/95 active:scale-[0.97]"
-                >
-                  {heroCta}
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-                </Link>
-              </motion.div>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* ── Benefits Strip ── */}
+        {/* Benefits Strip */}
         {differentialsActive && (
           <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={stagger}
+            initial="hidden" animate="visible" variants={stagger}
             className="flex items-center gap-2 px-4 mt-5 overflow-x-auto no-scrollbar"
           >
             {differentialsItems.map((item, i) => {
               const IconComp = item.icon ? ({ Truck, Shield, Zap }[item.icon] || null) : null;
               return (
-                <motion.div
-                  key={i}
-                  variants={fadeUp}
-                  custom={i}
-                  className="flex items-center gap-2 bg-white border border-gray-100 rounded-full px-4 py-2.5 shrink-0"
-                >
+                <motion.div key={i} variants={fadeUp} custom={i} className="flex items-center gap-2 bg-white border border-gray-100 rounded-full px-4 py-2.5 shrink-0">
                   {item.emoji ? (
                     <span className="text-base">{item.emoji}</span>
                   ) : IconComp ? (
@@ -394,15 +200,9 @@ export default function Home() {
           </motion.div>
         )}
 
-        {/* ── Smart Search Banner ── */}
+        {/* AI Button */}
         {aiButtonActive && (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={2}
-            className="px-4 mt-5"
-          >
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2} className="px-4 mt-5">
             <button
               onClick={() => navigate('/Search')}
               className="w-full relative overflow-hidden rounded-2xl p-4 text-left group active:scale-[0.98] transition-transform"
@@ -417,12 +217,8 @@ export default function Home() {
                   <Sparkles className="w-5 h-5 text-white" strokeWidth={2} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-[13px] font-bold text-white block leading-tight">
-                    {aiButtonTitle}
-                  </span>
-                  <span className="text-[11px] text-white/60 block mt-0.5">
-                    {aiButtonSubtitle}
-                  </span>
+                  <span className="text-[13px] font-bold text-white block leading-tight">{aiButtonTitle}</span>
+                  <span className="text-[11px] text-white/60 block mt-0.5">{aiButtonSubtitle}</span>
                 </div>
                 <ArrowRight className="w-4 h-4 text-white/50 shrink-0 group-hover:translate-x-0.5 transition-transform" />
               </div>
@@ -430,254 +226,109 @@ export default function Home() {
           </motion.div>
         )}
 
-        {/* ── Categories ── */}
-        {categoriesActive && <section className="mt-8">
-          <div className="flex items-center justify-between px-4 mb-4">
-            <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{categoriesTitle}</h2>
-            <Link
-              to={createPageUrl('Categories')}
-              className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors"
-            >
-              Ver todas
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {loadingCategories ? (
-            <div className="flex gap-1 px-4 overflow-hidden">
-              {[1, 2, 3, 4].map(i => (
-                <Skeleton key={i} className="w-[100px] h-[110px] rounded-2xl shrink-0" />
-              ))}
-            </div>
-          ) : (
-            <div
-              ref={categoriesRef}
-              className={categoriesLayout === 'grid'
-                ? "grid grid-cols-4 gap-3 px-4"
-                : "flex gap-1 px-4 overflow-x-auto no-scrollbar scroll-smooth"
-              }
-            >
-              {categories.map((cat, index) => {
-                const Icon = categoryIconMap[cat.icon] || Smartphone;
-                return (
-                  <motion.div
-                    key={cat.id}
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05, duration: 0.4 }}
-                  >
-                    <Link
-                      to={createPageUrl(`Products?category=${cat.id}`)}
-                      className={`group flex flex-col items-center gap-2.5 ${categoriesLayout === 'grid' ? '' : 'w-[88px] shrink-0'}`}
-                    >
-                      <div className="w-16 h-16 rounded-2xl bg-gray-900 flex items-center justify-center transition-all duration-200 group-hover:bg-gray-800 group-hover:scale-105 group-active:scale-95">
-                        <Icon className="w-7 h-7 text-white" strokeWidth={1.5} />
-                      </div>
-                      <div className="text-center">
-                        <span className="text-xs font-semibold text-gray-800 block leading-tight">
-                          {cat.name}
-                        </span>
-                      </div>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </div>
-          )}
-        </section>}
-
-        {/* ── Secondary Banner ── */}
-        {secondaryBannerActive && secondaryBannerProducts.length > 0 && (
+        {/* Categories */}
+        {categoriesActive && (
           <section className="mt-8">
             <div className="flex items-center justify-between px-4 mb-4">
-              <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{secondaryBannerTitle}</h2>
-            </div>
-            <div className="grid grid-cols-2 gap-3.5 px-4">
-              {secondaryBannerProducts.slice(0, 4).map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.06, duration: 0.4 }}
-                >
-                  <ProductCard
-                    product={product}
-                    onAddToCart={handleAddToCart}
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── Dynamic Catalog Sections ── */}
-        {catalogSections.map((section) => (
-          <section key={section.id} className="mt-8">
-            <div className="flex items-center justify-between px-4 mb-4">
-              <div>
-                <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{section.titulo}</h2>
-                {section.subtitulo && (
-                  <p className="text-xs text-gray-400 mt-0.5">{section.subtitulo}</p>
-                )}
-              </div>
-              <Link
-                to={createPageUrl('Products')}
-                className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors"
-              >
-                Ver todos
+              <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{categoriesTitle}</h2>
+              <Link to={createPageUrl('Categories')} className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors">
+                Ver todas
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
-            {section.produtos && section.produtos.length > 0 && (
-              <div className="flex gap-3.5 px-4 overflow-x-auto no-scrollbar scroll-smooth pb-1">
-                {section.produtos.map((p, index) => (
-                  <motion.div
-                    key={p.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.06, duration: 0.4 }}
-                    className="w-[170px] shrink-0"
-                  >
-                    <ProductCard
-                      product={{
-                        id: p.id,
-                        name: p.nome,
-                        price: p.preco,
-                        images: p.imagemUrl ? [p.imagemUrl] : [],
-                        stock: 1,
-                      }}
-                      onAddToCart={handleAddToCart}
-                    />
-                  </motion.div>
-                ))}
+
+            {loadingCategories ? (
+              <div className="flex gap-1 px-4 overflow-hidden">
+                {[1, 2, 3, 4].map(i => <Skeleton key={i} className="w-[100px] h-[110px] rounded-2xl shrink-0" />)}
+              </div>
+            ) : (
+              <div
+                ref={categoriesRef}
+                className={categoriesLayout === 'grid' ? "grid grid-cols-4 gap-3 px-4" : "flex gap-1 px-4 overflow-x-auto no-scrollbar scroll-smooth"}
+              >
+                {categories.map((cat, index) => {
+                  const Icon = categoryIconMap[cat.icon] || Smartphone;
+                  return (
+                    <motion.div key={cat.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.4 }}>
+                      <Link to={createPageUrl(`Products?category=${cat.id}`)} className={`group flex flex-col items-center gap-2.5 ${categoriesLayout === 'grid' ? '' : 'w-[88px] shrink-0'}`}>
+                        <div className="w-16 h-16 rounded-2xl bg-gray-900 flex items-center justify-center transition-all duration-200 group-hover:bg-gray-800 group-hover:scale-105 group-active:scale-95">
+                          <Icon className="w-7 h-7 text-white" strokeWidth={1.5} />
+                        </div>
+                        <span className="text-xs font-semibold text-gray-800 block leading-tight text-center">{cat.name}</span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
           </section>
+        )}
+
+        {/* Secondary Banner */}
+        <ProductCarousel
+          title={secondaryBannerTitle}
+          products={secondaryBannerActive ? secondaryBannerProducts.slice(0, 4) : []}
+          onAddToCart={handleAddToCart}
+          layout="grid"
+          showCta={false}
+        />
+
+        {/* Dynamic Catalog Sections */}
+        {catalogSections.map((section) => (
+          <ProductCarousel
+            key={section.id}
+            title={section.titulo}
+            subtitle={section.subtitulo}
+            products={section.produtos?.map(p => ({
+              id: p.id, name: p.nome, price: p.preco,
+              images: p.imagemUrl ? [p.imagemUrl] : [], stock: 1,
+            })) || []}
+            onAddToCart={handleAddToCart}
+          />
         ))}
 
-        {/* ── Dynamic Carousels ── */}
+        {/* Dynamic Carousels */}
         {carousels.map((carousel, ci) => {
           const items = carousel.source_type === 'category'
             ? products.filter(p => String(p.category_id) === String(carousel.source_value))
             : products.filter(p => p.tags?.some(t => t.slug === carousel.source_value || t.name === carousel.source_value));
-          if (items.length === 0) return null;
           return (
-            <section key={ci} className="mt-8">
-              <div className="flex items-center justify-between px-4 mb-4">
-                <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{carousel.title || 'Produtos'}</h2>
-                <Link
-                  to={createPageUrl('Products')}
-                  className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors"
-                >
-                  Ver todos
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-              <div className="flex gap-3.5 px-4 overflow-x-auto no-scrollbar scroll-smooth pb-1">
-                {items.slice(0, 12).map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.06, duration: 0.4 }}
-                    className="w-[170px] shrink-0"
-                  >
-                    <ProductCard product={product} onAddToCart={handleAddToCart} />
-                  </motion.div>
-                ))}
-              </div>
-            </section>
+            <ProductCarousel
+              key={ci}
+              title={carousel.title || 'Produtos'}
+              products={items.slice(0, 12)}
+              onAddToCart={handleAddToCart}
+            />
           );
         })}
 
-        {/* ── Product List (configurable) ── */}
-        {productListItems.length > 0 && (
-          <section className="mt-8">
-            <div className="flex items-center justify-between px-4 mb-4">
-              <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{productListTitle}</h2>
-              {productListShowCta && (
-                <Link
-                  to={createPageUrl('Products')}
-                  className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors"
-                >
-                  {productListCtaText}
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-              )}
-            </div>
-            <div className="grid grid-cols-2 gap-3.5 px-4">
-              {productListItems.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.06, duration: 0.4 }}
-                >
-                  <ProductCard
-                    product={product}
-                    onAddToCart={handleAddToCart}
-                    isAdding={addToCartMutation.isPending}
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </section>
-        )}
+        {/* Product List */}
+        <ProductCarousel
+          title={productListTitle}
+          products={productListItems}
+          onAddToCart={handleAddToCart}
+          layout="grid"
+          showCta={productListShowCta}
+          ctaText={productListCtaText}
+        />
 
-        {/* ── Info Card ── */}
-        {infoCardActive && infoCardTitle && (
-          <motion.section
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-40px' }}
-            variants={fadeUp}
-            className="mx-4 mt-8"
-          >
-            <div className="relative rounded-3xl overflow-hidden p-6" style={{ backgroundColor: infoCardBgColor }}>
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/[0.03] rounded-full blur-2xl" />
-                <div className="absolute bottom-0 left-1/4 w-32 h-32 bg-white/[0.02] rounded-full blur-xl" />
-              </div>
-              <div className="relative z-10">
-                {infoCardEmoji && (
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-2xl">{infoCardEmoji}</span>
-                  </div>
-                )}
-                <h3 className="text-white text-lg font-bold leading-snug mb-1.5">
-                  {infoCardTitle}
-                </h3>
-                {infoCardDescription && (
-                  <p className="text-white/40 text-sm leading-relaxed">
-                    {infoCardDescription}
-                  </p>
-                )}
-                {infoCardCtaText && (
-                  <Link
-                    to={infoCardCtaLink || '#'}
-                    className="inline-flex items-center gap-2 mt-4 bg-white/10 hover:bg-white/15 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
-                  >
-                    {infoCardCtaText}
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                )}
-              </div>
-            </div>
-          </motion.section>
+        {/* Info Card */}
+        {infoCardActive && (
+          <InfoCard
+            emoji={homeConfig.info_card_emoji}
+            title={homeConfig.info_card_title}
+            description={homeConfig.info_card_description}
+            ctaText={homeConfig.info_card_cta_text}
+            ctaLink={homeConfig.info_card_cta_link}
+            bgColor={homeConfig.info_card_bg_color || '#1c1c1e'}
+          />
         )}
-
 
         {/* Loading state */}
         {loadingProducts && (
           <div className="px-4 mt-8">
             <div className="flex gap-4 overflow-hidden">
-              {[1, 2, 3].map(i => (
-                <Skeleton key={i} className="w-[200px] h-[280px] rounded-2xl shrink-0" />
-              ))}
+              {[1, 2, 3].map(i => <Skeleton key={i} className="w-[200px] h-[280px] rounded-2xl shrink-0" />)}
             </div>
           </div>
         )}
