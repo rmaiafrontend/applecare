@@ -2,7 +2,11 @@ import { motion } from 'framer-motion';
 import { ShoppingCart, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export default function CartEmptyState({ onExplore }) {
+interface CartEmptyStateProps {
+  onExplore: () => void;
+}
+
+export default function CartEmptyState({ onExplore }: CartEmptyStateProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

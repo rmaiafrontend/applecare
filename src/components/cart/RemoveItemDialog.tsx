@@ -9,7 +9,13 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-export default function RemoveItemDialog({ open, onClose, onConfirm }) {
+interface RemoveItemDialogProps {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}
+
+export default function RemoveItemDialog({ open, onClose, onConfirm }: RemoveItemDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
       <AlertDialogContent className="max-w-[320px] rounded-3xl p-6">

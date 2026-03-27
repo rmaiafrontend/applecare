@@ -3,9 +3,18 @@ import { ShoppingCart, Check, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/format';
 
+interface ProductBottomCTAProps {
+  price: number;
+  quantity: number;
+  isAvailable: boolean;
+  isAdding: boolean;
+  addedToCart: boolean;
+  onAddToCart: () => void;
+}
+
 export default function ProductBottomCTA({
   price, quantity, isAvailable, isAdding, addedToCart, onAddToCart,
-}) {
+}: ProductBottomCTAProps) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
       <div className="max-w-lg mx-auto px-4">

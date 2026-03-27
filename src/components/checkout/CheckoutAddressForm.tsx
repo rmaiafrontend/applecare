@@ -5,6 +5,22 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { utilsService } from '@/api/services';
+import type { Dispatch, SetStateAction, ChangeEvent } from 'react';
+
+export interface AddressData {
+  cep: string;
+  street: string;
+  number: string;
+  complement: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+}
+
+interface CheckoutAddressFormProps {
+  address: AddressData;
+  onChange: Dispatch<SetStateAction<AddressData>>;
+}
 
 const STATES = [
   'AC','AL','AP','AM','BA','CE','DF','ES','GO','MA',
@@ -12,10 +28,10 @@ const STATES = [
   'RS','RO','RR','SC','SP','SE','TO',
 ];
 
-export default function CheckoutAddressForm({ address, onChange }) {
+export default function CheckoutAddressForm({ address, onChange }: CheckoutAddressFormProps) {
   const [loadingCep, setLoadingCep] = useState(false);
 
-  const fetchCep = async (cep) => {
+  const fetchCep = async (cep: string) => {
     const clean = cep.replace(/\D/g, '');
     if (clean.length !== 8) return;
     setLoadingCep(true);
@@ -36,14 +52,14 @@ export default function CheckoutAddressForm({ address, onChange }) {
     setLoadingCep(false);
   };
 
-  const handleCepChange = (e) => {
+  const handleCepChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, '').slice(0, 8);
     const formatted = value.replace(/(\d{5})(\d{3})/, '$1-$2');
     onChange((prev) => ({ ...prev, cep: formatted }));
     if (value.length === 8) fetchCep(value);
   };
 
-  const set = (field) => (e) => onChange((p) => ({ ...p, [field]: e.target.value }));
+  const set = (field: keyof AddressData) => (e: ChangeEvent<HTMLInputElement>) => onChange((p) => ({ ...p, [field]: e.target.value }));
 
   return (
     <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">

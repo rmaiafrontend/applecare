@@ -4,8 +4,20 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import type { Dispatch, SetStateAction } from 'react';
 
-export default function CheckoutPaymentForm({ payment, onChange }) {
+export interface PaymentData {
+  method: string;
+  document: string;
+  documentType: string;
+}
+
+interface CheckoutPaymentFormProps {
+  payment: PaymentData;
+  onChange: Dispatch<SetStateAction<PaymentData>>;
+}
+
+export default function CheckoutPaymentForm({ payment, onChange }: CheckoutPaymentFormProps) {
   return (
     <div className="space-y-4">
       {/* Payment methods */}

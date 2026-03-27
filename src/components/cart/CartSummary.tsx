@@ -2,7 +2,14 @@ import { Tag, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatPrice } from '@/lib/format';
 
-export default function CartSummary({ subtotal, shipping, total, onCheckout }) {
+interface CartSummaryProps {
+  subtotal: number;
+  shipping: number;
+  total: number;
+  onCheckout: () => void;
+}
+
+export default function CartSummary({ subtotal, shipping, total, onCheckout }: CartSummaryProps) {
   return (
     <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
       <div className="p-5 space-y-3">

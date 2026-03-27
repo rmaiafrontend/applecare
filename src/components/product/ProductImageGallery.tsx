@@ -1,10 +1,22 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Truck, RotateCcw, Package } from 'lucide-react';
 
+interface ProductImageGalleryProps {
+  images: string[];
+  currentImage: number;
+  onChangeImage: (index: number) => void;
+  isAvailable: boolean;
+  expressDelivery: boolean;
+  isUsed: boolean;
+  hasDiscount: boolean;
+  discountPercent: number;
+  productName: string;
+}
+
 export default function ProductImageGallery({
   images, currentImage, onChangeImage,
   isAvailable, expressDelivery, isUsed, hasDiscount, discountPercent, productName,
-}) {
+}: ProductImageGalleryProps) {
   return (
     <div className="relative bg-gradient-to-b from-gray-100 to-gray-50">
       <div className="relative aspect-[4/5] overflow-hidden">
