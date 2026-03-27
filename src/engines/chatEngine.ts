@@ -1,7 +1,35 @@
-import { smartSearch } from './smartSearch';
+import { smartSearch, type SearchProduct, type SearchCategory } from './smartSearch';
 import { formatPrice } from '@/lib/format';
 
-const categoryKeywords = {
+interface ChatMessage {
+  role: 'ai';
+  text: string;
+  products?: SearchProduct[];
+  quickReplies?: string[];
+}
+
+interface ChatContext {
+  category?: string;
+  maxPrice?: number;
+  express?: boolean;
+  useCase?: string;
+}
+
+interface ChatResponse {
+  response: ChatMessage;
+  updatedContext: ChatContext;
+}
+
+interface Intent {
+  type: string;
+  categoryId?: string;
+  maxPrice?: number;
+  keyword?: string;
+  cats?: string[];
+  label?: string;
+}
+
+const categoryKeywords: Record<string, string[]> = {
   'cat-1': ['iphone', 'celular', 'smartphone', 'telefone'],
   'cat-2': ['macbook', 'notebook', 'laptop', 'computador'],
   'cat-3': ['ipad', 'tablet'],
@@ -11,7 +39,7 @@ const categoryKeywords = {
   'cat-7': ['acessorio', 'acessorios', 'cabo', 'carregador', 'teclado', 'pencil'],
 };
 
-const useCaseKeywords = {
+const useCaseKeywords: Record<string, { cats: string[]; label: string }> = {
   estudar: { cats: ['cat-2', 'cat-3'], label: 'para estudos' },
   estudo: { cats: ['cat-2', 'cat-3'], label: 'para estudos' },
   trabalho: { cats: ['cat-2', 'cat-6'], label: 'para trabalho' },
@@ -35,7 +63,7 @@ const useCaseKeywords = {
   presente: { cats: [], label: 'para presente' },
 };
 
-const categoryNames = {
+const categoryNames: Record<string, string> = {
   'cat-1': 'iPhones',
   'cat-2': 'MacBooks',
   'cat-3': 'iPads',
@@ -45,7 +73,7 @@ const categoryNames = {
   'cat-7': 'Acessorios',
 };
 
-function normalize(str) {
+function normalize(str: string): string {
   return str
     .toLowerCase()
     .normalize('NFD')
@@ -54,10 +82,10 @@ function normalize(str) {
     .trim();
 }
 
-function extractPriceFromText(text) {
+function extractPriceFromText(text: string): number | null {
   const normalized = normalize(text);
   const tokens = normalized.split(/\s+/);
-  let maxPrice = null;
+  let maxPrice: number | null = null;
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
@@ -89,7 +117,7 @@ function extractPriceFromText(text) {
   return maxPrice;
 }
 
-function getProductBlurb(product, useCase) {
+function getProductBlurb(product: SearchProduct, useCase?: string): string {
   const specs = product.specs || [];
   const chipSpec = specs.find(s => normalize(s.label).includes('chip') || normalize(s.label).includes('processador'));
   const storageSpec = specs.find(s => normalize(s.label).includes('armazenamento') || normalize(s.label).includes('capacidade'));
@@ -109,7 +137,7 @@ function getProductBlurb(product, useCase) {
   return `**${product.name}** por ${formatPrice(product.price)}${discount}${specStr}.`;
 }
 
-function detectIntent(text, context) {
+function detectIntent(text: string, context: ChatContext): Intent {
   const normalized = normalize(text);
   const tokens = normalized.split(/\s+/);
 
@@ -164,7 +192,7 @@ function detectIntent(text, context) {
   return { type: 'search' };
 }
 
-export function getGreeting() {
+export function getGreeting(): ChatMessage {
   return {
     role: 'ai',
     text: 'Ola! Sou o assistente aLink. Posso te ajudar a encontrar o produto Apple perfeito pra voce. O que esta procurando?',
@@ -172,12 +200,12 @@ export function getGreeting() {
   };
 }
 
-export function processMessage(userMessage, products, categories, context = {}) {
+export function processMessage(userMessage: string, products: SearchProduct[], categories: SearchCategory[], context: ChatContext = {}): ChatResponse {
   const intent = detectIntent(userMessage, context);
   const updatedContext = { ...context };
   let text = '';
-  let resultProducts = [];
-  let quickReplies = [];
+  let resultProducts: SearchProduct[] = [];
+  let quickReplies: string[] = [];
 
   switch (intent.type) {
     case 'thanks': {

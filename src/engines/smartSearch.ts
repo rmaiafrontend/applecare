@@ -1,4 +1,30 @@
-const categoryKeywords = {
+export interface SearchProduct {
+  id: number;
+  name: string;
+  price: number;
+  original_price?: number;
+  stock: number;
+  express_delivery: boolean;
+  condition?: string;
+  category_id: number | string;
+  description?: string;
+  specs?: { label: string; value: string }[];
+  tags?: { id: number; name: string; slug: string; color: string }[];
+  images?: string[];
+}
+
+export interface SearchCategory {
+  id: number | string;
+  name: string;
+}
+
+export interface SearchResult {
+  results: SearchProduct[];
+  interpretation: string[];
+  query: string;
+}
+
+const categoryKeywords: Record<string, string[]> = {
   'cat-1': ['iphone', 'celular', 'smartphone', 'telefone'],
   'cat-2': ['macbook', 'notebook', 'laptop', 'computador portatil'],
   'cat-3': ['ipad', 'tablet'],
@@ -8,7 +34,7 @@ const categoryKeywords = {
   'cat-7': ['acessorio', 'acessorios', 'cabo', 'carregador', 'teclado', 'pencil', 'caneta', 'magsafe'],
 };
 
-const useCaseMap = {
+const useCaseMap: Record<string, string[]> = {
   estudar: ['cat-2', 'cat-3'],
   estudo: ['cat-2', 'cat-3'],
   trabalho: ['cat-2', 'cat-6'],
@@ -31,7 +57,7 @@ const useCaseMap = {
   jogo: ['cat-2', 'cat-6'],
 };
 
-function normalize(str) {
+function normalize(str: string): string {
   return str
     .toLowerCase()
     .normalize('NFD')
@@ -40,9 +66,9 @@ function normalize(str) {
     .trim();
 }
 
-function extractPrice(tokens) {
-  let maxPrice = null;
-  let minPrice = null;
+function extractPrice(tokens: string[]): { maxPrice: number | null; minPrice: number | null } {
+  let maxPrice: number | null = null;
+  let minPrice: number | null = null;
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
@@ -90,7 +116,7 @@ function extractPrice(tokens) {
   return { maxPrice, minPrice };
 }
 
-export function smartSearch(query, products, categories) {
+export function smartSearch(query: string, products: SearchProduct[], categories: SearchCategory[]): SearchResult {
   if (!query || query.trim().length < 2) {
     return { results: [], interpretation: [], query };
   }
@@ -100,7 +126,7 @@ export function smartSearch(query, products, categories) {
   const interpretation = [];
 
   // 1. Detect categories
-  let matchedCategoryIds = new Set();
+  const matchedCategoryIds = new Set<string>();
 
   for (const [catId, keywords] of Object.entries(categoryKeywords)) {
     for (const kw of keywords) {
