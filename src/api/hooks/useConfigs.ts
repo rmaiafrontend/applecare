@@ -24,7 +24,10 @@ export function useSaveConfigLoja() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: SalvarConfiguracaoLojaRequest) => configService.saveLoja(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.loja }),
+    onSuccess: (data) => {
+      qc.setQueryData(KEYS.loja, data);
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 
@@ -34,6 +37,8 @@ export function usePublicHomeConfig(slug: string) {
     queryKey: KEYS.publicHome(slug),
     queryFn: () => configService.getPublicHome(slug),
     enabled: !!slug,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 }
 
@@ -46,7 +51,10 @@ export function useSaveConfigHome() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: SalvarConfiguracaoHomeRequest) => configService.saveHome(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.home }),
+    onSuccess: (data) => {
+      qc.setQueryData(KEYS.home, data);
+      qc.invalidateQueries({ queryKey: ['store'] });
+    },
   });
 }
 

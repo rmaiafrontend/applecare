@@ -80,6 +80,7 @@ export default function HomeSettings() {
   const [openSections, setOpenSections] = useState({});
   const [activeSection, setActiveSection] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [initialized, setInitialized] = useState(false);
   const sectionsRef = useRef(null);
 
   const { data: homeConfig } = useConfigHome();
@@ -110,12 +111,14 @@ export default function HomeSettings() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
+  // Sincronizar dados do servidor → form apenas na carga inicial
   useEffect(() => {
-    if (homeConfig) {
+    if (homeConfig && !initialized) {
       const flat = deserializeHomeConfig(homeConfig);
       setForm(prev => ({ ...prev, ...flat }));
+      setInitialized(true);
     }
-  }, [homeConfig]);
+  }, [homeConfig, initialized]);
 
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 

@@ -10,5 +10,7 @@ export function usePublicStore(slug: string) {
     queryKey: KEYS.public(slug),
     queryFn: () => storeService.get(slug),
     enabled: !!slug,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 }
