@@ -162,9 +162,9 @@ export default function ProductDetail() {
         {/* Description */}
         {product.description && (
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={fadeUp} className="px-4 mt-4">
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
-              <h2 className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-3">Sobre o produto</h2>
-              <p className="text-[14px] text-gray-600 leading-relaxed">{product.description}</p>
+            <div className="bg-store-bg rounded-3xl border border-store-secondary/50 shadow-sm p-5">
+              <h2 className="text-[11px] font-bold uppercase tracking-widest text-store-text/40 mb-3">Sobre o produto</h2>
+              <p className="text-[14px] text-store-text/70 leading-relaxed">{product.description}</p>
             </div>
           </motion.div>
         )}
@@ -172,15 +172,15 @@ export default function ProductDetail() {
         {/* Specs */}
         {specs.length > 0 && (
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={fadeUp} className="px-4 mt-4">
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-store-bg rounded-3xl border border-store-secondary/50 shadow-sm overflow-hidden">
               <div className="p-5 pb-3">
-                <h2 className="text-[11px] font-bold uppercase tracking-widest text-gray-400">Especificacoes</h2>
+                <h2 className="text-[11px] font-bold uppercase tracking-widest text-store-text/40">Especificacoes</h2>
               </div>
               <div className="px-5 pb-5 grid grid-cols-2 gap-2.5">
                 {specs.map((spec, index) => (
-                  <motion.div key={index} variants={fadeUp} custom={index * 0.5} className="bg-gray-50 rounded-2xl p-3.5 border border-gray-100/60">
-                    <span className="text-[10px] font-medium text-gray-400 uppercase tracking-wider block leading-none">{spec.label}</span>
-                    <span className="text-[13px] font-semibold text-gray-800 block mt-1.5 leading-snug">{spec.value}</span>
+                  <motion.div key={index} variants={fadeUp} custom={index * 0.5} className="bg-store-secondary rounded-2xl p-3.5 border border-store-secondary/30">
+                    <span className="text-[10px] font-medium text-store-text/40 uppercase tracking-wider block leading-none">{spec.label}</span>
+                    <span className="text-[13px] font-semibold text-store-text block mt-1.5 leading-snug">{spec.value}</span>
                   </motion.div>
                 ))}
               </div>
@@ -191,15 +191,15 @@ export default function ProductDetail() {
         {/* Datasheet */}
         {datasheetUrl && (
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="px-4 mt-4">
-            <a href={datasheetUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white rounded-3xl border border-gray-100 shadow-sm p-5 group hover:border-gray-200 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center shrink-0">
+            <a href={datasheetUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-store-bg rounded-3xl border border-store-secondary/50 shadow-sm p-5 group hover:border-store-secondary transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-store-primary flex items-center justify-center shrink-0">
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <span className="text-sm font-semibold text-gray-900 block">Datasheet</span>
-                <span className="text-xs text-gray-400">Baixar ficha tecnica (PDF)</span>
+                <span className="text-sm font-semibold text-store-text block">Datasheet</span>
+                <span className="text-xs text-store-text/40">Baixar ficha tecnica (PDF)</span>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-300 shrink-0 group-hover:text-gray-400 transition-colors" />
+              <ChevronRight className="w-5 h-5 text-store-text/30 shrink-0 group-hover:text-gray-400 transition-colors" />
             </a>
           </motion.div>
         )}
@@ -208,7 +208,7 @@ export default function ProductDetail() {
         {relatedProducts.length > 0 && (
           <section className="mt-8">
             <div className="px-4 mb-4">
-              <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">Voce tambem pode gostar</h2>
+              <h2 className="text-[17px] font-bold text-store-text tracking-tight">Voce tambem pode gostar</h2>
             </div>
             <div className="flex gap-3.5 px-4 overflow-x-auto no-scrollbar scroll-smooth pb-1">
               {relatedProducts.map((relProduct, index) => (

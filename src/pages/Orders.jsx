@@ -142,27 +142,27 @@ export default function Orders() {
             className="px-4 mt-2 mb-2"
           >
             <div className="flex gap-2.5">
-              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-3.5">
-                <span className="text-[22px] font-bold text-gray-900 block leading-none tabular-nums">
+              <div className="flex-1 bg-store-bg rounded-2xl border border-store-secondary/50 p-3.5">
+                <span className="text-[22px] font-bold text-store-text block leading-none tabular-nums">
                   {orders.length}
                 </span>
-                <span className="text-[11px] text-gray-400 mt-1 block">
+                <span className="text-[11px] text-store-text/40 mt-1 block">
                   Total de pedidos
                 </span>
               </div>
-              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-3.5">
-                <span className="text-[22px] font-bold text-gray-900 block leading-none tabular-nums">
+              <div className="flex-1 bg-store-bg rounded-2xl border border-store-secondary/50 p-3.5">
+                <span className="text-[22px] font-bold text-store-text block leading-none tabular-nums">
                   {activeCount}
                 </span>
-                <span className="text-[11px] text-gray-400 mt-1 block">
+                <span className="text-[11px] text-store-text/40 mt-1 block">
                   Em andamento
                 </span>
               </div>
-              <div className="flex-1 bg-white rounded-2xl border border-gray-100 p-3.5">
+              <div className="flex-1 bg-store-bg rounded-2xl border border-store-secondary/50 p-3.5">
                 <span className="text-[22px] font-bold text-green-600 block leading-none tabular-nums">
                   {orders.filter(o => o.status === 'ENTREGUE').length}
                 </span>
-                <span className="text-[11px] text-gray-400 mt-1 block">
+                <span className="text-[11px] text-store-text/40 mt-1 block">
                   Entregues
                 </span>
               </div>
@@ -179,14 +179,14 @@ export default function Orders() {
                 onClick={() => setFilter(f.key)}
                 className={`px-4 py-2 rounded-full text-[12px] font-semibold transition-all active:scale-95 ${
                   filter === f.key
-                    ? 'bg-gray-900 text-white shadow-md'
-                    : 'bg-white text-gray-500 border border-gray-200 hover:border-gray-300'
+                    ? 'bg-store-primary text-white shadow-md'
+                    : 'bg-store-secondary text-store-text/50 border border-store-secondary hover:border-store-secondary'
                 }`}
               >
                 {f.label}
                 {f.key === 'active' && activeCount > 0 && (
                   <span className={`ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] rounded-full text-[10px] font-bold ${
-                    filter === f.key ? 'bg-white text-gray-900' : 'bg-gray-100 text-gray-600'
+                    filter === f.key ? 'bg-white text-store-text' : 'bg-store-secondary text-store-text/60'
                   }`}>
                     {activeCount}
                   </span>
@@ -201,7 +201,7 @@ export default function Orders() {
           {isLoading && (
             <div className="space-y-3 mt-2">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white rounded-3xl border border-gray-100 p-4 space-y-3">
+                <div key={i} className="bg-store-bg rounded-3xl border border-store-secondary/50 p-4 space-y-3">
                   <div className="flex items-center gap-3">
                     <Skeleton className="w-12 h-12 rounded-2xl" />
                     <div className="flex-1 space-y-2">
@@ -225,18 +225,18 @@ export default function Orders() {
               className="mt-12 flex flex-col items-center"
             >
               <div className="relative">
-                <div className="w-24 h-24 rounded-[28px] bg-gray-100 flex items-center justify-center">
-                  <ShoppingBag className="w-10 h-10 text-gray-300" strokeWidth={1.5} />
+                <div className="w-24 h-24 rounded-[28px] bg-store-secondary flex items-center justify-center">
+                  <ShoppingBag className="w-10 h-10 text-store-text/30" strokeWidth={1.5} />
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-xl bg-gray-900 flex items-center justify-center shadow-lg">
+                <div className="absolute -bottom-1 -right-1 w-9 h-9 rounded-xl bg-store-primary flex items-center justify-center shadow-lg">
                   <Sparkles className="w-4 h-4 text-white" strokeWidth={2} />
                 </div>
               </div>
 
-              <h2 className="text-lg font-bold text-gray-900 mt-5">
+              <h2 className="text-lg font-bold text-store-text mt-5">
                 {filter === 'all' ? 'Nenhum pedido ainda' : 'Nenhum pedido aqui'}
               </h2>
-              <p className="text-sm text-gray-400 mt-1 text-center max-w-[240px]">
+              <p className="text-sm text-store-text/40 mt-1 text-center max-w-[240px]">
                 {filter === 'all'
                   ? 'Explore nosso catalogo e faca seu primeiro pedido'
                   : 'Nenhum pedido corresponde a esse filtro'}
@@ -245,7 +245,7 @@ export default function Orders() {
               {filter === 'all' && (
                 <Link
                   to={createPageUrl('Home')}
-                  className="mt-5 inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-semibold px-5 py-3 rounded-2xl hover:bg-gray-800 transition-colors active:scale-[0.97]"
+                  className="mt-5 inline-flex items-center gap-2 bg-store-primary text-white text-sm font-semibold px-5 py-3 rounded-2xl hover:bg-store-primary transition-colors active:scale-[0.97]"
                 >
                   Explorar produtos
                   <ArrowRight className="w-4 h-4" />
@@ -283,8 +283,8 @@ export default function Orders() {
                         to={createPageUrl(`OrderDetail?id=${order.id}`)}
                         className="block group"
                       >
-                        <div className={`bg-white rounded-3xl border shadow-sm overflow-hidden transition-all hover:shadow-md ${
-                          isInTransit ? 'border-violet-200' : 'border-gray-100'
+                        <div className={`bg-store-bg rounded-3xl border shadow-sm overflow-hidden transition-all hover:shadow-md ${
+                          isInTransit ? 'border-violet-200' : 'border-store-secondary/50'
                         }`}>
                           {/* Live tracking banner for in-transit orders */}
                           {isInTransit && (
@@ -305,16 +305,16 @@ export default function Orders() {
                             <div className="flex items-start justify-between mb-3.5">
                               <div>
                                 <div className="flex items-center gap-2">
-                                  <span className="text-[15px] font-bold text-gray-900">
+                                  <span className="text-[15px] font-bold text-store-text">
                                     #{order.order_number}
                                   </span>
                                   {order.express_delivery && (
-                                    <span className="inline-flex items-center gap-0.5 bg-gray-900 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                    <span className="inline-flex items-center gap-0.5 bg-store-primary text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
                                       <Truck className="w-2.5 h-2.5" /> Express
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-[11px] text-gray-400 mt-0.5 block">
+                                <span className="text-[11px] text-store-text/40 mt-0.5 block">
                                   {getRelativeTime(order.created_date)}
                                 </span>
                               </div>
@@ -328,7 +328,7 @@ export default function Orders() {
                             {/* Progress bar */}
                             {!isCancelled && (
                               <div className="mb-3.5">
-                                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div className="w-full h-1.5 bg-store-secondary rounded-full overflow-hidden">
                                   <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${config.progress}%` }}
@@ -346,7 +346,7 @@ export default function Orders() {
                                 {order.items?.slice(0, 3).map((item, i) => (
                                   <div
                                     key={i}
-                                    className="w-11 h-11 rounded-xl bg-gray-50 border-2 border-white overflow-hidden shadow-sm"
+                                    className="w-11 h-11 rounded-xl bg-store-secondary border-2 border-white overflow-hidden shadow-sm"
                                   >
                                     <img
                                       src={item.product_image}
@@ -356,8 +356,8 @@ export default function Orders() {
                                   </div>
                                 ))}
                                 {(order.items?.length || 0) > 3 && (
-                                  <div className="w-11 h-11 rounded-xl bg-gray-100 border-2 border-white flex items-center justify-center shadow-sm">
-                                    <span className="text-[11px] font-bold text-gray-500">
+                                  <div className="w-11 h-11 rounded-xl bg-store-secondary border-2 border-white flex items-center justify-center shadow-sm">
+                                    <span className="text-[11px] font-bold text-store-text/50">
                                       +{(order.items?.length || 0) - 3}
                                     </span>
                                   </div>
@@ -365,18 +365,18 @@ export default function Orders() {
                               </div>
 
                               <div className="flex-1 min-w-0">
-                                <span className="text-[12px] text-gray-500 block">
+                                <span className="text-[12px] text-store-text/50 block">
                                   {itemCount} {itemCount === 1 ? 'item' : 'itens'}
                                 </span>
                               </div>
 
                               <div className="text-right shrink-0">
-                                <span className="text-[15px] font-bold text-gray-900 tabular-nums block leading-tight">
+                                <span className="text-[15px] font-bold text-store-text tabular-nums block leading-tight">
                                   {formatPrice(order.total)}
                                 </span>
                               </div>
 
-                              <ChevronRight className="w-4 h-4 text-gray-300 shrink-0 group-hover:text-gray-400 transition-colors" />
+                              <ChevronRight className="w-4 h-4 text-store-text/30 shrink-0 group-hover:text-store-text/40 transition-colors" />
                             </div>
                           </div>
                         </div>

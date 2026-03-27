@@ -46,7 +46,7 @@ export default function HeroBanner({
           <motion.div variants={fadeUp} custom={3}>
             <Link
               to={ctaLink}
-              className="group inline-flex items-center gap-2.5 bg-white text-gray-900 px-5 py-3 rounded-2xl font-semibold text-sm transition-all hover:bg-white/95 active:scale-[0.97]"
+              className="group inline-flex items-center gap-2.5 bg-store-accent text-white px-5 py-3 rounded-2xl font-semibold text-sm transition-all hover:bg-store-accent/90 active:scale-[0.97]"
             >
               {ctaText}
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />

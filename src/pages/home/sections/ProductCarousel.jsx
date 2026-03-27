@@ -20,13 +20,13 @@ export default function ProductCarousel({
     <section className="mt-8">
       <div className="flex items-center justify-between px-4 mb-4">
         <div>
-          <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{title}</h2>
-          {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
+          <h2 className="text-[17px] font-bold text-store-text tracking-tight">{title}</h2>
+          {subtitle && <p className="text-xs text-store-text/50 mt-0.5">{subtitle}</p>}
         </div>
         {showCta && (
           <Link
             to={ctaLink || createPageUrl('Products')}
-            className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors"
+            className="text-sm font-medium text-store-accent flex items-center gap-0.5 hover:text-store-accent/80 transition-colors"
           >
             {ctaText}
             <ChevronRight className="w-4 h-4" />

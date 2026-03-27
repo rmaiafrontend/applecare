@@ -22,15 +22,15 @@ import {
 function TypingIndicator() {
   return (
     <div className="flex items-end gap-2.5 px-4 mb-3">
-      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center shrink-0 shadow-sm">
+      <div className="w-8 h-8 rounded-full bg-store-primary flex items-center justify-center shrink-0 shadow-sm">
         <Sparkles className="w-3.5 h-3.5 text-white" strokeWidth={2} />
       </div>
-      <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-md px-4 py-3 shadow-sm">
+      <div className="bg-store-bg border border-store-secondary/50 rounded-2xl rounded-tl-md px-4 py-3 shadow-sm">
         <div className="flex gap-1.5 items-center h-5">
           {[0, 1, 2].map(i => (
             <motion.div
               key={i}
-              className="w-1.5 h-1.5 bg-gray-400 rounded-full"
+              className="w-1.5 h-1.5 bg-store-text/40 rounded-full"
               animate={{ y: [0, -5, 0], opacity: [0.4, 1, 0.4] }}
               transition={{
                 duration: 0.7,
@@ -60,13 +60,13 @@ function ProductCarousel({ products }) {
             <Link
               key={product.id}
               to={createPageUrl(`ProductDetail?id=${product.id}`)}
-              className="snap-start shrink-0 w-[145px] bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden hover:border-gray-200 transition-colors group"
+              className="snap-start shrink-0 w-[145px] bg-store-secondary rounded-2xl border border-store-secondary/50 overflow-hidden hover:border-store-secondary transition-colors group"
             >
               <div className="relative">
                 <img
                   src={product.images?.[0] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=200&fit=crop'}
                   alt={product.name}
-                  className="w-full aspect-square object-cover bg-gray-100 group-hover:scale-105 transition-transform duration-300"
+                  className="w-full aspect-square object-cover bg-store-secondary group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-1.5 left-1.5 flex flex-col gap-1">
                   {hasDiscount && (
@@ -76,22 +76,22 @@ function ProductCarousel({ products }) {
                   )}
                 </div>
                 {product.express_delivery && (
-                  <span className="absolute top-1.5 right-1.5 bg-gray-900/80 backdrop-blur-sm text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+                  <span className="absolute top-1.5 right-1.5 bg-store-primary/80 backdrop-blur-sm text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
                     <Truck className="w-2.5 h-2.5" /> 1h
                   </span>
                 )}
               </div>
               <div className="p-2.5">
-                <h4 className="text-[11px] font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[28px]">
+                <h4 className="text-[11px] font-semibold text-store-text leading-snug line-clamp-2 min-h-[28px]">
                   {product.name}
                 </h4>
                 <div className="mt-1.5 flex items-baseline gap-1">
                   {hasDiscount && (
-                    <span className="text-[9px] text-gray-400 line-through">
+                    <span className="text-[9px] text-store-text/40 line-through">
                       {formatPrice(product.original_price)}
                     </span>
                   )}
-                  <span className="text-[13px] font-bold text-gray-900 tabular-nums">
+                  <span className="text-[13px] font-bold text-store-text tabular-nums">
                     {formatPrice(product.price)}
                   </span>
                 </div>
@@ -113,15 +113,15 @@ function AiBubble({ message, onQuickReply, isLast }) {
       className="mb-3"
     >
       <div className="flex items-end gap-2.5 px-4">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center shrink-0 shadow-sm">
+        <div className="w-8 h-8 rounded-full bg-store-primary flex items-center justify-center shrink-0 shadow-sm">
           <Sparkles className="w-3.5 h-3.5 text-white" strokeWidth={2} />
         </div>
         <div className="max-w-[calc(100%-60px)]">
-          <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-md px-4 py-3 shadow-sm">
-            <p className="text-[13px] text-gray-700 leading-relaxed whitespace-pre-line"
+          <div className="bg-store-bg border border-store-secondary/50 rounded-2xl rounded-tl-md px-4 py-3 shadow-sm">
+            <p className="text-[13px] text-store-text/70 leading-relaxed whitespace-pre-line"
               dangerouslySetInnerHTML={{
                 __html: message.text
-                  .replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900">$1</strong>')
+                  .replace(/\*\*(.*?)\*\*/g, '<strong class="text-store-text">$1</strong>')
               }}
             />
             {message.products && message.products.length > 0 && (
@@ -141,7 +141,7 @@ function AiBubble({ message, onQuickReply, isLast }) {
             <button
               key={i}
               onClick={() => onQuickReply(reply)}
-              className="bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 text-[12px] font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 active:scale-95 transition-all"
+              className="bg-store-secondary border border-store-secondary rounded-xl px-3.5 py-2 text-[12px] font-medium text-store-text/70 hover:bg-store-secondary hover:border-store-secondary active:scale-95 transition-all"
             >
               {reply}
             </button>
@@ -160,7 +160,7 @@ function UserBubble({ message }) {
       transition={{ duration: 0.3 }}
       className="flex justify-end px-4 mb-3"
     >
-      <div className="max-w-[80%] bg-gray-900 text-white rounded-2xl rounded-tr-md px-4 py-3">
+      <div className="max-w-[80%] bg-store-primary text-white rounded-2xl rounded-tr-md px-4 py-3">
         <p className="text-[13px] leading-relaxed">{message.text}</p>
       </div>
     </motion.div>
@@ -240,8 +240,8 @@ export default function Search() {
             transition={{ delay: 0.1, duration: 0.4 }}
             className="flex justify-center mb-4"
           >
-            <div className="inline-flex items-center gap-1.5 bg-gray-50 text-gray-500 rounded-full px-3.5 py-2 border border-gray-100">
-              <Sparkles className="w-3.5 h-3.5 text-gray-400" strokeWidth={2} />
+            <div className="inline-flex items-center gap-1.5 bg-store-secondary text-store-text/50 rounded-full px-3.5 py-2 border border-store-secondary/50">
+              <Sparkles className="w-3.5 h-3.5 text-store-text/40" strokeWidth={2} />
               <span className="text-[11px] font-semibold">Assistente de compras aLink</span>
             </div>
           </motion.div>
@@ -269,7 +269,7 @@ export default function Search() {
       </main>
 
       {/* Input bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-xl border-t border-gray-100 pb-[env(safe-area-inset-bottom)]">
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-store-bg/90 backdrop-blur-xl border-t border-store-secondary/50 pb-[env(safe-area-inset-bottom)]">
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-lg mx-auto px-4 py-3 flex items-center gap-2"
@@ -282,13 +282,13 @@ export default function Search() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Pergunte sobre produtos..."
               disabled={isTyping}
-              className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-4 pr-4 py-3 text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-gray-300 focus:bg-white focus:ring-0 transition-all disabled:opacity-50"
+              className="w-full bg-store-secondary border border-store-secondary rounded-2xl pl-4 pr-4 py-3 text-[13px] text-store-text placeholder:text-store-text/40 focus:outline-none focus:border-store-secondary focus:bg-store-bg focus:ring-0 transition-all disabled:opacity-50"
             />
           </div>
           <button
             type="submit"
             disabled={!input.trim() || isTyping}
-            className="w-11 h-11 rounded-2xl bg-gray-900 flex items-center justify-center shrink-0 disabled:opacity-20 active:scale-95 hover:bg-gray-800 transition-all"
+            className="w-11 h-11 rounded-2xl bg-store-primary flex items-center justify-center shrink-0 disabled:opacity-20 active:scale-95 hover:bg-store-primary transition-all"
           >
             <Send className="w-4 h-4 text-white -rotate-45" strokeWidth={2} />
           </button>

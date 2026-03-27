@@ -18,7 +18,7 @@ export default function ProductImageGallery({
   isAvailable, expressDelivery, isUsed, hasDiscount, discountPercent, productName,
 }: ProductImageGalleryProps) {
   return (
-    <div className="relative bg-gradient-to-b from-gray-100 to-gray-50">
+    <div className="relative bg-store-secondary">
       <div className="relative aspect-[4/5] overflow-hidden">
         <AnimatePresence mode="wait">
           {images.length > 0 ? (
@@ -36,12 +36,12 @@ export default function ProductImageGallery({
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200"
+              className="w-full h-full flex flex-col items-center justify-center bg-store-secondary"
             >
               <div className="w-20 h-20 rounded-3xl bg-white/80 flex items-center justify-center shadow-sm">
-                <Package className="w-10 h-10 text-gray-300" strokeWidth={1.4} />
+                <Package className="w-10 h-10 text-store-text/30" strokeWidth={1.4} />
               </div>
-              <p className="text-sm font-medium text-gray-300 mt-3">Sem imagem</p>
+              <p className="text-sm font-medium text-store-text/30 mt-3">Sem imagem</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -58,13 +58,13 @@ export default function ProductImageGallery({
               </span>
             )}
             {isUsed && isAvailable && (
-              <span className="inline-flex items-center gap-1.5 bg-gray-900/80 backdrop-blur-md text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-lg shadow-sm">
+              <span className="inline-flex items-center gap-1.5 bg-store-primary/80 backdrop-blur-md text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-lg shadow-sm">
                 <RotateCcw className="w-3 h-3" strokeWidth={2.5} />
                 Seminovo
               </span>
             )}
             {!isAvailable && (
-              <span className="inline-flex items-center bg-gray-900/70 backdrop-blur-md text-white text-[10px] font-semibold tracking-wider uppercase px-3 py-1.5 rounded-lg">
+              <span className="inline-flex items-center bg-store-primary/70 backdrop-blur-md text-white text-[10px] font-semibold tracking-wider uppercase px-3 py-1.5 rounded-lg">
                 Indisponivel
               </span>
             )}

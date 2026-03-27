@@ -219,7 +219,7 @@ export default function OrderConfirmation() {
                   ? 'bg-amber-500 text-white'
                   : order.express_delivery
                     ? 'bg-green-500 text-white'
-                    : 'bg-white border border-gray-100 shadow-sm'
+                    : 'bg-store-bg border border-store-secondary/50 shadow-sm'
               }`}
             >
               <div className="flex items-center gap-4">
@@ -264,7 +264,7 @@ export default function OrderConfirmation() {
 
           {/* ── Order Items ── */}
           <motion.div variants={fadeUp} custom={1}>
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
+            <div className="bg-store-bg rounded-3xl border border-store-secondary/50 shadow-sm p-5">
               <h2 className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-4">
                 {order.items?.length} {order.items?.length === 1 ? 'item' : 'itens'}
               </h2>
@@ -280,12 +280,12 @@ export default function OrderConfirmation() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[13px] font-semibold text-gray-900 truncate">
+                      <h3 className="text-[13px] font-semibold text-store-text truncate">
                         {item.product_name}
                       </h3>
-                      <span className="text-[11px] text-gray-400">Qtd: {item.quantity}</span>
+                      <span className="text-[11px] text-store-text/40">Qtd: {item.quantity}</span>
                     </div>
-                    <span className="text-[13px] font-bold text-gray-900 tabular-nums shrink-0">
+                    <span className="text-[13px] font-bold text-store-text tabular-nums shrink-0">
                       {formatPrice(item.unit_price * item.quantity)}
                     </span>
                   </div>
@@ -296,20 +296,20 @@ export default function OrderConfirmation() {
 
           {/* ── Summary ── */}
           <motion.div variants={fadeUp} custom={2}>
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
+            <div className="bg-store-bg rounded-3xl border border-store-secondary/50 shadow-sm p-5">
               <h2 className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-4">
                 Resumo
               </h2>
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-[13px] text-gray-500">Subtotal</span>
-                  <span className="text-[13px] font-semibold text-gray-900 tabular-nums">
+                  <span className="text-[13px] text-store-text/50">Subtotal</span>
+                  <span className="text-[13px] font-semibold text-store-text tabular-nums">
                     {formatPrice(order.subtotal)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[13px] text-gray-500">Frete</span>
+                  <span className="text-[13px] text-store-text/50">Frete</span>
                   <span
                     className={`text-[13px] font-semibold tabular-nums ${
                       order.shipping_cost === 0 ? 'text-green-600' : 'text-gray-900'
@@ -318,9 +318,9 @@ export default function OrderConfirmation() {
                     {order.shipping_cost === 0 ? 'Gratis' : formatPrice(order.shipping_cost)}
                   </span>
                 </div>
-                <div className="pt-3 border-t border-gray-100 flex justify-between items-baseline">
-                  <span className="text-sm font-semibold text-gray-900">Total</span>
-                  <span className="text-xl font-bold text-gray-900 tabular-nums">
+                <div className="pt-3 border-t border-store-secondary/50 flex justify-between items-baseline">
+                  <span className="text-sm font-semibold text-store-text">Total</span>
+                  <span className="text-xl font-bold text-store-text tabular-nums">
                     {formatPrice(order.total)}
                   </span>
                 </div>
@@ -330,15 +330,15 @@ export default function OrderConfirmation() {
 
           {/* ── Payment & Address ── */}
           <motion.div variants={fadeUp} custom={3}>
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-store-bg rounded-3xl border border-store-secondary/50 shadow-sm overflow-hidden">
               {/* Payment */}
               <div className="p-5 flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0">
                   <PaymentIcon className="w-5 h-5 text-gray-600" strokeWidth={1.75} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-[11px] text-gray-400 block">Forma de pagamento</span>
-                  <span className="text-[13px] font-semibold text-gray-900">
+                  <span className="text-[11px] text-store-text/40 block">Forma de pagamento</span>
+                  <span className="text-[13px] font-semibold text-store-text">
                     {paymentLabels[order.payment_method] || order.payment_method}
                   </span>
                 </div>
@@ -347,20 +347,20 @@ export default function OrderConfirmation() {
               {/* Address */}
               {order.address && (
                 <div className="px-5 pb-5 pt-0">
-                  <div className="pt-4 border-t border-gray-100 flex items-start gap-3.5">
+                  <div className="pt-4 border-t border-store-secondary/50 flex items-start gap-3.5">
                     <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0 mt-0.5">
                       <MapPin className="w-5 h-5 text-gray-600" strokeWidth={1.75} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className="text-[11px] text-gray-400 block mb-1">Endereco de entrega</span>
-                      <span className="text-[13px] font-semibold text-gray-900 block leading-snug">
+                      <span className="text-[11px] text-store-text/40 block mb-1">Endereco de entrega</span>
+                      <span className="text-[13px] font-semibold text-store-text block leading-snug">
                         {order.address.street}, {order.address.number}
                         {order.address.complement && ` - ${order.address.complement}`}
                       </span>
-                      <span className="text-[12px] text-gray-500 block mt-0.5">
+                      <span className="text-[12px] text-store-text/50 block mt-0.5">
                         {order.address.neighborhood} - {order.address.city}/{order.address.state}
                       </span>
-                      <span className="text-[12px] text-gray-400 block">
+                      <span className="text-[12px] text-store-text/40 block">
                         CEP {order.address.cep}
                       </span>
                     </div>
@@ -372,8 +372,8 @@ export default function OrderConfirmation() {
 
           {/* ── Notice ── */}
           <motion.div variants={fadeUp} custom={4}>
-            <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-              <p className="text-[12px] text-gray-400 text-center leading-relaxed">
+            <div className="bg-store-secondary rounded-2xl p-4 border border-gray-100">
+              <p className="text-[12px] text-store-text/40 text-center leading-relaxed">
                 {isWhatsAppFlow
                   ? 'Seu pedido foi registrado. Finalize a confirmacao pelo WhatsApp para darmos continuidade.'
                   : 'A Nota Fiscal sera enviada para seu e-mail e WhatsApp apos a confirmacao do pagamento.'}

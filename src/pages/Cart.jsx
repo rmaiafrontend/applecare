@@ -195,7 +195,7 @@ export default function Cart() {
           <motion.div initial="hidden" animate="visible">
             {/* Header info */}
             <motion.div variants={fadeUp} custom={0} className="flex items-center justify-between px-4 pt-5 pb-2">
-              <span className="text-sm text-gray-400">
+              <span className="text-sm text-store-text/40">
                 {cartCount} {cartCount === 1 ? 'item' : 'itens'}
               </span>
               <button
@@ -237,7 +237,7 @@ export default function Cart() {
             <motion.div variants={fadeUp} custom={cartItems.length + 1} className="px-4 mt-5">
               <button
                 onClick={() => navigate(createPageUrl('Home'))}
-                className="w-full flex items-center justify-center gap-2 h-11 rounded-xl border border-dashed border-gray-200 text-[13px] font-medium text-gray-400 hover:text-gray-600 hover:border-gray-300 transition-colors"
+                className="w-full flex items-center justify-center gap-2 h-11 rounded-xl border border-dashed border-store-secondary text-[13px] font-medium text-store-text/40 hover:text-store-text/60 hover:border-store-text/20 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Continuar comprando
@@ -247,7 +247,7 @@ export default function Cart() {
             {/* Express delivery banner */}
             {allExpressDelivery && cartItems.length > 0 && (
               <motion.div variants={fadeUp} custom={cartItems.length + 2} className="px-4 mt-4">
-                <div className="flex items-center gap-3 bg-gray-900 rounded-2xl p-4">
+                <div className="flex items-center gap-3 bg-store-primary rounded-2xl p-4">
                   <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
                     <Truck className="w-4 h-4 text-white" strokeWidth={2} />
                   </div>

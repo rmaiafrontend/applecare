@@ -105,50 +105,50 @@ export default function Profile() {
         <motion.div initial="hidden" animate="visible">
           {/* Profile Header */}
           <motion.div variants={fadeUp} custom={0} className="px-4 pt-6 pb-2">
-            <div className="relative bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="relative bg-store-bg rounded-3xl border border-store-secondary/50 shadow-sm overflow-hidden">
               {/* Decorative top bar */}
-              <div className="h-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" />
+              <div className="h-20 bg-store-primary" />
 
               <div className="px-5 pb-5">
                 {/* Avatar - overlapping the gradient */}
                 <div className="-mt-8 mb-3 flex items-end justify-between">
                   <div className="w-16 h-16 rounded-2xl bg-white shadow-lg border-2 border-white flex items-center justify-center">
-                    <span className="text-2xl font-bold text-gray-900">
+                    <span className="text-2xl font-bold text-store-text">
                       {user?.full_name?.[0]?.toUpperCase() || 'U'}
                     </span>
                   </div>
-                  <button className="text-[12px] font-semibold text-gray-900 bg-gray-100 hover:bg-gray-200 px-3.5 py-1.5 rounded-xl transition-colors active:scale-95">
+                  <button className="text-[12px] font-semibold text-store-text bg-store-secondary hover:bg-store-secondary/80 px-3.5 py-1.5 rounded-xl transition-colors active:scale-95">
                     Editar perfil
                   </button>
                 </div>
 
                 {/* Name & email */}
-                <h2 className="text-lg font-bold text-gray-900 tracking-tight">
+                <h2 className="text-lg font-bold text-store-text tracking-tight">
                   {user?.full_name || 'Usuario'}
                 </h2>
-                <p className="text-[13px] text-gray-400 mt-0.5">
+                <p className="text-[13px] text-store-text/40 mt-0.5">
                   {user?.email || 'email@exemplo.com'}
                 </p>
 
                 {/* Stats row */}
-                <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+                <div className="flex items-center gap-4 mt-4 pt-4 border-t border-store-secondary/50">
                   <div className="flex-1 text-center">
-                    <span className="text-lg font-bold text-gray-900 tabular-nums block">
+                    <span className="text-lg font-bold text-store-text tabular-nums block">
                       {orders.length}
                     </span>
-                    <span className="text-[11px] text-gray-400">Orcamentos</span>
+                    <span className="text-[11px] text-store-text/40">Orcamentos</span>
                   </div>
-                  <div className="w-px h-8 bg-gray-100" />
+                  <div className="w-px h-8 bg-store-secondary" />
                   <div className="flex-1 text-center">
-                    <span className="text-lg font-bold text-gray-900 tabular-nums block">0</span>
-                    <span className="text-[11px] text-gray-400">Favoritos</span>
+                    <span className="text-lg font-bold text-store-text tabular-nums block">0</span>
+                    <span className="text-[11px] text-store-text/40">Favoritos</span>
                   </div>
-                  <div className="w-px h-8 bg-gray-100" />
+                  <div className="w-px h-8 bg-store-secondary" />
                   <div className="flex-1 text-center">
-                    <span className="text-lg font-bold text-gray-900 tabular-nums block">
+                    <span className="text-lg font-bold text-store-text tabular-nums block">
                       {cartItems.length}
                     </span>
-                    <span className="text-[11px] text-gray-400">No carrinho</span>
+                    <span className="text-[11px] text-store-text/40">No carrinho</span>
                   </div>
                 </div>
               </div>
@@ -163,14 +163,14 @@ export default function Profile() {
                 return (
                   <button
                     key={action.label}
-                    className="flex flex-col items-center gap-2 py-3 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all active:scale-95"
+                    className="flex flex-col items-center gap-2 py-3 rounded-2xl bg-store-bg border border-store-secondary/50 shadow-sm hover:shadow-md transition-all active:scale-95"
                   >
                     <div
                       className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center`}
                     >
                       <Icon className="w-5 h-5 text-white" strokeWidth={2} />
                     </div>
-                    <span className="text-[11px] font-semibold text-gray-700">{action.label}</span>
+                    <span className="text-[11px] font-semibold text-store-text/70">{action.label}</span>
                   </button>
                 );
               })}
@@ -185,11 +185,11 @@ export default function Profile() {
               custom={sectionIndex + 2}
               className="px-4 mt-5"
             >
-              <h3 className="text-[11px] font-bold uppercase tracking-widest text-gray-400 px-1 mb-2">
+              <h3 className="text-[11px] font-bold uppercase tracking-widest text-store-text/40 px-1 mb-2">
                 {section.title}
               </h3>
 
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="bg-store-bg rounded-3xl border border-store-secondary/50 shadow-sm overflow-hidden">
                 {section.items.map((item, itemIndex) => {
                   const Icon = item.icon;
                   const isLast = itemIndex === section.items.length - 1;
@@ -199,19 +199,19 @@ export default function Profile() {
                       <div
                         key={item.label}
                         className={`flex items-center justify-between px-4 py-3.5 ${
-                          !isLast ? 'border-b border-gray-50' : ''
+                          !isLast ? 'border-b border-store-secondary/30' : ''
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center">
-                            <Icon className="w-4 h-4 text-gray-600" strokeWidth={2} />
+                          <div className="w-9 h-9 rounded-xl bg-store-secondary flex items-center justify-center">
+                            <Icon className="w-4 h-4 text-store-text/60" strokeWidth={2} />
                           </div>
                           <div>
-                            <span className="text-[13px] font-semibold text-gray-900 block">
+                            <span className="text-[13px] font-semibold text-store-text block">
                               {item.label}
                             </span>
                             {item.subtitle && (
-                              <span className="text-[11px] text-gray-400">{item.subtitle}</span>
+                              <span className="text-[11px] text-store-text/40">{item.subtitle}</span>
                             )}
                           </div>
                         </div>
@@ -226,24 +226,24 @@ export default function Profile() {
                       onClick={() => {
                         if (item.whatsapp) handleWhatsApp();
                       }}
-                      className={`w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50/50 transition-colors active:bg-gray-50 ${
-                        !isLast ? 'border-b border-gray-50' : ''
+                      className={`w-full flex items-center justify-between px-4 py-3.5 hover:bg-store-secondary/50 transition-colors active:bg-store-secondary ${
+                        !isLast ? 'border-b border-store-secondary/30' : ''
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center">
-                          <Icon className="w-4 h-4 text-gray-600" strokeWidth={2} />
+                        <div className="w-9 h-9 rounded-xl bg-store-secondary flex items-center justify-center">
+                          <Icon className="w-4 h-4 text-store-text/60" strokeWidth={2} />
                         </div>
                         <div className="text-left">
-                          <span className="text-[13px] font-semibold text-gray-900 block leading-tight">
+                          <span className="text-[13px] font-semibold text-store-text block leading-tight">
                             {item.label}
                           </span>
                           {item.subtitle && (
-                            <span className="text-[11px] text-gray-400">{item.subtitle}</span>
+                            <span className="text-[11px] text-store-text/40">{item.subtitle}</span>
                           )}
                         </div>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-gray-300" strokeWidth={2} />
+                      <ChevronRight className="w-4 h-4 text-store-text/30" strokeWidth={2} />
                     </button>
                   );
                 })}
@@ -268,7 +268,7 @@ export default function Profile() {
             custom={menuSections.length + 3}
             className="text-center mt-6 mb-4"
           >
-            <p className="text-[11px] text-gray-300 font-medium">aLink Loja v1.0.0</p>
+            <p className="text-[11px] text-store-text/30 font-medium">aLink Loja v1.0.0</p>
           </motion.div>
         </motion.div>
       </main>

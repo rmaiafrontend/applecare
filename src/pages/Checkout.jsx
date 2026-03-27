@@ -116,10 +116,10 @@ export default function Checkout() {
                   onClick={() => step.id < currentStep && setCurrentStep(step.id)}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-[12px] font-semibold transition-all ${
                     currentStep === step.id
-                      ? 'bg-gray-900 text-white'
+                      ? 'bg-store-primary text-white'
                       : currentStep > step.id
                         ? 'bg-green-50 text-green-600'
-                        : 'bg-gray-100 text-gray-400'
+                        : 'bg-store-secondary text-store-text/40'
                   }`}
                 >
                   {currentStep > step.id ? (
@@ -129,7 +129,7 @@ export default function Checkout() {
                   )}
                   {step.label}
                 </button>
-                {i === 0 && <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />}
+                {i === 0 && <ChevronRight className="w-4 h-4 text-store-text/30 shrink-0" />}
               </React.Fragment>
             ))}
           </div>
@@ -137,7 +137,7 @@ export default function Checkout() {
 
         {/* Order Preview Strip */}
         <div className="px-4 mb-4">
-          <div className="flex items-center gap-3 bg-gray-50 rounded-2xl p-3.5 border border-gray-100">
+          <div className="flex items-center gap-3 bg-store-secondary rounded-2xl p-3.5 border border-store-secondary/50">
             <div className="flex -space-x-2">
               {cartItems.slice(0, 3).map((item) => (
                 <div key={item.id} className="w-10 h-10 rounded-xl bg-white border-2 border-gray-50 overflow-hidden">
@@ -145,17 +145,17 @@ export default function Checkout() {
                 </div>
               ))}
               {cartItems.length > 3 && (
-                <div className="w-10 h-10 rounded-xl bg-gray-200 border-2 border-gray-50 flex items-center justify-center">
-                  <span className="text-[10px] font-bold text-gray-500">+{cartItems.length - 3}</span>
+                <div className="w-10 h-10 rounded-xl bg-store-secondary border-2 border-gray-50 flex items-center justify-center">
+                  <span className="text-[10px] font-bold text-store-text/50">+{cartItems.length - 3}</span>
                 </div>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <span className="text-[12px] text-gray-500 block">{itemCount} {itemCount === 1 ? 'item' : 'itens'}</span>
-              <span className="text-[14px] font-bold text-gray-900 tabular-nums">{formatPrice(total)}</span>
+              <span className="text-[12px] text-store-text/50 block">{itemCount} {itemCount === 1 ? 'item' : 'itens'}</span>
+              <span className="text-[14px] font-bold text-store-text tabular-nums">{formatPrice(total)}</span>
             </div>
             {allExpressDelivery && (
-              <div className="flex items-center gap-1 bg-gray-900 text-white text-[10px] font-bold tracking-wide uppercase px-2.5 py-1.5 rounded-full">
+              <div className="flex items-center gap-1 bg-store-primary text-white text-[10px] font-bold tracking-wide uppercase px-2.5 py-1.5 rounded-full">
                 <Truck className="w-3 h-3" /> 1h
               </div>
             )}
@@ -182,17 +182,17 @@ export default function Checkout() {
       {/* Fixed Bottom CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-50">
         <div className="max-w-lg mx-auto">
-          <div className="bg-white border-t border-gray-100 shadow-[0_-4px_24px_rgba(0,0,0,0.06)] px-5 py-4">
+          <div className="bg-store-bg border-t border-store-secondary/50 shadow-[0_-4px_24px_rgba(0,0,0,0.06)] px-5 py-4">
             <div className="flex justify-between items-baseline mb-3">
-              <span className="text-[11px] font-medium text-gray-400 uppercase tracking-widest">Total</span>
-              <span className="text-lg font-bold text-gray-900 tabular-nums">{formatPrice(total)}</span>
+              <span className="text-[11px] font-medium text-store-text/40 uppercase tracking-widest">Total</span>
+              <span className="text-lg font-bold text-store-text tabular-nums">{formatPrice(total)}</span>
             </div>
 
             {currentStep === 1 ? (
               <Button
                 onClick={() => setCurrentStep(2)}
                 disabled={!isAddressValid()}
-                className="w-full h-12 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold active:scale-[0.97] transition-all disabled:opacity-40"
+                className="w-full h-12 rounded-2xl bg-store-primary hover:bg-store-primary/90 text-white text-sm font-semibold active:scale-[0.97] transition-all disabled:opacity-40"
               >
                 Continuar para pagamento
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -201,7 +201,7 @@ export default function Checkout() {
               <Button
                 onClick={handleSubmit}
                 disabled={!isPaymentValid() || isProcessing}
-                className="w-full h-12 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold active:scale-[0.97] transition-all disabled:opacity-40"
+                className="w-full h-12 rounded-2xl bg-store-primary hover:bg-store-primary/90 text-white text-sm font-semibold active:scale-[0.97] transition-all disabled:opacity-40"
               >
                 {isProcessing ? (
                   <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processando...</>

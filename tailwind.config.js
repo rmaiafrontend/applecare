@@ -14,11 +14,11 @@ module.exports = {
   		},
   		colors: {
   			store: {
-  				primary: 'var(--store-primary)',
-  				secondary: 'var(--store-secondary)',
-  				accent: 'var(--store-accent)',
-  				bg: 'var(--store-bg)',
-  				text: 'var(--store-text)',
+  				primary: 'rgb(var(--store-primary) / <alpha-value>)',
+  				secondary: 'rgb(var(--store-secondary) / <alpha-value>)',
+  				accent: 'rgb(var(--store-accent) / <alpha-value>)',
+  				bg: 'rgb(var(--store-bg) / <alpha-value>)',
+  				text: 'rgb(var(--store-text) / <alpha-value>)',
   			},
   			apple: {
   				dark: '#1d1d1f',

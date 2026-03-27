@@ -4,12 +4,18 @@
 
 @layer base {
   :root {
-    /* Store theme colors (overridden at runtime by StoreThemeProvider) */
-    --store-primary: #1d1d1f;
-    --store-secondary: #f5f5f7;
-    --store-accent: #0071e3;
-    --store-bg: #ffffff;
-    --store-text: #1d1d1f;
+    /* Store theme colors — RGB format for Tailwind opacity support */
+    --store-primary: 29 29 31;
+    --store-secondary: 245 245 247;
+    --store-accent: 0 113 227;
+    --store-bg: 255 255 255;
+    --store-text: 29 29 31;
+    /* Hex variants for inline styles */
+    --store-primary-hex: #1d1d1f;
+    --store-secondary-hex: #f5f5f7;
+    --store-accent-hex: #0071e3;
+    --store-bg-hex: #ffffff;
+    --store-text-hex: #1d1d1f;
 
     /* Apple Store: tema preto sofisticado */
     --background: 0 0% 98%;

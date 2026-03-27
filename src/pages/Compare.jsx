@@ -66,7 +66,7 @@ export default function Compare() {
         <Header showBack title="Comparar Produtos" />
         <main className="pt-12 w-full max-w-lg mx-auto px-4 flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <p className="text-gray-400 mb-4 text-sm">Selecione pelo menos 2 produtos para comparar</p>
+            <p className="text-store-text/40 mb-4 text-sm">Selecione pelo menos 2 produtos para comparar</p>
             <Button onClick={() => navigate(-1)} className="rounded-xl">
               Voltar
             </Button>
@@ -93,30 +93,30 @@ export default function Compare() {
                 key={product.id}
                 variants={fadeUp}
                 custom={i}
-                className="flex-1 min-w-[130px] bg-white rounded-2xl border border-gray-100 shadow-sm p-3 relative"
+                className="flex-1 min-w-[130px] bg-store-bg rounded-2xl border border-store-secondary/50 shadow-sm p-3 relative"
               >
                 <button
                   onClick={() => removeFromCompare(product.id)}
-                  className="absolute top-2 right-2 w-5 h-5 bg-gray-100 rounded-full flex items-center justify-center z-10"
+                  className="absolute top-2 right-2 w-5 h-5 bg-store-secondary rounded-full flex items-center justify-center z-10"
                 >
-                  <X className="w-3 h-3 text-gray-500" strokeWidth={2.5} />
+                  <X className="w-3 h-3 text-store-text/50" strokeWidth={2.5} />
                 </button>
                 <img
                   src={product.images?.[0] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=200&fit=crop'}
                   alt={product.name}
-                  className="w-full aspect-square rounded-xl object-cover bg-gray-50 mb-2.5"
+                  className="w-full aspect-square rounded-xl object-cover bg-store-secondary mb-2.5"
                 />
-                <h3 className="text-[12px] font-semibold text-gray-900 leading-snug line-clamp-2">
+                <h3 className="text-[12px] font-semibold text-store-text leading-snug line-clamp-2">
                   {product.name}
                 </h3>
                 <div className="mt-1.5">
                   {product.original_price && product.original_price > product.price && (
-                    <span className="text-[10px] text-gray-400 line-through block">
+                    <span className="text-[10px] text-store-text/40 line-through block">
                       {formatPrice(product.original_price)}
                     </span>
                   )}
                   <span className={`text-[14px] font-bold tabular-nums ${
-                    comparison?.bestValue?.id === product.id ? 'text-green-600' : 'text-gray-900'
+                    comparison?.bestValue?.id === product.id ? 'text-green-600' : 'text-store-text'
                   }`}>
                     {formatPrice(product.price)}
                   </span>
@@ -146,14 +146,14 @@ export default function Compare() {
                 return (
                   <div
                     key={i}
-                    className="shrink-0 flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-2.5 border border-gray-100"
+                    className="shrink-0 flex items-center gap-2 bg-store-secondary rounded-xl px-3 py-2.5 border border-store-secondary/50"
                   >
-                    <div className="w-7 h-7 rounded-lg bg-gray-900 flex items-center justify-center shrink-0">
+                    <div className="w-7 h-7 rounded-lg bg-store-primary flex items-center justify-center shrink-0">
                       <Icon className="w-3.5 h-3.5 text-white" strokeWidth={2} />
                     </div>
                     <div className="min-w-0">
-                      <span className="text-[10px] text-gray-400 block leading-none truncate">{h.product}</span>
-                      <span className="text-[11px] font-semibold text-gray-800 block mt-0.5">{h.text}</span>
+                      <span className="text-[10px] text-store-text/40 block leading-none truncate">{h.product}</span>
+                      <span className="text-[11px] font-semibold text-store-text block mt-0.5">{h.text}</span>
                     </div>
                   </div>
                 );
@@ -171,21 +171,21 @@ export default function Compare() {
             custom={2}
             className="px-4 mt-4"
           >
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-store-bg rounded-3xl border border-store-secondary/50 shadow-sm overflow-hidden">
               <div className="p-4 pb-2">
-                <h2 className="text-[11px] font-bold uppercase tracking-widest text-gray-400">
+                <h2 className="text-[11px] font-bold uppercase tracking-widest text-store-text/40">
                   Especificacoes
                 </h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="border-b border-gray-100">
-                      <th className="pl-4 pr-2 py-2 text-[10px] font-medium text-gray-400 uppercase tracking-wider w-[100px] shrink-0">
+                    <tr className="border-b border-store-secondary/50">
+                      <th className="pl-4 pr-2 py-2 text-[10px] font-medium text-store-text/40 uppercase tracking-wider w-[100px] shrink-0">
                         Spec
                       </th>
                       {products.map(p => (
-                        <th key={p.id} className="px-2 py-2 text-[10px] font-medium text-gray-400 uppercase tracking-wider min-w-[100px]">
+                        <th key={p.id} className="px-2 py-2 text-[10px] font-medium text-store-text/40 uppercase tracking-wider min-w-[100px]">
                           {p.name.split(' ').slice(0, 2).join(' ')}
                         </th>
                       ))}
@@ -193,11 +193,11 @@ export default function Compare() {
                   </thead>
                   <tbody>
                     {/* Price row */}
-                    <tr className="border-b border-gray-50">
-                      <td className="pl-4 pr-2 py-2.5 text-[11px] font-semibold text-gray-500">Preco</td>
+                    <tr className="border-b border-store-secondary">
+                      <td className="pl-4 pr-2 py-2.5 text-[11px] font-semibold text-store-text/50">Preco</td>
                       {products.map(p => (
                         <td key={p.id} className={`px-2 py-2.5 text-[12px] font-bold tabular-nums ${
-                          comparison.bestValue?.id === p.id ? 'text-green-600' : 'text-gray-900'
+                          comparison.bestValue?.id === p.id ? 'text-green-600' : 'text-store-text'
                         }`}>
                           {formatPrice(p.price)}
                         </td>
@@ -205,18 +205,18 @@ export default function Compare() {
                     </tr>
                     {/* Spec rows */}
                     {comparison.specsTable.map((row, i) => (
-                      <tr key={row.label} className={i < comparison.specsTable.length - 1 ? 'border-b border-gray-50' : ''}>
-                        <td className="pl-4 pr-2 py-2.5 text-[11px] font-semibold text-gray-500">{row.label}</td>
+                      <tr key={row.label} className={i < comparison.specsTable.length - 1 ? 'border-b border-store-secondary' : ''}>
+                        <td className="pl-4 pr-2 py-2.5 text-[11px] font-semibold text-store-text/50">{row.label}</td>
                         {row.values.map((val, j) => (
-                          <td key={j} className="px-2 py-2.5 text-[12px] text-gray-800">
+                          <td key={j} className="px-2 py-2.5 text-[12px] text-store-text">
                             {val}
                           </td>
                         ))}
                       </tr>
                     ))}
                     {/* Express row */}
-                    <tr className="border-t border-gray-100">
-                      <td className="pl-4 pr-2 py-2.5 text-[11px] font-semibold text-gray-500">Express</td>
+                    <tr className="border-t border-store-secondary/50">
+                      <td className="pl-4 pr-2 py-2.5 text-[11px] font-semibold text-store-text/50">Express</td>
                       {products.map(p => (
                         <td key={p.id} className="px-2 py-2.5 text-[12px]">
                           {p.express_delivery ? (
@@ -224,16 +224,16 @@ export default function Compare() {
                               <Truck className="w-3 h-3" /> 1h
                             </span>
                           ) : (
-                            <span className="text-gray-400">2-3 dias</span>
+                            <span className="text-store-text/40">2-3 dias</span>
                           )}
                         </td>
                       ))}
                     </tr>
                     {/* Stock row */}
                     <tr>
-                      <td className="pl-4 pr-2 py-2.5 text-[11px] font-semibold text-gray-500">Estoque</td>
+                      <td className="pl-4 pr-2 py-2.5 text-[11px] font-semibold text-store-text/50">Estoque</td>
                       {products.map(p => (
-                        <td key={p.id} className="px-2 py-2.5 text-[12px] text-gray-800">
+                        <td key={p.id} className="px-2 py-2.5 text-[12px] text-store-text">
                           {p.stock} un.
                         </td>
                       ))}
@@ -253,7 +253,7 @@ export default function Compare() {
           custom={3}
           className="px-4 mt-4"
         >
-          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-5 shadow-lg">
+          <div className="bg-store-primary rounded-3xl p-5 shadow-lg">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-white" strokeWidth={2} />
@@ -302,7 +302,7 @@ export default function Compare() {
               clearCompare();
               navigate(-1);
             }}
-            className="w-full text-center text-[12px] text-gray-400 hover:text-gray-600 py-3 transition-colors"
+            className="w-full text-center text-[12px] text-store-text/40 hover:text-store-text/60 py-3 transition-colors"
           >
             Limpar comparacao
           </button>

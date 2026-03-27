@@ -22,7 +22,7 @@ export default function BottomNav({ cartCount = 0 }) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom">
       <div className="max-w-lg mx-auto px-4 pb-2">
-        <div className="rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/[0.06] px-2 py-1.5 flex items-center justify-around" style={{ backgroundColor: 'color-mix(in srgb, var(--store-primary) 92%, transparent)' }}>
+        <div className="bg-store-primary/90 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/[0.06] px-2 py-1.5 flex items-center justify-around">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.page);

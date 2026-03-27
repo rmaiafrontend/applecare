@@ -185,15 +185,15 @@ export default function Home() {
             {differentialsItems.map((item, i) => {
               const IconComp = item.icon ? ({ Truck, Shield, Zap }[item.icon] || null) : null;
               return (
-                <motion.div key={i} variants={fadeUp} custom={i} className="flex items-center gap-2 bg-white border border-gray-100 rounded-full px-4 py-2.5 shrink-0">
+                <motion.div key={i} variants={fadeUp} custom={i} className="flex items-center gap-2 bg-store-secondary border border-store-secondary rounded-full px-4 py-2.5 shrink-0">
                   {item.emoji ? (
                     <span className="text-base">{item.emoji}</span>
                   ) : IconComp ? (
                     <IconComp className="w-4 h-4 text-gray-900" strokeWidth={2} />
                   ) : (
-                    <Shield className="w-4 h-4 text-gray-900" strokeWidth={2} />
+                    <Shield className="w-4 h-4 text-store-text" strokeWidth={2} />
                   )}
-                  <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">{item.label || item.text}</span>
+                  <span className="text-xs font-semibold text-store-text/70 whitespace-nowrap">{item.label || item.text}</span>
                 </motion.div>
               );
             })}
@@ -230,8 +230,8 @@ export default function Home() {
         {categoriesActive && (
           <section className="mt-8">
             <div className="flex items-center justify-between px-4 mb-4">
-              <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{categoriesTitle}</h2>
-              <Link to={createPageUrl('Categories')} className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors">
+              <h2 className="text-[17px] font-bold text-store-text tracking-tight">{categoriesTitle}</h2>
+              <Link to={createPageUrl('Categories')} className="text-sm font-medium text-store-accent flex items-center gap-0.5 hover:text-store-accent/80 transition-colors">
                 Ver todas
                 <ChevronRight className="w-4 h-4" />
               </Link>
@@ -254,7 +254,7 @@ export default function Home() {
                         <div className="w-16 h-16 rounded-2xl bg-store-primary flex items-center justify-center transition-all duration-200 group-hover:opacity-90 group-hover:scale-105 group-active:scale-95">
                           <Icon className="w-7 h-7 text-white" strokeWidth={1.5} />
                         </div>
-                        <span className="text-xs font-semibold text-gray-800 block leading-tight text-center">{cat.name}</span>
+                        <span className="text-xs font-semibold text-store-text block leading-tight text-center">{cat.name}</span>
                       </Link>
                     </motion.div>
                   );

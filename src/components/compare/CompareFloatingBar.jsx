@@ -33,7 +33,7 @@ export default function CompareFloatingBar() {
           className="fixed bottom-[68px] left-0 right-0 z-40"
         >
           <div className="max-w-lg mx-auto px-4 pb-2">
-            <div className="bg-gray-900 rounded-2xl p-3 shadow-xl flex items-center gap-3">
+            <div className="bg-store-primary rounded-2xl p-3 shadow-xl flex items-center gap-3">
               {/* Product Thumbnails */}
               <div className="flex items-center gap-1.5 flex-1 min-w-0">
                 {selectedProducts.map(product => (
@@ -41,7 +41,7 @@ export default function CompareFloatingBar() {
                     <img
                       src={product.images?.[0] || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=80&h=80&fit=crop'}
                       alt={product.name}
-                      className="w-10 h-10 rounded-xl object-cover border-2 border-gray-700"
+                      className="w-10 h-10 rounded-xl object-cover border-2 border-white/10"
                     />
                     <button
                       onClick={() => removeFromCompare(product.id)}
@@ -51,7 +51,7 @@ export default function CompareFloatingBar() {
                     </button>
                   </div>
                 ))}
-                <span className="text-[11px] text-gray-400 ml-1 truncate">
+                <span className="text-[11px] text-white/40 ml-1 truncate">
                   {compareIds.length}/3 selecionado{compareIds.length !== 1 ? 's' : ''}
                 </span>
               </div>
@@ -60,7 +60,7 @@ export default function CompareFloatingBar() {
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={clearCompare}
-                  className="text-[11px] text-gray-500 hover:text-gray-300 transition-colors"
+                  className="text-[11px] text-white/50 hover:text-white/70 transition-colors"
                 >
                   Limpar
                 </button>

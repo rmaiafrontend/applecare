@@ -34,15 +34,15 @@ export default function StoreProfile({
         </div>
         <div className="flex-1 min-w-0 pt-0.5">
           <div className="flex items-center gap-2">
-            <h2 className="text-[17px] font-bold text-gray-900 tracking-tight truncate">{storeName}</h2>
+            <h2 className="text-[17px] font-bold text-store-text tracking-tight truncate">{storeName}</h2>
           </div>
           {storeSlogan && (
-            <p className="text-[12px] text-gray-400 mt-0.5 leading-snug">{storeSlogan}</p>
+            <p className="text-[12px] text-store-text/50 mt-0.5 leading-snug">{storeSlogan}</p>
           )}
           {hoursEntries.length > 0 && (
             <div className="flex items-center gap-2 mt-2">
-              <div className="flex items-center gap-1.5 text-[11px] text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">
-                <Clock className="w-3 h-3 text-gray-400" strokeWidth={2} />
+              <div className="flex items-center gap-1.5 text-[11px] text-store-text/50 bg-store-secondary rounded-full px-2.5 py-1">
+                <Clock className="w-3 h-3 text-store-text/40" strokeWidth={2} />
                 <span>{hoursEntries[0]}</span>
               </div>
             </div>
@@ -65,22 +65,22 @@ export default function StoreProfile({
         )}
         <div className="flex items-center gap-1.5">
           {instagramUrl && (
-            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
+            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-store-secondary flex items-center justify-center text-store-text/60 hover:bg-store-secondary/80 active:scale-95 transition-all">
               <Instagram className="w-[18px] h-[18px]" strokeWidth={1.75} />
             </a>
           )}
           {tiktokUrl && (
-            <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
+            <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-store-secondary flex items-center justify-center text-store-text/60 hover:bg-store-secondary/80 active:scale-95 transition-all">
               <span className="text-[13px] font-bold">TT</span>
             </a>
           )}
           {youtubeUrl && (
-            <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
+            <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-store-secondary flex items-center justify-center text-store-text/60 hover:bg-store-secondary/80 active:scale-95 transition-all">
               <span className="text-[13px] font-bold">YT</span>
             </a>
           )}
           {facebookUrl && (
-            <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
+            <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-store-secondary flex items-center justify-center text-store-text/60 hover:bg-store-secondary/80 active:scale-95 transition-all">
               <span className="text-[13px] font-bold">FB</span>
             </a>
           )}
@@ -96,10 +96,10 @@ export default function StoreProfile({
               href={link.url || '#'}
               target={link.url?.startsWith('http') ? '_blank' : undefined}
               rel={link.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className={`flex items-center gap-1.5 border rounded-full px-4 py-2 text-[12px] font-semibold hover:bg-gray-200 active:scale-[0.96] transition-all shrink-0 ${
+              className={`flex items-center gap-1.5 border rounded-full px-4 py-2 text-[12px] font-semibold hover:bg-store-secondary/80 active:scale-[0.96] transition-all shrink-0 ${
                 link.is_highlight
                   ? 'bg-store-primary text-white border-store-primary hover:opacity-90'
-                  : 'bg-gray-100 text-gray-700 border-gray-200'
+                  : 'bg-store-secondary text-store-text/70 border-store-secondary'
               }`}
             >
               {link.emoji && <span className="text-[14px]">{link.emoji}</span>}
@@ -116,9 +116,9 @@ export default function StoreProfile({
             <Link
               key={link.label}
               to={link.to}
-              className="flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-full px-4 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-200 active:scale-[0.96] transition-all shrink-0"
+              className="flex items-center gap-1.5 bg-store-secondary border border-store-secondary rounded-full px-4 py-2 text-[12px] font-semibold text-store-text/70 hover:bg-store-secondary/80 active:scale-[0.96] transition-all shrink-0"
             >
-              <link.icon className="w-3.5 h-3.5 text-gray-400" strokeWidth={2} />
+              <link.icon className="w-3.5 h-3.5 text-store-text/40" strokeWidth={2} />
               {link.label}
             </Link>
           ))

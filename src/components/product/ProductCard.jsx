@@ -20,7 +20,7 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
     >
       {/* Image */}
       <Link to={createPageUrl(`ProductDetail?id=${product.id}`)} className="block relative">
-        <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100">
+        <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-store-secondary">
           {product.images?.[0] ? (
             <img
               src={product.images[0]}
@@ -28,11 +28,11 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
               className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-store-secondary">
               <div className="w-14 h-14 rounded-2xl bg-white/80 flex items-center justify-center shadow-sm">
-                <Package className="w-7 h-7 text-gray-300" strokeWidth={1.4} />
+                <Package className="w-7 h-7 text-store-text/30" strokeWidth={1.4} />
               </div>
-              <p className="text-[10px] font-medium text-gray-300 mt-2">Sem imagem</p>
+              <p className="text-[10px] font-medium text-store-text/30 mt-2">Sem imagem</p>
             </div>
           )}
 
@@ -45,7 +45,7 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
               </span>
             )}
             {isUsed && isAvailable && (
-              <span className="inline-flex items-center gap-1 bg-gray-900/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
+              <span className="inline-flex items-center gap-1 bg-store-primary/80 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
                 <RotateCcw className="w-2.5 h-2.5" strokeWidth={2.5} />
                 Seminovo
               </span>
@@ -55,7 +55,7 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
           {/* Unavailable overlay */}
           {!isAvailable && (
             <div className="absolute inset-0 bg-white/40 flex items-center justify-center">
-              <span className="bg-gray-900/80 text-white text-[11px] font-semibold tracking-wide uppercase px-3 py-1.5 rounded-full">
+              <span className="bg-store-primary/80 text-white text-[11px] font-semibold tracking-wide uppercase px-3 py-1.5 rounded-full">
                 Indisponivel
               </span>
             </div>
@@ -85,8 +85,8 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
         {/* Express badge */}
         {isAvailable && product.express_delivery && (
           <div className="flex items-center gap-1 mb-1">
-            <Truck className="w-3 h-3 text-gray-500" strokeWidth={2} />
-            <span className="text-[11px] font-medium text-gray-500">Entrega 1h</span>
+            <Truck className="w-3 h-3 text-store-text/50" strokeWidth={2} />
+            <span className="text-[11px] font-medium text-store-text/50">Entrega 1h</span>
           </div>
         )}
 
@@ -97,7 +97,7 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
         {/* Prices */}
         <div className="flex items-baseline gap-1.5 mt-1">
           {hasDiscount && (
-            <span className="text-[12px] text-gray-400 line-through tabular-nums">
+            <span className="text-[12px] text-store-text/40 line-through tabular-nums">
               {formatPrice(product.original_price)}
             </span>
           )}
