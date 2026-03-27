@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import StoreSettingsSection from "../store/StoreSettingsSection";
 import LogoUploader from "../store/LogoUploader";
 import ColorPicker from "../store/ColorPicker";
-import ThemePreview from "../store/ThemePreview";
+import HomePreview from "../home-settings/HomePreview";
 import { useConfigLoja, useSaveConfigLoja } from "@/api/hooks";
 
 const defaultConfig = {
@@ -110,7 +110,7 @@ export default function StoreSettingsTab() {
         </button>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr_320px] gap-6">
+      <div className="grid xl:grid-cols-[1fr_390px] gap-6">
         <div className="space-y-5">
           <StoreSettingsSection title="Identidade da Loja" subtitle="Nome, slogan e logotipos">
             <div className="grid sm:grid-cols-2 gap-4">
@@ -183,8 +183,16 @@ export default function StoreSettingsTab() {
           </StoreSettingsSection>
         </div>
 
-        <div className="hidden lg:block">
-          <ThemePreview config={form} />
+        <div className="hidden xl:block">
+          <HomePreview
+            form={{}}
+            storeInfo={{
+              name: form.store_name,
+              logo: form.logo_url,
+              whatsapp: form.whatsapp_number,
+              instagram: form.instagram_url,
+            }}
+          />
         </div>
       </div>
     </div>
