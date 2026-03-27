@@ -17,7 +17,7 @@ import {
   GitCompareArrows,
 } from 'lucide-react';
 import Header from '@/components/navigation/Header';
-import { useCompare } from '@/lib/CompareContext';
+import { useCompare } from '@/contexts/CompareContext';
 import ProductCard from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';

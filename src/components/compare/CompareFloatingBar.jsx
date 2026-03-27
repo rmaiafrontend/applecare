@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCompare } from '@/lib/CompareContext';
+import { useCompare } from '@/contexts/CompareContext';
 import { useSlug, usePublicProducts } from '@/api/hooks';
 import { mapProductFromApi } from '@/api/adapters';
 

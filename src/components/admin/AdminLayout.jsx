@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useAuth } from "@/lib/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard,
   Package,

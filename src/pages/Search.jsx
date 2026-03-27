@@ -9,7 +9,7 @@ import {
   Truck,
 } from 'lucide-react';
 import Header from '@/components/navigation/Header';
-import { getGreeting, processMessage } from '@/lib/chatEngine';
+import { getGreeting, processMessage } from '@/engines/chatEngine';
 import { formatPrice } from '@/lib/format';
 import { mapProductFromApi, mapCategoryFromApi } from '@/api/adapters';
 import {

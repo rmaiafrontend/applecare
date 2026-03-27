@@ -6,8 +6,8 @@ import { motion } from 'framer-motion';
 import Header from '@/components/navigation/Header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { useCompare } from '@/lib/CompareContext';
-import { generateComparison } from '@/lib/smartCompare';
+import { useCompare } from '@/contexts/CompareContext';
+import { generateComparison } from '@/engines/smartCompare';
 import { formatPrice } from '@/lib/format';
 import { mapProductFromApi, mapCategoryFromApi } from '@/api/adapters';
 import {

@@ -14,7 +14,7 @@ import {
   useDeactivateCatalogSection,
 } from "@/api/hooks";
 import { usePublicCategories } from "@/api/hooks";
-import { useAuth } from "@/lib/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 const EMPTY_FORM = {
   titulo: "", subtitulo: "", ativo: true,

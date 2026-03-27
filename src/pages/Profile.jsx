@@ -26,7 +26,7 @@ import {
   useCart,
   useOrders,
 } from '@/api/hooks';
-import { useAuth } from '@/lib/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },

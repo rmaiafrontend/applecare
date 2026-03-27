@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Loader2, ArrowRight, Store, User, Mail, Lock, Phone, Globe } from 'lucide-react';
-import { useAuth } from '@/lib/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
