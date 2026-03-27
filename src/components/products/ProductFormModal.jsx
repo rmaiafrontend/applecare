@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useCreateProduct, useUpdateProduct } from "@/api/hooks";
-import { uploadFile } from "@/lib/fileUpload";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Plus, X, Upload, Save, Loader2, Check,
+  X, Save, Loader2, Check,
   Info, DollarSign, Image, Cpu, Tags, Settings, FileText,
   Package, Zap, Star, Eye, Trash2
 } from "lucide-react";
@@ -16,6 +15,9 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SmartProductSearch from "./SmartProductSearch";
 import FormSection from "./FormSection";
+import ProductFormImages from "./ProductFormImages";
+import ProductFormSpecs from "./ProductFormSpecs";
+import ProductFormTags from "./ProductFormTags";
 
 const emptyForm = {
   product_id: "", name: "", sku: "", price: "", original_price: "",
@@ -30,10 +32,6 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
   const isEditing = !!editProduct;
 
   const [form, setForm] = useState(emptyForm);
-  const [newTag, setNewTag] = useState("");
-  const [newSpecLabel, setNewSpecLabel] = useState("");
-  const [newSpecValue, setNewSpecValue] = useState("");
-  const [newImageUrl, setNewImageUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [aiFilled, setAiFilled] = useState(false);
@@ -58,14 +56,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
       } else {
         setForm(emptyForm);
       }
-      setSaved(false);
-      setSaving(false);
-      setAiFilled(false);
-      setConfirmDelete(false);
-      setNewTag("");
-      setNewSpecLabel("");
-      setNewSpecValue("");
-      setNewImageUrl("");
+      setSaved(false); setSaving(false); setAiFilled(false); setConfirmDelete(false);
     }
   }, [open, editProduct]);
 
@@ -108,11 +99,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
       }));
     }
     if (form.specs?.length) {
-      body.especificacoes = form.specs.map((s, i) => ({
-        rotulo: s.label,
-        valor: s.value,
-        ordemExibicao: i,
-      }));
+      body.especificacoes = form.specs.map((s, i) => ({ rotulo: s.label, valor: s.value, ordemExibicao: i }));
     }
     if (form.tags?.length) {
       body.etiquetaIds = form.tags.map(Number).filter(n => !isNaN(n));
@@ -138,20 +125,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
     }
   };
 
-  const addTag = () => { if (newTag && !form.tags.includes(newTag)) { setForm({ ...form, tags: [...form.tags, newTag] }); setNewTag(""); } };
-  const removeTag = (tag) => setForm({ ...form, tags: form.tags.filter(t => t !== tag) });
-  const addSpec = () => { if (newSpecLabel && newSpecValue) { setForm({ ...form, specs: [...form.specs, { label: newSpecLabel, value: newSpecValue }] }); setNewSpecLabel(""); setNewSpecValue(""); } };
-  const removeSpec = (i) => setForm({ ...form, specs: form.specs.filter((_, idx) => idx !== i) });
-  const addImage = () => { if (newImageUrl) { setForm({ ...form, images: [...form.images, newImageUrl] }); setNewImageUrl(""); } };
-  const removeImage = (i) => setForm({ ...form, images: form.images.filter((_, idx) => idx !== i) });
-  const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const { file_url } = await uploadFile(file);
-    setForm(prev => ({ ...prev, images: [...prev.images, file_url] }));
-  };
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
-
   const canSave = form.name && form.price && form.category_id && (isEditing || form.product_id);
 
   return (
@@ -167,25 +141,18 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
               <h2 className="text-[14px] font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] leading-tight">
                 {isEditing ? "Editar Produto" : "Novo Produto"}
               </h2>
-              {isEditing && (
-                <p className="text-[10px] text-[#86868b] dark:text-[#98989d] leading-tight">{editProduct.product_id}</p>
-              )}
+              {isEditing && <p className="text-[10px] text-[#86868b] dark:text-[#98989d] leading-tight">{editProduct.product_id}</p>}
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => onOpenChange(false)}
-              className="w-8 h-8 rounded-lg hover:bg-[#f5f5f7] dark:hover:bg-white/[0.06] flex items-center justify-center transition-colors"
-            >
+            <button onClick={() => onOpenChange(false)} className="w-8 h-8 rounded-lg hover:bg-[#f5f5f7] dark:hover:bg-white/[0.06] flex items-center justify-center transition-colors">
               <X className="w-4 h-4 text-[#86868b] dark:text-[#98989d]" />
             </button>
             <button
               onClick={handleSave}
               disabled={saving || saved || !canSave}
               className={`h-8 px-4 rounded-lg text-[12px] font-semibold flex items-center gap-1.5 transition-all disabled:opacity-40 ${
-                saved
-                  ? "bg-emerald-500 text-white"
-                  : "bg-[#007aff] dark:bg-[#0a84ff] hover:bg-[#0071e3] dark:hover:bg-[#409cff] text-white shadow-sm"
+                saved ? "bg-emerald-500 text-white" : "bg-[#007aff] dark:bg-[#0a84ff] hover:bg-[#0071e3] dark:hover:bg-[#409cff] text-white shadow-sm"
               }`}
             >
               {saving ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Salvando</>
@@ -200,10 +167,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
             {/* AI Success */}
             <AnimatePresence>
               {aiFilled && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
                   className="bg-emerald-50 dark:bg-emerald-500/[0.1] border border-emerald-100 dark:border-emerald-500/[0.2] rounded-xl px-4 py-3 flex items-center gap-3 overflow-hidden"
                 >
                   <div className="w-6 h-6 bg-emerald-500/15 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -214,10 +178,8 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
               )}
             </AnimatePresence>
 
-            {/* Smart Search */}
             {!isEditing && <SmartProductSearch onProductData={handleAIData} categories={categories} />}
 
-            {/* Divider */}
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-black/[0.04] dark:bg-white/[0.06]" />
               <span className="text-[10px] font-semibold text-[#b0b0b5] dark:text-[#636366] uppercase tracking-widest">Dados do produto</span>
@@ -242,7 +204,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
               </FieldGroup>
             </FormSection>
 
-            {/* Price + Category row */}
+            {/* Price + Category */}
             <div className="grid grid-cols-2 gap-5">
               <FormSection title="Preço e Estoque" icon={DollarSign} accent="#34c759">
                 <div className="grid grid-cols-2 gap-2.5">
@@ -281,86 +243,17 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
 
             {/* Images */}
             <FormSection title="Imagens" icon={Image} accent="#ff9500">
-              <div className="flex flex-wrap gap-2.5">
-                {form.images.map((img, i) => (
-                  <div key={i} className="relative w-[72px] h-[72px] rounded-xl overflow-hidden bg-[#f5f5f7] dark:bg-[#3a3a3c] ring-1 ring-black/[0.06] dark:ring-white/[0.06] group">
-                    <img src={img} alt="" className="w-full h-full object-cover" />
-                    <button onClick={() => removeImage(i)} className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
-                      <X className="w-4 h-4 text-white" />
-                    </button>
-                    {i === 0 && (
-                      <span className="absolute bottom-1 left-1 text-[8px] font-bold bg-white/90 dark:bg-[#2c2c2e]/90 text-[#1d1d1f] dark:text-[#f5f5f7] px-1.5 py-0.5 rounded">Principal</span>
-                    )}
-                  </div>
-                ))}
-                <label className="w-[72px] h-[72px] rounded-xl border-2 border-dashed border-black/[0.08] dark:border-white/[0.1] flex flex-col items-center justify-center cursor-pointer hover:border-[#007aff]/40 dark:hover:border-[#0a84ff]/40 hover:bg-blue-50/30 dark:hover:bg-blue-500/[0.06] transition-all gap-1">
-                  <Upload className="w-4 h-4 text-[#b0b0b5] dark:text-[#636366]" strokeWidth={1.8} />
-                  <span className="text-[9px] text-[#b0b0b5] dark:text-[#636366] font-medium">Upload</span>
-                  <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
-                </label>
-              </div>
-              <div className="flex gap-2">
-                <Input value={newImageUrl} onChange={e => setNewImageUrl(e.target.value)} placeholder="Ou cole a URL da imagem..." className="h-9 rounded-xl text-[12px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
-                <button onClick={addImage} disabled={!newImageUrl} className="h-9 px-3.5 bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e8e8ed] dark:hover:bg-[#48484a] text-[#1d1d1f] dark:text-[#f5f5f7] rounded-lg text-[11px] font-semibold transition-colors disabled:opacity-30">
-                  Adicionar
-                </button>
-              </div>
+              <ProductFormImages images={form.images} onChange={(imgs) => updateField("images", imgs)} inputClass={inputClass} />
             </FormSection>
 
             {/* Specs */}
             <FormSection title="Especificações" icon={Cpu} accent="#5856d6">
-              {form.specs.length > 0 && (
-                <div className="grid grid-cols-2 gap-2">
-                  {form.specs.map((spec, i) => (
-                    <div key={i} className="flex items-center gap-2 bg-[#fafafa] dark:bg-[#1c1c1e] rounded-lg px-3 py-2 group border border-black/[0.03] dark:border-white/[0.04]">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[10px] text-[#86868b] dark:text-[#98989d] font-medium leading-tight">{spec.label}</p>
-                        <p className="text-[12px] text-[#1d1d1f] dark:text-[#f5f5f7] font-semibold truncate">{spec.value}</p>
-                      </div>
-                      <button onClick={() => removeSpec(i)} className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 w-5 h-5 rounded flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-500/[0.12]">
-                        <X className="w-3 h-3 text-red-400" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div className="flex gap-2">
-                <Input value={newSpecLabel} onChange={e => setNewSpecLabel(e.target.value)} placeholder="Label (ex: Tela)" className="h-9 rounded-lg text-[12px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
-                <Input value={newSpecValue} onChange={e => setNewSpecValue(e.target.value)} placeholder="Valor (ex: 6.7 polegadas)" className="h-9 rounded-lg text-[12px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]"
-                  onKeyDown={e => { if (e.key === "Enter") addSpec(); }}
-                />
-                <button onClick={addSpec} disabled={!newSpecLabel || !newSpecValue} className="h-9 w-9 bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e8e8ed] dark:hover:bg-[#48484a] rounded-lg flex items-center justify-center transition-colors disabled:opacity-30 flex-shrink-0 border border-black/[0.04] dark:border-white/[0.06]">
-                  <Plus className="w-3.5 h-3.5 text-[#1d1d1f] dark:text-[#f5f5f7]" />
-                </button>
-              </div>
+              <ProductFormSpecs specs={form.specs} onChange={(specs) => updateField("specs", specs)} />
             </FormSection>
 
             {/* Tags */}
             <FormSection title="Tags" icon={Tags} accent="#ff2d55">
-              {form.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {form.tags.map(tag => (
-                    <span key={tag} className="inline-flex items-center gap-1.5 text-[11px] font-medium bg-[#f5f5f7] dark:bg-[#3a3a3c] text-[#1d1d1f] dark:text-[#f5f5f7] pl-2.5 pr-1.5 py-1 rounded-lg group border border-black/[0.03] dark:border-white/[0.04]">
-                      {tag}
-                      <button onClick={() => removeTag(tag)} className="w-4 h-4 rounded flex items-center justify-center opacity-40 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/[0.12] transition-all">
-                        <X className="w-2.5 h-2.5" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-              <div className="flex gap-2">
-                <Select value="" onValueChange={v => { if (!form.tags.includes(v)) updateField("tags", [...form.tags, v]); }}>
-                  <SelectTrigger className="h-9 rounded-lg text-[12px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7]"><SelectValue placeholder="Selecionar tag..." /></SelectTrigger>
-                  <SelectContent className="dark:bg-[#2c2c2e] dark:border-white/[0.08]">
-                    {tags.filter(t => !form.tags.includes(t.slug)).map(t => <SelectItem key={t.id} value={t.slug}>{t.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-                <Input value={newTag} onChange={e => setNewTag(e.target.value)} placeholder="Ou digite..." className="h-9 rounded-lg text-[12px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" onKeyDown={e => { if (e.key === "Enter") addTag(); }} />
-                <button onClick={addTag} disabled={!newTag} className="h-9 px-3.5 bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e8e8ed] dark:hover:bg-[#48484a] text-[#1d1d1f] dark:text-[#f5f5f7] rounded-lg text-[11px] font-semibold transition-colors disabled:opacity-30 flex-shrink-0">
-                  Add
-                </button>
-              </div>
+              <ProductFormTags selectedTags={form.tags} availableTags={tags} onChange={(t) => updateField("tags", t)} />
             </FormSection>
 
             {/* Toggles */}
@@ -396,12 +289,8 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
             {isEditing && onDelete && (
               <div className="pt-2 border-t border-black/[0.04] dark:border-white/[0.06]">
                 {!confirmDelete ? (
-                  <button
-                    onClick={() => setConfirmDelete(true)}
-                    className="flex items-center gap-2 text-[12px] font-medium text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    Excluir produto
+                  <button onClick={() => setConfirmDelete(true)} className="flex items-center gap-2 text-[12px] font-medium text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors">
+                    <Trash2 className="w-3.5 h-3.5" /> Excluir produto
                   </button>
                 ) : (
                   <div className="flex items-center gap-3 bg-red-50 dark:bg-red-500/[0.1] border border-red-100 dark:border-red-500/[0.2] rounded-xl px-4 py-3">
@@ -417,7 +306,6 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
               </div>
             )}
 
-            {/* Bottom spacer */}
             <div className="h-2" />
           </div>
         </ScrollArea>

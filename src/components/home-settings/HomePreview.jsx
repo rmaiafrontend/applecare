@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import {
   Smartphone, Wifi, Battery, Signal, Sparkles, ArrowRight,
-  MessageCircle, Instagram, Truck, Shield, Zap, ChevronRight,
+  MessageCircle, Instagram, Truck, Shield, Zap,
 } from "lucide-react";
+import { PreviewSectionHeader, PreviewProductCarousel, PreviewProductGrid } from "./PreviewProductGrid";
 
 export default function HomePreview({ form, storeInfo = {}, activeSection, scrollProgress = 0 }) {
   // Campos base vêm de storeInfo (ConfigLoja), campos exclusivos de form (ConfigHome)
@@ -331,29 +332,8 @@ export default function HomePreview({ form, storeInfo = {}, activeSection, scrol
                     className={`mt-8 ${sectionWrapperClass("carousels")}`}
                     style={activeGlowStyle("carousels")}
                   >
-                    <div className="flex items-center justify-between px-4 mb-3">
-                      <div>
-                        <span className="text-[13px] font-bold text-gray-900 block">Entrega Express</span>
-                        <span className="text-[9px] text-gray-400">Receba em ate 1 hora</span>
-                      </div>
-                      <span className="text-[10px] text-gray-400 flex items-center">
-                        Ver todos
-                        <ChevronRight className="w-3 h-3" />
-                      </span>
-                    </div>
-                    <div className="flex gap-3 px-4 overflow-hidden pb-1">
-                      {[1, 2, 3].map(i => (
-                        <div key={i} className="w-[150px] shrink-0 rounded-2xl border border-gray-100 bg-white overflow-hidden">
-                          <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-50 relative">
-                            <span className="absolute top-2 left-2 text-[7px] font-bold text-white bg-green-500 px-1.5 py-0.5 rounded-full">Express</span>
-                          </div>
-                          <div className="p-2.5 space-y-1.5">
-                            <Bar w="75%" h={6} />
-                            <Bar w="45%" h={8} className="!bg-gray-300" />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <PreviewSectionHeader title="Entrega Express" subtitle="Receba em ate 1 hora" />
+                    <PreviewProductCarousel count={3} badgeText="Express" />
                   </div>
 
                   {/* ── 08. Info Card ── */}
@@ -383,32 +363,8 @@ export default function HomePreview({ form, storeInfo = {}, activeSection, scrol
                     className={`mt-8 mb-6 ${sectionWrapperClass("product_list")}`}
                     style={activeGlowStyle("product_list")}
                   >
-                    <div className="flex items-center justify-between px-4 mb-3">
-                      <div>
-                        <span className="text-[13px] font-bold text-gray-900 block">Ofertas</span>
-                        <span className="text-[9px] text-gray-400">Melhores precos</span>
-                      </div>
-                      <span className="text-[10px] text-gray-400 flex items-center">
-                        Ver todos
-                        <ChevronRight className="w-3 h-3" />
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 px-4">
-                      {[1, 2, 3, 4].map(i => (
-                        <div key={i} className="rounded-2xl border border-gray-100 bg-white overflow-hidden">
-                          <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-50 relative">
-                            <span className="absolute top-2 left-2 text-[7px] font-bold text-white bg-green-500 px-1.5 py-0.5 rounded-full">-14%</span>
-                          </div>
-                          <div className="p-2.5 space-y-1.5">
-                            <Bar w="80%" h={6} />
-                            <div className="flex items-center gap-1">
-                              <Bar w="45%" h={8} className="!bg-gray-300" />
-                              <Bar w="25%" h={5} className="opacity-30 line-through" />
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <PreviewSectionHeader title="Ofertas" subtitle="Melhores precos" />
+                    <PreviewProductGrid count={4} />
                   </div>
 
                   <div className="h-20" />
