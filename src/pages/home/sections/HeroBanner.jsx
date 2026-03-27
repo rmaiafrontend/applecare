@@ -18,8 +18,8 @@ export default function HeroBanner({
     <motion.section initial="hidden" animate="visible" variants={fadeUp} className="relative mx-4 mt-4 rounded-3xl overflow-hidden">
       <div className="relative p-6 pb-7">
         <img src={image} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(3,7,18,0.97), rgba(17,24,39,0.92), rgba(31,41,55,0.7))' }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(3,7,18,0.8), transparent 60%)' }} />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(to right, rgb(var(--store-primary) / 0.97), rgb(var(--store-primary) / 0.85), rgb(var(--store-primary) / 0.6))` }} />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(to top, rgb(var(--store-primary) / 0.8), transparent 60%)` }} />
 
         <div className="relative z-10">
           {badgeActive && (
