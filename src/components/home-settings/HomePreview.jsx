@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import {
   Smartphone, Wifi, Battery, Signal, Sparkles, ArrowRight,
-  MessageCircle, Instagram, Truck, Shield, Zap,
+  MessageCircle, Instagram, Truck, Shield, Zap, ChevronRight,
 } from "lucide-react";
 import { PreviewSectionHeader, PreviewProductCarousel, PreviewProductGrid } from "./PreviewProductGrid";
 

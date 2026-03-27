@@ -41,9 +41,12 @@ export default function SectionWrapper({
           : "border-black/[0.04] dark:border-white/[0.06] shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.2)] hover:shadow-[0_4px_20px_-8px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_4px_20px_-8px_rgba(0,0,0,0.3)] hover:border-black/[0.06] dark:hover:border-white/[0.08]"
       }`}>
         {/* Header */}
-        <button
+        <div
+          role="button"
+          tabIndex={0}
           onClick={onToggleOpen}
-          className="w-full flex items-center gap-3.5 px-5 py-[18px] text-left transition-colors"
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggleOpen(); } }}
+          className="w-full flex items-center gap-3.5 px-5 py-[18px] text-left transition-colors cursor-pointer"
         >
           {!fixed && (
             <GripVertical className="w-3.5 h-3.5 text-black/10 dark:text-white/10 flex-shrink-0 cursor-grab hover:text-black/30 dark:hover:text-white/30 transition-colors" />
@@ -88,7 +91,7 @@ export default function SectionWrapper({
           >
             <ChevronDown className="w-3.5 h-3.5 text-black/30 dark:text-white/30" strokeWidth={2} />
           </motion.div>
-        </button>
+        </div>
 
         {/* Content */}
         <AnimatePresence>
