@@ -4,7 +4,12 @@ import {
   MessageCircle, Instagram, Truck, Shield, Zap, ChevronRight,
 } from "lucide-react";
 
-export default function HomePreview({ form, activeSection, scrollProgress = 0 }) {
+export default function HomePreview({ form, storeInfo = {}, activeSection, scrollProgress = 0 }) {
+  // Campos base vêm de storeInfo (ConfigLoja), campos exclusivos de form (ConfigHome)
+  const storeName = storeInfo.name || 'aLink';
+  const storeLogo = storeInfo.logo || '';
+  const storeWhatsapp = storeInfo.whatsapp || '';
+  const storeInstagram = storeInfo.instagram || '';
   const scrollRef = useRef(null);
   const isAutoScrolling = useRef(false);
   const iframeWidth = 390;
@@ -102,52 +107,115 @@ export default function HomePreview({ form, activeSection, scrollProgress = 0 })
                     style={activeGlowStyle("header")}
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-14 h-14 rounded-2xl bg-gray-800 flex items-center justify-center shrink-0">
-                        <span className="text-[15px] font-black text-white tracking-tighter">AL</span>
+                      <div className="w-14 h-14 rounded-2xl bg-gray-800 flex items-center justify-center shrink-0 overflow-hidden">
+                        {storeLogo ? (
+                          <img src={storeLogo} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[15px] font-black text-white tracking-tighter">
+                            {(storeName || "AL").slice(0, 2).toUpperCase()}
+                          </span>
+                        )}
                       </div>
-                      <div className="flex-1 pt-0.5">
+                      <div className="flex-1 pt-0.5 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-[14px] font-bold text-gray-900">aLink</span>
-                          <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full ring-1 ring-emerald-500/20 flex items-center gap-0.5">
+                          <span className="text-[14px] font-bold text-gray-900 truncate">
+                            {storeName}
+                          </span>
+                          <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full ring-1 ring-emerald-500/20 flex items-center gap-0.5 shrink-0">
                             <span className="w-1 h-1 rounded-full bg-emerald-500" />
                             Aberto
                           </span>
                         </div>
                         <Bar w="70%" h={5} className="mt-1.5 opacity-30" />
-                        <div className="flex gap-1.5 mt-2">
-                          <div className="flex items-center gap-1 bg-gray-100 rounded-full px-2 py-1">
-                            <div className="w-2.5 h-2.5 rounded-sm bg-gray-300" />
-                            <Bar w="40px" h={5} className="opacity-40" />
-                          </div>
-                          <div className="flex items-center gap-1 bg-gray-100 rounded-full px-2 py-1">
-                            <div className="w-2.5 h-2.5 rounded-sm bg-gray-300" />
-                            <Bar w="35px" h={5} className="opacity-40" />
-                          </div>
+                        {(() => {
+                          const hours = form.header_hours || {};
+                          const hasHours = Object.values(hours).some(v => v);
+                          if (hasHours) {
+                            return (
+                              <div className="flex items-center gap-1 mt-2 text-[7px] text-gray-400">
+                                <span>🕐</span>
+                                <span className="truncate">{Object.values(hours).find(v => v) || ""}</span>
+                              </div>
+                            );
+                          }
+                          return (
+                            <div className="flex gap-1.5 mt-2">
+                              <div className="flex items-center gap-1 bg-gray-100 rounded-full px-2 py-1">
+                                <div className="w-2.5 h-2.5 rounded-sm bg-gray-300" />
+                                <Bar w="40px" h={5} className="opacity-40" />
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </div>
+
+                    {/* Social / Contact buttons */}
+                    {(() => {
+                      const hasWhatsapp = !!storeWhatsapp;
+                      const socials = [
+                        storeInstagram && "instagram",
+                        form.header_tiktok && "tiktok",
+                        form.header_youtube && "youtube",
+                        form.header_facebook && "facebook",
+                      ].filter(Boolean);
+                      if (!hasWhatsapp && socials.length === 0) {
+                        return (
+                          <>
+                            <Bar w="85%" h={5} className="mt-4 opacity-25" />
+                            <Bar w="60%" h={5} className="mt-1 opacity-15" />
+                            <div className="flex gap-2 mt-4">
+                              <div className="flex-1 h-10 rounded-xl bg-gray-200 flex items-center justify-center gap-1.5">
+                                <MessageCircle className="w-3.5 h-3.5 text-gray-400" strokeWidth={2} />
+                                <span className="text-[10px] font-semibold text-gray-400">WhatsApp</span>
+                              </div>
+                              <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
+                                <Instagram className="w-4 h-4 text-gray-300" strokeWidth={1.5} />
+                              </div>
+                            </div>
+                          </>
+                        );
+                      }
+                      return (
+                        <div className="flex gap-2 mt-4">
+                          {hasWhatsapp && (
+                            <div className="flex-1 h-10 rounded-xl bg-gray-800 flex items-center justify-center gap-1.5">
+                              <MessageCircle className="w-3.5 h-3.5 text-white" strokeWidth={2} />
+                              <span className="text-[10px] font-semibold text-white">WhatsApp</span>
+                            </div>
+                          )}
+                          {socials.map(s => (
+                            <div key={s} className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
+                              {s === "instagram" ? <Instagram className="w-4 h-4 text-gray-400" strokeWidth={1.5} /> : (
+                                <span className="text-[10px] text-gray-400">{s.slice(0, 2).toUpperCase()}</span>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                    </div>
-                    <Bar w="85%" h={5} className="mt-4 opacity-25" />
-                    <Bar w="60%" h={5} className="mt-1 opacity-15" />
-                    <div className="flex gap-2 mt-4">
-                      <div className="flex-1 h-10 rounded-xl bg-gray-800 flex items-center justify-center gap-1.5">
-                        <MessageCircle className="w-3.5 h-3.5 text-white" strokeWidth={2} />
-                        <span className="text-[10px] font-semibold text-white">WhatsApp</span>
-                      </div>
-                      <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
-                        <Instagram className="w-4 h-4 text-gray-400" strokeWidth={1.5} />
-                      </div>
-                      <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center">
-                        <div className="w-3.5 h-3.5 rounded bg-gray-300" />
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mt-3 overflow-hidden">
-                      {["Catalogo", "Ofertas", "FAQ"].map(label => (
-                        <div key={label} className="flex items-center gap-1 bg-gray-100 border border-gray-200 rounded-full px-3 py-1.5 shrink-0">
-                          <div className="w-3 h-3 rounded-sm bg-gray-300" />
-                          <span className="text-[9px] font-semibold text-gray-500">{label}</span>
+                      );
+                    })()}
+
+                    {/* Quick Links */}
+                    {(() => {
+                      const quickLinks = Array.isArray(form.header_quick_links) && form.header_quick_links.length > 0
+                        ? form.header_quick_links
+                        : null;
+                      const items = quickLinks || [{ emoji: "", label: "Catálogo" }, { emoji: "", label: "Ofertas" }, { emoji: "", label: "FAQ" }];
+                      return (
+                        <div className="flex gap-2 mt-3 overflow-hidden">
+                          {items.map((link, i) => (
+                            <div key={i} className="flex items-center gap-1 bg-gray-100 border border-gray-200 rounded-full px-3 py-1.5 shrink-0">
+                              {link.emoji ? (
+                                <span className="text-[10px]">{link.emoji}</span>
+                              ) : (
+                                <div className="w-3 h-3 rounded-sm bg-gray-300" />
+                              )}
+                              <span className="text-[9px] font-semibold text-gray-500">{link.label || "Link"}</span>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      );
+                    })()}
                   </div>
 
                   {/* ── 02. Hero Banner ── */}
@@ -172,7 +240,7 @@ export default function HomePreview({ form, activeSection, scrollProgress = 0 })
                   </div>
 
                   {/* ── 03. Benefits Strip ── */}
-                  <div
+                  {form.differentials_active !== false && <div
                     data-section="differentials"
                     className={`flex gap-2 px-4 mt-5 overflow-hidden ${sectionWrapperClass("differentials")}`}
                     style={activeGlowStyle("differentials")}
@@ -187,10 +255,10 @@ export default function HomePreview({ form, activeSection, scrollProgress = 0 })
                         <span className="text-[9px] font-semibold text-gray-500">{item.label}</span>
                       </div>
                     ))}
-                  </div>
+                  </div>}
 
                   {/* ── 04. Smart Search Banner ── */}
-                  <div
+                  {form.ai_button_active !== false && <div
                     data-section="ai_button"
                     className={`px-4 mt-5 ${sectionWrapperClass("ai_button")}`}
                     style={activeGlowStyle("ai_button")}
@@ -206,10 +274,10 @@ export default function HomePreview({ form, activeSection, scrollProgress = 0 })
                       </div>
                       <ArrowRight className="w-3.5 h-3.5 text-white/40 shrink-0 relative z-10" />
                     </div>
-                  </div>
+                  </div>}
 
                   {/* ── 05. Categories ── */}
-                  <div
+                  {form.categories_active !== false && <div
                     data-section="categories"
                     className={`mt-8 ${sectionWrapperClass("categories")}`}
                     style={activeGlowStyle("categories")}
@@ -231,10 +299,10 @@ export default function HomePreview({ form, activeSection, scrollProgress = 0 })
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </div>}
 
                   {/* ── 06. Featured Product (Secondary Banner) ── */}
-                  <div
+                  {form.secondary_banner_active !== false && <div
                     data-section="secondary_banner"
                     className={`mx-4 mt-8 ${sectionWrapperClass("secondary_banner")}`}
                     style={activeGlowStyle("secondary_banner")}
@@ -255,7 +323,7 @@ export default function HomePreview({ form, activeSection, scrollProgress = 0 })
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div>}
 
                   {/* ── 07. Carousels ── */}
                   <div
@@ -289,7 +357,7 @@ export default function HomePreview({ form, activeSection, scrollProgress = 0 })
                   </div>
 
                   {/* ── 08. Info Card ── */}
-                  <div
+                  {form.info_card_active !== false && <div
                     data-section="info_card"
                     className={`mx-4 mt-8 ${sectionWrapperClass("info_card")}`}
                     style={activeGlowStyle("info_card")}
@@ -307,7 +375,7 @@ export default function HomePreview({ form, activeSection, scrollProgress = 0 })
                         <Bar w="55%" h={5} className="!bg-white/8 mt-1" />
                       </div>
                     </div>
-                  </div>
+                  </div>}
 
                   {/* ── 09. Product List ── */}
                   <div

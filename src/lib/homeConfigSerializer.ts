@@ -6,10 +6,8 @@ import type { SalvarConfiguracaoHomeRequest, ConfiguracaoHomeResponse } from '@/
  */
 const FIELD_GROUPS: Record<keyof SalvarConfiguracaoHomeRequest, string[]> = {
   configCabecalho: [
-    'header_store_name', 'header_tagline', 'header_logo_url',
     'header_hours', 'header_quick_links',
-    'header_whatsapp', 'header_instagram', 'header_tiktok', 'header_youtube', 'header_facebook',
-    'identity_logo_url', 'identity_primary_color', 'identity_accent_color', 'identity_slug',
+    'header_tiktok', 'header_youtube', 'header_facebook',
   ],
   configHero: [
     'hero_image_url', 'hero_title', 'hero_subtitle',

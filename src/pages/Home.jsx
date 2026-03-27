@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Clock, ChevronRight, Zap, Truck, Shield, ArrowRight, Sparkles, MapPin, MessageCircle, Tag, HelpCircle, Instagram, Package } from 'lucide-react';
+import { Clock, ChevronRight, Zap, Truck, Shield, ArrowRight, Sparkles, MessageCircle, Tag, HelpCircle, Instagram, Package } from 'lucide-react';
 import { motion } from 'framer-motion';
 import BottomNav from '@/components/navigation/BottomNav';
 import ProductCard from '@/components/product/ProductCard';
 import { Skeleton } from '@/components/ui/skeleton';
-import { formatPrice } from '@/lib/format';
 import { mapProductFromApi, mapCategoryFromApi } from '@/api/adapters';
 import {
   useSlug,
@@ -70,12 +69,22 @@ export default function Home() {
 
   const homeConfig = useMemo(() => deserializeHomeConfig(homeConfigRaw), [homeConfigRaw]);
 
+  // Campos base: fonte única = ConfigLoja (Configurações da Loja)
   const config = store?.configuracao;
   const storeName = config?.nomeLoja || 'Apple Link';
   const storeSlogan = config?.sloganLoja || '';
   const whatsapp = config?.numeroWhatsapp || '';
   const instagramUrl = config?.urlInstagram || '';
   const logoUrl = config?.logoUrl || '';
+
+  // Campos exclusivos do Layout Home (ConfigHome)
+  const tiktokUrl = homeConfig.header_tiktok || '';
+  const youtubeUrl = homeConfig.header_youtube || '';
+  const facebookUrl = homeConfig.header_facebook || '';
+  const quickLinks = Array.isArray(homeConfig.header_quick_links) && homeConfig.header_quick_links.length > 0
+    ? homeConfig.header_quick_links
+    : null;
+  const headerHours = homeConfig.header_hours || {};
 
   const categories = categoriesRaw.map(mapCategoryFromApi);
 
@@ -84,13 +93,6 @@ export default function Home() {
   }, [productsPage]);
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantidade, 0);
-
-  const expressProducts = products.filter(p => p.stock > 0 && p.express_delivery).slice(0, 6);
-
-  const discountProducts = products
-    .filter(p => p.stock > 0 && p.original_price && p.original_price > p.price)
-    .sort((a, b) => (b.original_price / b.price) - (a.original_price / a.price))
-    .slice(0, 6);
 
   const heroBanner = heroBanners.find(b => b.ativo) || null;
 
@@ -118,6 +120,52 @@ export default function Home() {
 
   const categoriesActive = homeConfig.categories_active !== false;
   const categoriesTitle = homeConfig.categories_title || 'Categorias';
+  const categoriesLayout = homeConfig.categories_layout || 'carousel';
+
+  // AI Button extras
+  const aiButtonCtaText = homeConfig.ai_button_cta_text || '';
+  const aiButtonGradientFrom = homeConfig.ai_button_gradient_from || '#6366f1';
+  const aiButtonGradientTo = homeConfig.ai_button_gradient_to || '#a855f7';
+
+  // Hero extras
+  const heroBadgeAnimated = homeConfig.hero_badge_animated !== false;
+
+  // Secondary Banner
+  const secondaryBannerActive = homeConfig.secondary_banner_active !== false;
+  const secondaryBannerTitle = homeConfig.secondary_banner_title || 'Destaques';
+  const secondaryBannerProductIds = Array.isArray(homeConfig.secondary_banner_product_ids) ? homeConfig.secondary_banner_product_ids : [];
+  const secondaryBannerProducts = products.filter(p => secondaryBannerProductIds.includes(p.id));
+
+  // Info Card
+  const infoCardActive = homeConfig.info_card_active === true;
+  const infoCardEmoji = homeConfig.info_card_emoji || '';
+  const infoCardTitle = homeConfig.info_card_title || '';
+  const infoCardDescription = homeConfig.info_card_description || '';
+  const infoCardCtaText = homeConfig.info_card_cta_text || '';
+  const infoCardCtaLink = homeConfig.info_card_cta_link || '';
+  const infoCardBgColor = homeConfig.info_card_bg_color || '#1c1c1e';
+
+  // Product List
+  const productListTitle = homeConfig.product_list_title || 'Novidades';
+  const productListTemplate = homeConfig.product_list_template || 'launches';
+  const productListMaxItems = Number(homeConfig.product_list_max_items) || 6;
+  const productListShowCta = homeConfig.product_list_show_cta !== false;
+  const productListCtaText = homeConfig.product_list_cta_text || 'Ver todos';
+  const productListCuratedIds = Array.isArray(homeConfig.product_list_curated_ids) ? homeConfig.product_list_curated_ids : [];
+
+  const productListItems = useMemo(() => {
+    if (productListTemplate === 'offers') {
+      return products
+        .filter(p => p.stock > 0 && p.original_price && p.original_price > p.price)
+        .sort((a, b) => (b.original_price / b.price) - (a.original_price / a.price))
+        .slice(0, productListMaxItems);
+    }
+    if (productListTemplate === 'curated') {
+      return products.filter(p => productListCuratedIds.includes(p.id)).slice(0, productListMaxItems);
+    }
+    // launches — most recent
+    return [...products].sort((a, b) => (b.id || 0) - (a.id || 0)).slice(0, productListMaxItems);
+  }, [products, productListTemplate, productListMaxItems, productListCuratedIds]);
 
   const handleAddToCart = async (product) => {
     try {
@@ -159,12 +207,19 @@ export default function Home() {
                   {storeSlogan}
                 </p>
               )}
-              <div className="flex items-center gap-2 mt-2">
-                <div className="flex items-center gap-1.5 text-[11px] text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">
-                  <Clock className="w-3 h-3 text-gray-400" strokeWidth={2} />
-                  <span>Seg-Sex 9h-18h</span>
-                </div>
-              </div>
+              {(() => {
+                const hoursEntries = Object.values(headerHours).filter(v => v);
+                if (hoursEntries.length === 0) return null;
+                const summary = hoursEntries[0];
+                return (
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center gap-1.5 text-[11px] text-gray-500 bg-gray-100 rounded-full px-2.5 py-1">
+                      <Clock className="w-3 h-3 text-gray-400" strokeWidth={2} />
+                      <span>{summary}</span>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </motion.div>
 
@@ -187,26 +242,60 @@ export default function Home() {
                   <Instagram className="w-[18px] h-[18px]" strokeWidth={1.75} />
                 </a>
               )}
+              {tiktokUrl && (
+                <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
+                  <span className="text-[13px] font-bold">TT</span>
+                </a>
+              )}
+              {youtubeUrl && (
+                <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
+                  <span className="text-[13px] font-bold">YT</span>
+                </a>
+              )}
+              {facebookUrl && (
+                <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 active:scale-95 transition-all">
+                  <span className="text-[13px] font-bold">FB</span>
+                </a>
+              )}
             </div>
           </motion.div>
 
           {/* Quick Links */}
           <motion.div variants={fadeUp} custom={3} className="flex items-center gap-2 mt-4 overflow-x-auto no-scrollbar -mx-5 px-5">
-            {[
-              { label: 'Catálogo', icon: Tag, to: createPageUrl('Products') },
-              { label: 'Ofertas', icon: Zap, to: createPageUrl('Products') },
-              { label: 'Rastreio', icon: Package, to: createPageUrl('Orders') },
-              { label: 'FAQ', icon: HelpCircle, to: createPageUrl('Profile') },
-            ].map((link) => (
-              <Link
-                key={link.label}
-                to={link.to}
-                className="flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-full px-4 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-200 active:scale-[0.96] transition-all shrink-0"
-              >
-                <link.icon className="w-3.5 h-3.5 text-gray-400" strokeWidth={2} />
-                {link.label}
-              </Link>
-            ))}
+            {quickLinks ? (
+              quickLinks.map((link, i) => (
+                <a
+                  key={i}
+                  href={link.url || '#'}
+                  target={link.url?.startsWith('http') ? '_blank' : undefined}
+                  rel={link.url?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  className={`flex items-center gap-1.5 border rounded-full px-4 py-2 text-[12px] font-semibold hover:bg-gray-200 active:scale-[0.96] transition-all shrink-0 ${
+                    link.is_highlight
+                      ? 'bg-gray-900 text-white border-gray-900 hover:bg-gray-800'
+                      : 'bg-gray-100 text-gray-700 border-gray-200'
+                  }`}
+                >
+                  {link.emoji && <span className="text-[14px]">{link.emoji}</span>}
+                  {link.label}
+                </a>
+              ))
+            ) : (
+              [
+                { label: 'Catálogo', icon: Tag, to: createPageUrl('Products') },
+                { label: 'Ofertas', icon: Zap, to: createPageUrl('Products') },
+                { label: 'Rastreio', icon: Package, to: createPageUrl('Orders') },
+                { label: 'FAQ', icon: HelpCircle, to: createPageUrl('Profile') },
+              ].map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className="flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-full px-4 py-2 text-[12px] font-semibold text-gray-700 hover:bg-gray-200 active:scale-[0.96] transition-all shrink-0"
+                >
+                  <link.icon className="w-3.5 h-3.5 text-gray-400" strokeWidth={2} />
+                  {link.label}
+                </Link>
+              ))
+            )}
           </motion.div>
         </motion.section>
 
@@ -233,7 +322,7 @@ export default function Home() {
                   custom={0}
                   className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5 mb-4 border border-white/[0.08]"
                 >
-                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                  <div className={`w-1.5 h-1.5 bg-green-400 rounded-full ${heroBadgeAnimated ? 'animate-pulse' : ''}`} />
                   <span className="font-medium text-white/90 text-[11px] tracking-widest uppercase">
                     {heroBadgeText}
                   </span>
@@ -280,7 +369,7 @@ export default function Home() {
             className="flex items-center gap-2 px-4 mt-5 overflow-x-auto no-scrollbar"
           >
             {differentialsItems.map((item, i) => {
-              const IconComp = { Truck, Shield, Zap }[item.icon] || Shield;
+              const IconComp = item.icon ? ({ Truck, Shield, Zap }[item.icon] || null) : null;
               return (
                 <motion.div
                   key={i}
@@ -288,8 +377,14 @@ export default function Home() {
                   custom={i}
                   className="flex items-center gap-2 bg-white border border-gray-100 rounded-full px-4 py-2.5 shrink-0"
                 >
-                  <IconComp className="w-4 h-4 text-gray-900" strokeWidth={2} />
-                  <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">{item.label}</span>
+                  {item.emoji ? (
+                    <span className="text-base">{item.emoji}</span>
+                  ) : IconComp ? (
+                    <IconComp className="w-4 h-4 text-gray-900" strokeWidth={2} />
+                  ) : (
+                    <Shield className="w-4 h-4 text-gray-900" strokeWidth={2} />
+                  )}
+                  <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">{item.label || item.text}</span>
                 </motion.div>
               );
             })}
@@ -307,7 +402,8 @@ export default function Home() {
           >
             <button
               onClick={() => navigate('/Search')}
-              className="w-full relative overflow-hidden bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-2xl p-4 text-left group active:scale-[0.98] transition-transform"
+              className="w-full relative overflow-hidden rounded-2xl p-4 text-left group active:scale-[0.98] transition-transform"
+              style={{ background: `linear-gradient(to right, ${aiButtonGradientFrom}, ${aiButtonGradientTo})` }}
             >
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
@@ -353,7 +449,10 @@ export default function Home() {
           ) : (
             <div
               ref={categoriesRef}
-              className="flex gap-1 px-4 overflow-x-auto no-scrollbar scroll-smooth"
+              className={categoriesLayout === 'grid'
+                ? "grid grid-cols-4 gap-3 px-4"
+                : "flex gap-1 px-4 overflow-x-auto no-scrollbar scroll-smooth"
+              }
             >
               {categories.map((cat, index) => {
                 const Icon = categoryIconMap[cat.icon] || Smartphone;
@@ -366,7 +465,7 @@ export default function Home() {
                   >
                     <Link
                       to={createPageUrl(`Products?category=${cat.id}`)}
-                      className="group flex flex-col items-center gap-2.5 w-[88px] shrink-0"
+                      className={`group flex flex-col items-center gap-2.5 ${categoriesLayout === 'grid' ? '' : 'w-[88px] shrink-0'}`}
                     >
                       <div className="w-16 h-16 rounded-2xl bg-gray-900 flex items-center justify-center transition-all duration-200 group-hover:bg-gray-800 group-hover:scale-105 group-active:scale-95">
                         <Icon className="w-7 h-7 text-white" strokeWidth={1.5} />
@@ -383,6 +482,31 @@ export default function Home() {
             </div>
           )}
         </section>}
+
+        {/* ── Secondary Banner ── */}
+        {secondaryBannerActive && secondaryBannerProducts.length > 0 && (
+          <section className="mt-8">
+            <div className="flex items-center justify-between px-4 mb-4">
+              <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{secondaryBannerTitle}</h2>
+            </div>
+            <div className="grid grid-cols-2 gap-3.5 px-4">
+              {secondaryBannerProducts.slice(0, 4).map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.06, duration: 0.4 }}
+                >
+                  <ProductCard
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* ── Dynamic Catalog Sections ── */}
         {catalogSections.map((section) => (
@@ -430,97 +554,23 @@ export default function Home() {
           </section>
         ))}
 
-        {/* ── Express Delivery Products ── */}
-        {expressProducts.length > 0 && (
+        {/* ── Product List (configurable) ── */}
+        {productListItems.length > 0 && (
           <section className="mt-8">
             <div className="flex items-center justify-between px-4 mb-4">
-              <div>
-                <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">
-                  Entrega Express
-                </h2>
-                <p className="text-xs text-gray-400 mt-0.5">Receba em até 1 hora</p>
-              </div>
-              <Link
-                to={createPageUrl('Products')}
-                className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors"
-              >
-                Ver todos
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <div className="flex gap-3.5 px-4 overflow-x-auto no-scrollbar scroll-smooth pb-1">
-              {expressProducts.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.06, duration: 0.4 }}
-                  className="w-[170px] shrink-0"
+              <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{productListTitle}</h2>
+              {productListShowCta && (
+                <Link
+                  to={createPageUrl('Products')}
+                  className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors"
                 >
-                  <ProductCard
-                    product={product}
-                    onAddToCart={handleAddToCart}
-                    isAdding={addToCartMutation.isPending}
-                  />
-                </motion.div>
-              ))}
+                  {productListCtaText}
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              )}
             </div>
-          </section>
-        )}
-
-        {/* ── Promo Banner ── */}
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-40px' }}
-          variants={fadeUp}
-          className="mx-4 mt-8"
-        >
-          <div className="relative rounded-3xl overflow-hidden bg-gray-900 p-6">
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/[0.03] rounded-full blur-2xl" />
-              <div className="absolute bottom-0 left-1/4 w-32 h-32 bg-white/[0.02] rounded-full blur-xl" />
-            </div>
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-3">
-                <Shield className="w-5 h-5 text-white/80" strokeWidth={1.5} />
-                <span className="text-[11px] font-medium text-white/50 tracking-widest uppercase">
-                  Garantia Apple
-                </span>
-              </div>
-              <h3 className="text-white text-lg font-bold leading-snug mb-1.5">
-                Todos os produtos são
-                <br />
-                100% originais.
-              </h3>
-              <p className="text-white/40 text-sm leading-relaxed">
-                Garantia oficial Apple em todos os itens da loja.
-              </p>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* ── Offers / Discounts ── */}
-        {discountProducts.length > 0 && (
-          <section className="mt-8 mb-6">
-            <div className="flex items-center justify-between px-4 mb-4">
-              <div>
-                <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">Ofertas</h2>
-                <p className="text-xs text-gray-400 mt-0.5">Melhores preços para você</p>
-              </div>
-              <Link
-                to={createPageUrl('Products')}
-                className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors"
-              >
-                Ver todos
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-
             <div className="grid grid-cols-2 gap-3.5 px-4">
-              {discountProducts.slice(0, 4).map((product, index) => (
+              {productListItems.map((product, index) => (
                 <motion.div
                   key={product.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -538,6 +588,49 @@ export default function Home() {
             </div>
           </section>
         )}
+
+        {/* ── Info Card ── */}
+        {infoCardActive && infoCardTitle && (
+          <motion.section
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px' }}
+            variants={fadeUp}
+            className="mx-4 mt-8"
+          >
+            <div className="relative rounded-3xl overflow-hidden p-6" style={{ backgroundColor: infoCardBgColor }}>
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/[0.03] rounded-full blur-2xl" />
+                <div className="absolute bottom-0 left-1/4 w-32 h-32 bg-white/[0.02] rounded-full blur-xl" />
+              </div>
+              <div className="relative z-10">
+                {infoCardEmoji && (
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-2xl">{infoCardEmoji}</span>
+                  </div>
+                )}
+                <h3 className="text-white text-lg font-bold leading-snug mb-1.5">
+                  {infoCardTitle}
+                </h3>
+                {infoCardDescription && (
+                  <p className="text-white/40 text-sm leading-relaxed">
+                    {infoCardDescription}
+                  </p>
+                )}
+                {infoCardCtaText && (
+                  <Link
+                    to={infoCardCtaLink || '#'}
+                    className="inline-flex items-center gap-2 mt-4 bg-white/10 hover:bg-white/15 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
+                  >
+                    {infoCardCtaText}
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                )}
+              </div>
+            </div>
+          </motion.section>
+        )}
+
 
         {/* Loading state */}
         {loadingProducts && (

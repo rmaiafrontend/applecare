@@ -12,25 +12,16 @@ import CarouselsSection from "@/components/home-settings/CarouselsSection";
 import InfoCardSection from "@/components/home-settings/InfoCardSection";
 import ProductListSection from "@/components/home-settings/ProductListSection";
 import HomePreview from "@/components/home-settings/HomePreview";
-import { useConfigHome, useSaveConfigHome } from "@/api/hooks";
+import { useConfigHome, useSaveConfigHome, useConfigLoja } from "@/api/hooks";
 import { deserializeHomeConfig, serializeHomeConfig } from "@/lib/homeConfigSerializer";
 
 const DEFAULT_CONFIG = {
   config_key: "home_layout",
-  header_store_name: "",
-  header_tagline: "",
-  header_logo_url: "",
   header_hours: { mon: "", tue: "", wed: "", thu: "", fri: "", sat: "", sun: "" },
   header_quick_links: [],
-  header_whatsapp: "",
-  header_instagram: "",
   header_tiktok: "",
   header_youtube: "",
   header_facebook: "",
-  identity_logo_url: "",
-  identity_primary_color: "#1A1A1A",
-  identity_accent_color: "#FF6B35",
-  identity_slug: "",
   hero_image_url: "",
   hero_title: "",
   hero_subtitle: "",
@@ -92,7 +83,16 @@ export default function HomeSettings() {
   const sectionsRef = useRef(null);
 
   const { data: homeConfig } = useConfigHome();
+  const { data: lojaConfig } = useConfigLoja();
   const saveMutation = useSaveConfigHome();
+
+  // Dados base da loja (fonte única: ConfigLoja)
+  const storeInfo = {
+    name: lojaConfig?.nomeLoja || '',
+    logo: lojaConfig?.logoUrl || '',
+    whatsapp: lojaConfig?.numeroWhatsapp || '',
+    instagram: lojaConfig?.urlInstagram || '',
+  };
 
   const handleScroll = useCallback(() => {
     const el = sectionsRef.current;
@@ -218,7 +218,7 @@ export default function HomeSettings() {
 
       {/* Right: Live Preview (hidden on small screens) */}
       <div className="hidden xl:block w-[390px] flex-shrink-0">
-        <HomePreview form={form} activeSection={activeSection} scrollProgress={scrollProgress} />
+        <HomePreview form={form} storeInfo={storeInfo} activeSection={activeSection} scrollProgress={scrollProgress} />
       </div>
     </div>
   );
