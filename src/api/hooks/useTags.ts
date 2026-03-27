@@ -12,19 +12,23 @@ export function useAdminTags() {
   return useQuery({
     queryKey: KEYS.admin(),
     queryFn: () => tagService.adminList(),
-    staleTime: 0,
-    refetchOnMount: 'always',
+    staleTime: 30_000,
   });
+}
+
+function invalidateTagQueries(qc: ReturnType<typeof useQueryClient>) {
+  qc.invalidateQueries({ queryKey: KEYS.admin() });
+  qc.invalidateQueries({ predicate: (q) => {
+    const key = q.queryKey as string[];
+    return key[0] === 'store' && key[2] === 'tags';
+  }});
 }
 
 export function useCreateTag() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: CadastrarEtiquetaRequest) => tagService.create(data),
-    onSettled: () => {
-      qc.refetchQueries({ queryKey: KEYS.admin() });
-      qc.invalidateQueries({ queryKey: ['store'] });
-    },
+    onSettled: () => invalidateTagQueries(qc),
   });
 }
 
@@ -32,10 +36,7 @@ export function useUpdateTag() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: AtualizarEtiquetaRequest }) => tagService.update(id, data),
-    onSettled: () => {
-      qc.refetchQueries({ queryKey: KEYS.admin() });
-      qc.invalidateQueries({ queryKey: ['store'] });
-    },
+    onSettled: () => invalidateTagQueries(qc),
   });
 }
 
@@ -43,10 +44,7 @@ export function useDeactivateTag() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => tagService.deactivate(id),
-    onSettled: () => {
-      qc.refetchQueries({ queryKey: KEYS.admin() });
-      qc.invalidateQueries({ queryKey: ['store'] });
-    },
+    onSettled: () => invalidateTagQueries(qc),
   });
 }
 

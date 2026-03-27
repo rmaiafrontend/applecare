@@ -89,6 +89,17 @@ export const PAGES = {
     "Splash": Splash,
 }
 
+/** Rotas que exigem autenticação — adicione aqui ao criar novas páginas protegidas */
+export const PROTECTED_ROUTES = new Set([
+    "Admin",
+    "Orders",
+    "OrderDetail",
+    "Profile",
+    "Checkout",
+    "Cart",
+    "OrderConfirmation",
+]);
+
 export const pagesConfig = {
     mainPage: "LandingPage",
     Pages: PAGES,

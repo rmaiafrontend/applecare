@@ -20,21 +20,25 @@ export function useAdminProducts(params?: AdminProdutoListParams) {
   return useQuery({
     queryKey: KEYS.admin(params),
     queryFn: () => productService.list(params),
-    staleTime: 0,
-    refetchOnMount: 'always',
+    staleTime: 30_000,
   });
+}
+
+function invalidateProductQueries(qc: ReturnType<typeof useQueryClient>) {
+  qc.invalidateQueries({ queryKey: ['admin', 'products'] });
+  qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+  // Invalidate public product lists (not all store queries)
+  qc.invalidateQueries({ predicate: (q) => {
+    const key = q.queryKey as string[];
+    return key[0] === 'store' && (key[2] === 'products' || key[2] === 'product');
+  }});
 }
 
 export function useCreateProduct() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: CadastrarProdutoRequest) => productService.create(data),
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: ['admin', 'products'] });
-      qc.refetchQueries({ queryKey: ['admin', 'products'] });
-      qc.invalidateQueries({ queryKey: ['store'] });
-      qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
-    },
+    onSettled: () => invalidateProductQueries(qc),
   });
 }
 
@@ -42,12 +46,7 @@ export function useUpdateProduct() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: AtualizarProdutoRequest }) => productService.update(id, data),
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: ['admin', 'products'] });
-      qc.refetchQueries({ queryKey: ['admin', 'products'] });
-      qc.invalidateQueries({ queryKey: ['store'] });
-      qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
-    },
+    onSettled: () => invalidateProductQueries(qc),
   });
 }
 
@@ -55,12 +54,7 @@ export function useDeactivateProduct() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => productService.deactivate(id),
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: ['admin', 'products'] });
-      qc.refetchQueries({ queryKey: ['admin', 'products'] });
-      qc.invalidateQueries({ queryKey: ['store'] });
-      qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
-    },
+    onSettled: () => invalidateProductQueries(qc),
   });
 }
 

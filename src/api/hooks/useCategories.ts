@@ -17,19 +17,23 @@ export function useAdminCategories() {
   return useQuery({
     queryKey: KEYS.admin(),
     queryFn: () => categoryService.adminList(),
-    staleTime: 0,
-    refetchOnMount: 'always',
+    staleTime: 30_000,
   });
+}
+
+function invalidateCategoryQueries(qc: ReturnType<typeof useQueryClient>) {
+  qc.invalidateQueries({ queryKey: KEYS.admin() });
+  qc.invalidateQueries({ predicate: (q) => {
+    const key = q.queryKey as string[];
+    return key[0] === 'store' && (key[2] === 'categories' || key[2] === 'category');
+  }});
 }
 
 export function useCreateCategory() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: CadastrarCategoriaRequest) => categoryService.create(data),
-    onSettled: () => {
-      qc.refetchQueries({ queryKey: KEYS.admin() });
-      qc.invalidateQueries({ queryKey: ['store'] });
-    },
+    onSettled: () => invalidateCategoryQueries(qc),
   });
 }
 
@@ -37,10 +41,7 @@ export function useUpdateCategory() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: AtualizarCategoriaRequest }) => categoryService.update(id, data),
-    onSettled: () => {
-      qc.refetchQueries({ queryKey: KEYS.admin() });
-      qc.invalidateQueries({ queryKey: ['store'] });
-    },
+    onSettled: () => invalidateCategoryQueries(qc),
   });
 }
 
@@ -48,10 +49,7 @@ export function useDeactivateCategory() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => categoryService.deactivate(id),
-    onSettled: () => {
-      qc.refetchQueries({ queryKey: KEYS.admin() });
-      qc.invalidateQueries({ queryKey: ['store'] });
-    },
+    onSettled: () => invalidateCategoryQueries(qc),
   });
 }
 
@@ -59,10 +57,7 @@ export function useReorderCategories() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: ReordenarCategoriasRequest) => categoryService.reorder(data),
-    onSettled: () => {
-      qc.refetchQueries({ queryKey: KEYS.admin() });
-      qc.invalidateQueries({ queryKey: ['store'] });
-    },
+    onSettled: () => invalidateCategoryQueries(qc),
   });
 }
 

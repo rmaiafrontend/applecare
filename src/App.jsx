@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import NavigationTracker from '@/components/NavigationTracker'
-import { pagesConfig } from './pages.config'
+import { pagesConfig, PROTECTED_ROUTES } from './pages.config'
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from '@/components/PageNotFound';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
@@ -14,16 +14,6 @@ const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 
-// Rotas que exigem autenticação
-const PROTECTED_ROUTES = new Set([
-  'Admin',
-  'Orders',
-  'OrderDetail',
-  'Profile',
-  'Checkout',
-  'Cart',
-  'OrderConfirmation',
-]);
 
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>

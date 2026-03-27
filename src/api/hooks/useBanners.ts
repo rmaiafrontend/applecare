@@ -11,19 +11,23 @@ export function useAdminBanners() {
   return useQuery({
     queryKey: KEYS.admin,
     queryFn: () => bannerService.list(),
-    staleTime: 0,
-    refetchOnMount: 'always',
+    staleTime: 30_000,
   });
+}
+
+function invalidateBannerQueries(qc: ReturnType<typeof useQueryClient>) {
+  qc.invalidateQueries({ queryKey: KEYS.admin });
+  qc.invalidateQueries({ predicate: (q) => {
+    const key = q.queryKey as string[];
+    return key[0] === 'store' && key[2] === 'banners';
+  }});
 }
 
 export function useCreateBanner() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: CadastrarBannerRequest) => bannerService.create(data),
-    onSettled: () => {
-      qc.refetchQueries({ queryKey: KEYS.admin });
-      qc.invalidateQueries({ queryKey: ['store'] });
-    },
+    onSettled: () => invalidateBannerQueries(qc),
   });
 }
 
@@ -31,10 +35,7 @@ export function useUpdateBanner() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: AtualizarBannerRequest }) => bannerService.update(id, data),
-    onSettled: () => {
-      qc.refetchQueries({ queryKey: KEYS.admin });
-      qc.invalidateQueries({ queryKey: ['store'] });
-    },
+    onSettled: () => invalidateBannerQueries(qc),
   });
 }
 
@@ -42,10 +43,7 @@ export function useDeactivateBanner() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => bannerService.deactivate(id),
-    onSettled: () => {
-      qc.refetchQueries({ queryKey: KEYS.admin });
-      qc.invalidateQueries({ queryKey: ['store'] });
-    },
+    onSettled: () => invalidateBannerQueries(qc),
   });
 }
 
