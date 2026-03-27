@@ -1,3 +1,5 @@
+import { getToken, clearToken } from '@/lib/tokenStore';
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
 export class ApiError extends Error {
@@ -33,7 +35,7 @@ export async function apiClient<T>(config: RequestConfig): Promise<T> {
     });
   }
 
-  const token = localStorage.getItem('app_access_token');
+  const token = getToken();
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
@@ -55,8 +57,7 @@ export async function apiClient<T>(config: RequestConfig): Promise<T> {
 
   if (!response.ok) {
     if (response.status === 401) {
-      localStorage.removeItem('app_access_token');
-      localStorage.removeItem('access_token');
+      clearToken();
       window.dispatchEvent(new CustomEvent('auth:logout'));
     }
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   User,
@@ -26,6 +26,7 @@ import {
   useCart,
   useOrders,
 } from '@/api/hooks';
+import { useAuth } from '@/lib/AuthContext';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -77,9 +78,8 @@ const menuSections = [
 
 export default function Profile() {
   const slug = useSlug();
+  const { user, logout } = useAuth();
   const [notifications, setNotifications] = useState(true);
-
-  const { data: user } = { data: null }; // Placeholder for user auth hook
 
   const { data: cartItemsRaw = [] } = useCart(slug);
   const cartItems = useMemo(() => cartItemsRaw.map(mapCartItemFromApi), [cartItemsRaw]);
@@ -91,9 +91,7 @@ export default function Profile() {
     return raw.map(mapOrderFromApi);
   }, [ordersPage]);
 
-  const handleLogout = () => {
-    window.localStorage.removeItem('app_access_token'); window.localStorage.removeItem('access_token');
-  };
+  const handleLogout = useCallback(() => logout(), [logout]);
 
   const handleWhatsApp = () => {
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=Ola, preciso de ajuda com a aLink`, '_blank');

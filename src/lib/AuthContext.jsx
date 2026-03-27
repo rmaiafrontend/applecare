@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { authService } from '@/api/services';
+import { getToken, setToken, clearToken } from '@/lib/tokenStore';
 
 const AuthContext = createContext();
 
@@ -27,25 +28,24 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(() => {
     setUser(null);
     setIsAuthenticated(false);
+    clearToken();
     try {
-      localStorage.removeItem('app_access_token');
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('auth_user');
+      sessionStorage.removeItem('auth_user');
       localStorage.removeItem('store_slug');
     } catch (_) {}
   }, []);
 
-  // Restaurar sessão do localStorage
+  // Restaurar sessão do tokenStore (memória + sessionStorage)
+  // Apenas id e nome são persistidos — o objeto completo vive só em memória
   useEffect(() => {
     try {
-      const token = localStorage.getItem('app_access_token');
-      const savedUser = localStorage.getItem('auth_user');
+      const token = getToken();
+      const savedMinimal = sessionStorage.getItem('auth_user');
 
-      if (token && !isTokenExpired(token) && savedUser) {
-        setUser(JSON.parse(savedUser));
+      if (token && !isTokenExpired(token) && savedMinimal) {
+        setUser(JSON.parse(savedMinimal));
         setIsAuthenticated(true);
       } else if (token) {
-        // Token expirado
         logout();
       }
     } catch {
@@ -54,21 +54,13 @@ export const AuthProvider = ({ children }) => {
     setIsLoadingAuth(false);
   }, [logout]);
 
-  // Escutar evento de logout forçado (401 do apiClient)
-  // e mudanças no localStorage (outra aba ou remoção manual via DevTools)
+  // Agendar logout por expiração do JWT + escutar evento de logout forçado (401)
   useEffect(() => {
     const handleForceLogout = () => logout();
 
-    const handleStorageChange = (e) => {
-      if (e.key === 'app_access_token' && !e.newValue) {
-        logout();
-      }
-    };
-
-    // Agendar logout baseado no exp do JWT (em vez de polling a cada 2s)
     let expiryTimeout;
     if (isAuthenticated) {
-      const token = localStorage.getItem('app_access_token');
+      const token = getToken();
       if (!token) {
         logout();
       } else {
@@ -85,10 +77,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     window.addEventListener('auth:logout', handleForceLogout);
-    window.addEventListener('storage', handleStorageChange);
     return () => {
       window.removeEventListener('auth:logout', handleForceLogout);
-      window.removeEventListener('storage', handleStorageChange);
       if (expiryTimeout) clearTimeout(expiryTimeout);
     };
   }, [logout, isAuthenticated]);
@@ -97,9 +87,9 @@ export const AuthProvider = ({ children }) => {
     setAuthError(null);
     try {
       const response = await authService.login({ email, senha });
-      localStorage.setItem('app_access_token', response.token);
-      localStorage.setItem('access_token', response.token);
-      localStorage.setItem('auth_user', JSON.stringify(response.usuario));
+      setToken(response.token);
+      const { id, nome } = response.usuario;
+      sessionStorage.setItem('auth_user', JSON.stringify({ id, nome }));
       if (response.loja?.slug) {
         localStorage.setItem('store_slug', response.loja.slug);
         window.dispatchEvent(new Event('auth:slug-changed'));
@@ -117,9 +107,9 @@ export const AuthProvider = ({ children }) => {
     setAuthError(null);
     try {
       const response = await authService.registro(data);
-      localStorage.setItem('app_access_token', response.token);
-      localStorage.setItem('access_token', response.token);
-      localStorage.setItem('auth_user', JSON.stringify(response.usuario));
+      setToken(response.token);
+      const { id, nome } = response.usuario;
+      sessionStorage.setItem('auth_user', JSON.stringify({ id, nome }));
       if (response.loja?.slug) {
         localStorage.setItem('store_slug', response.loja.slug);
         window.dispatchEvent(new Event('auth:slug-changed'));

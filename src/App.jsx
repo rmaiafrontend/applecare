@@ -15,7 +15,15 @@ const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 
 // Rotas que exigem autenticação
-const PROTECTED_ROUTES = new Set(['Admin']);
+const PROTECTED_ROUTES = new Set([
+  'Admin',
+  'Orders',
+  'OrderDetail',
+  'Profile',
+  'Checkout',
+  'Cart',
+  'OrderConfirmation',
+]);
 
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
