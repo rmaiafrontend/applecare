@@ -147,10 +147,8 @@ export default function Products() {
                   key={product.id}
                   product={product}
                   categoryName={getCategoryName(product.category_id)}
-                  onDelete={(p) => setDeleteTarget(p)}
-                  onToggleActive={handleToggleActive}
-                  onToggleFeatured={handleToggleFeatured}
                   onEdit={handleEdit}
+                  onDelete={(p) => setDeleteTarget(p)}
                 />
               ))}
             </motion.div>
@@ -223,6 +221,7 @@ export default function Products() {
         editProduct={editProduct}
         categories={categories}
         tags={tags}
+        onDelete={(p) => { deleteMutation.mutate(p.id); }}
       />
     </div>
   );

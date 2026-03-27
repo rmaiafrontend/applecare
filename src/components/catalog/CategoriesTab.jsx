@@ -182,15 +182,9 @@ export default function CategoriesTab() {
             <DialogTitle className="text-[#1d1d1f] dark:text-[#f5f5f7]">{editDialog === 'new' ? 'Nova Categoria' : 'Editar Categoria'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">ID *</Label>
-                <Input value={form.category_id} onChange={e => setForm({...form, category_id: e.target.value})} placeholder="cat-1" className="h-11 rounded-2xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Nome *</Label>
-                <Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="iPhone" className="h-11 rounded-2xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
-              </div>
+            <div className="space-y-1.5">
+              <Label className="text-[11px] text-[#86868b] dark:text-[#98989d] font-medium">Nome *</Label>
+              <Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="iPhone" className="h-11 rounded-2xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#f5f5f7]/50 dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e]" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
@@ -225,7 +219,7 @@ export default function CategoriesTab() {
           </div>
           <DialogFooter>
             <button onClick={() => setEditDialog(null)} className="h-10 px-5 text-[13px] font-medium text-[#86868b] dark:text-[#98989d] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] transition-colors">Cancelar</button>
-            <button onClick={handleSave} disabled={saving || !form.name || !form.category_id} className="h-10 px-6 bg-[#0071e3] hover:bg-[#0077ED] dark:bg-[#0a84ff] dark:hover:bg-[#409cff] text-white rounded-full text-[13px] font-semibold flex items-center gap-2 transition-colors shadow-sm disabled:opacity-40">
+            <button onClick={handleSave} disabled={saving || !form.name} className="h-10 px-6 bg-[#0071e3] hover:bg-[#0077ED] dark:bg-[#0a84ff] dark:hover:bg-[#409cff] text-white rounded-full text-[13px] font-semibold flex items-center gap-2 transition-colors shadow-sm disabled:opacity-40">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Salvar
             </button>

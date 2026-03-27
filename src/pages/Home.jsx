@@ -145,6 +145,9 @@ export default function Home() {
   const infoCardCtaLink = homeConfig.info_card_cta_link || '';
   const infoCardBgColor = homeConfig.info_card_bg_color || '#1c1c1e';
 
+  // Carousels
+  const carousels = Array.isArray(homeConfig.carousels) ? homeConfig.carousels.filter(c => c.is_active !== false) : [];
+
   // Product List
   const productListTitle = homeConfig.product_list_title || 'Novidades';
   const productListTemplate = homeConfig.product_list_template || 'launches';
@@ -553,6 +556,42 @@ export default function Home() {
             )}
           </section>
         ))}
+
+        {/* ── Dynamic Carousels ── */}
+        {carousels.map((carousel, ci) => {
+          const items = carousel.source_type === 'category'
+            ? products.filter(p => String(p.category_id) === String(carousel.source_value))
+            : products.filter(p => p.tags?.some(t => t.slug === carousel.source_value || t.name === carousel.source_value));
+          if (items.length === 0) return null;
+          return (
+            <section key={ci} className="mt-8">
+              <div className="flex items-center justify-between px-4 mb-4">
+                <h2 className="text-[17px] font-bold text-gray-900 tracking-tight">{carousel.title || 'Produtos'}</h2>
+                <Link
+                  to={createPageUrl('Products')}
+                  className="text-sm font-medium text-gray-400 flex items-center gap-0.5 hover:text-gray-600 transition-colors"
+                >
+                  Ver todos
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+              <div className="flex gap-3.5 px-4 overflow-x-auto no-scrollbar scroll-smooth pb-1">
+                {items.slice(0, 12).map((product, index) => (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.06, duration: 0.4 }}
+                    className="w-[170px] shrink-0"
+                  >
+                    <ProductCard product={product} onAddToCart={handleAddToCart} />
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          );
+        })}
 
         {/* ── Product List (configurable) ── */}
         {productListItems.length > 0 && (

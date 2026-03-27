@@ -1,8 +1,8 @@
 import React from "react";
-import { Pencil, Trash2, Star, Eye, EyeOff, Truck, Package } from "lucide-react";
+import { Trash2, Truck, Package } from "lucide-react";
 import { formatPrice } from '@/lib/format';
 
-export default function AdminProductCard({ product, categoryName, onDelete, onToggleActive, onToggleFeatured, onEdit }) {
+export default function AdminProductCard({ product, categoryName, onEdit, onDelete }) {
   const discount = product.original_price && product.original_price > product.price
     ? Math.round((1 - product.price / product.original_price) * 100)
     : 0;
@@ -10,14 +10,17 @@ export default function AdminProductCard({ product, categoryName, onDelete, onTo
   const lowStock = (product.stock || 0) <= 2;
 
   return (
-    <div className={`group relative bg-white dark:bg-[#2c2c2e] rounded-2xl border border-black/[0.05] dark:border-white/[0.06] shadow-[0_1px_4px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_4px_rgba(0,0,0,0.2)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.4)] transition-all duration-400 overflow-hidden ${!isActive ? "opacity-55" : ""}`}>
+    <div onClick={() => onEdit(product)} className={`group relative bg-white dark:bg-[#2c2c2e] rounded-2xl border border-black/[0.05] dark:border-white/[0.06] shadow-[0_1px_4px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_4px_rgba(0,0,0,0.2)] hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.4)] transition-all duration-400 overflow-hidden cursor-pointer ${!isActive ? "opacity-55" : ""}`}>
       {/* Image */}
       <div className="relative aspect-square bg-[#f8f8fa] dark:bg-[#1c1c1e] overflow-hidden">
         {product.images?.[0] ? (
           <img src={product.images[0]} alt="" className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500 ease-out" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Package className="w-10 h-10 text-[#d8d8dc] dark:text-[#48484a]" strokeWidth={1.4} />
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#f5f5f7] to-[#e8e8ed] dark:from-[#2c2c2e] dark:to-[#1c1c1e]">
+            <div className="w-14 h-14 rounded-2xl bg-white/80 dark:bg-white/[0.06] flex items-center justify-center shadow-sm">
+              <Package className="w-7 h-7 text-[#c7c7cc] dark:text-[#48484a]" strokeWidth={1.4} />
+            </div>
+            <p className="text-[10px] font-medium text-[#c7c7cc] dark:text-[#48484a] mt-2">Sem imagem</p>
           </div>
         )}
 
@@ -38,39 +41,28 @@ export default function AdminProductCard({ product, categoryName, onDelete, onTo
           )}
         </div>
 
-        {/* Actions top-right */}
-        <div className="absolute top-2.5 right-2.5 flex flex-col gap-1 opacity-0 group-hover:opacity-100 translate-y-0.5 group-hover:translate-y-0 transition-all duration-250">
-          <button
-            onClick={() => onToggleFeatured(product)}
-            className="w-7 h-7 bg-white/90 dark:bg-[#2c2c2e]/90 backdrop-blur rounded-lg flex items-center justify-center shadow-md hover:bg-white dark:hover:bg-[#3a3a3c] transition-colors"
-          >
-            <Star className={`w-3 h-3 ${product.is_featured ? "fill-amber-400 text-amber-400" : "text-[#86868b] dark:text-[#98989d]"}`} />
-          </button>
-          <button
-            onClick={() => onToggleActive(product)}
-            className="w-7 h-7 bg-white/90 dark:bg-[#2c2c2e]/90 backdrop-blur rounded-lg flex items-center justify-center shadow-md hover:bg-white dark:hover:bg-[#3a3a3c] transition-colors"
-          >
-            {isActive ? <Eye className="w-3 h-3 text-[#86868b] dark:text-[#98989d]" /> : <EyeOff className="w-3 h-3 text-[#86868b] dark:text-[#98989d]" />}
-          </button>
-          <button
-            onClick={() => onEdit(product)}
-            className="w-7 h-7 bg-white/90 dark:bg-[#2c2c2e]/90 backdrop-blur rounded-lg flex items-center justify-center shadow-md hover:bg-white dark:hover:bg-[#3a3a3c] transition-colors"
-          >
-            <Pencil className="w-3 h-3 text-[#86868b] dark:text-[#98989d]" />
-          </button>
+        {/* Delete action top-right */}
+        <div className="absolute top-2.5 right-2.5 opacity-0 group-hover:opacity-100 translate-y-0.5 group-hover:translate-y-0 transition-all duration-250" onClick={e => e.stopPropagation()}>
           <button
             onClick={() => onDelete(product)}
             className="w-7 h-7 bg-white/90 dark:bg-[#2c2c2e]/90 backdrop-blur rounded-lg flex items-center justify-center shadow-md hover:bg-red-50 dark:hover:bg-red-500/[0.15] transition-colors"
           >
-            <Trash2 className="w-3 h-3 text-red-400 dark:text-red-400" />
+            <Trash2 className="w-3 h-3 text-red-400" />
           </button>
         </div>
+
+        {/* Inactive badge */}
+        {!isActive && (
+          <div className="absolute top-2.5 right-12">
+            <span className="text-[10px] font-bold bg-black/60 text-white px-2 py-0.5 rounded-md shadow-sm">Inativo</span>
+          </div>
+        )}
 
         {/* Featured badge bottom */}
         {product.is_featured && (
           <div className="absolute bottom-2.5 left-2.5">
             <span className="text-[10px] font-bold bg-amber-400 text-amber-900 px-2 py-0.5 rounded-md shadow-sm flex items-center gap-0.5">
-              <Star className="w-2.5 h-2.5 fill-amber-900" /> Destaque
+              Destaque
             </span>
           </div>
         )}

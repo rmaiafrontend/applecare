@@ -3,8 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, X, GripVertical } from "lucide-react";
+import { useAdminCategories, useAdminTags } from "@/api/hooks";
 
 export default function CarouselsSection({ form, updateField }) {
+  const { data: categories = [] } = useAdminCategories();
+  const { data: tags = [] } = useAdminTags();
   const carousels = form.carousels || [];
 
   const addCarousel = () => {
@@ -62,12 +65,29 @@ export default function CarouselsSection({ form, updateField }) {
                   <SelectItem value="category">Por Categoria</SelectItem>
                 </SelectContent>
               </Select>
-              <Input
-                value={carousel.source_value}
-                onChange={e => updateCarousel(i, "source_value", e.target.value)}
-                placeholder={carousel.source_type === "tag" ? "Nome da tag" : "ID da categoria"}
-                className="h-9 rounded-lg text-[12px] border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-[#2c2c2e] dark:text-[#f5f5f7]"
-              />
+              {carousel.source_type === "category" ? (
+                <Select value={String(carousel.source_value || "")} onValueChange={v => updateCarousel(i, "source_value", v)}>
+                  <SelectTrigger className="h-9 rounded-lg text-[12px] border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-[#2c2c2e] dark:text-[#f5f5f7]">
+                    <SelectValue placeholder="Selecione a categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map(cat => (
+                      <SelectItem key={cat.id} value={String(cat.id)}>{cat.nome}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Select value={carousel.source_value || ""} onValueChange={v => updateCarousel(i, "source_value", v)}>
+                  <SelectTrigger className="h-9 rounded-lg text-[12px] border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-[#2c2c2e] dark:text-[#f5f5f7]">
+                    <SelectValue placeholder="Selecione a tag" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {tags.map(tag => (
+                      <SelectItem key={tag.id} value={tag.slug}>{tag.nome}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </div>
         ))}

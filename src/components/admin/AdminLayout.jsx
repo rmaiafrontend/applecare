@@ -32,7 +32,7 @@ const navSections = [
   {
     label: "Configuração",
     items: [
-      { name: "Layout da Home", view: "home-settings", icon: Home },
+      { name: "Vitrine", view: "home-settings", icon: Home },
       { name: "Chat IA", view: "chat-settings", icon: MessageCircle },
       { name: "Configurações", view: "store-settings", icon: Settings },
     ],
@@ -46,7 +46,7 @@ const viewTitles = {
   "catalog": "Catálogo",
   "categories": "Categorias",
   "tags": "Tags",
-  "home-settings": "Layout da Home",
+  "home-settings": "Vitrine",
   "store-settings": "Configurações",
   "chat-settings": "Chat IA",
   "banner-settings": "Banners",

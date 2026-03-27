@@ -14,6 +14,14 @@ const DAYS = [
   { key: "sun", label: "Domingo" },
 ];
 
+const HOUR_PRESETS = [
+  { label: "Comercial", desc: "Seg–Sex 09:00–18:00", hours: { mon: "09:00 – 18:00", tue: "09:00 – 18:00", wed: "09:00 – 18:00", thu: "09:00 – 18:00", fri: "09:00 – 18:00", sat: "Fechado", sun: "Fechado" } },
+  { label: "Comercial + Sáb", desc: "Seg–Sex 09:00–18:00, Sáb 09:00–13:00", hours: { mon: "09:00 – 18:00", tue: "09:00 – 18:00", wed: "09:00 – 18:00", thu: "09:00 – 18:00", fri: "09:00 – 18:00", sat: "09:00 – 13:00", sun: "Fechado" } },
+  { label: "Loja/Shopping", desc: "Seg–Sáb 10:00–22:00, Dom 14:00–20:00", hours: { mon: "10:00 – 22:00", tue: "10:00 – 22:00", wed: "10:00 – 22:00", thu: "10:00 – 22:00", fri: "10:00 – 22:00", sat: "10:00 – 22:00", sun: "14:00 – 20:00" } },
+  { label: "Integral", desc: "Seg–Dom 08:00–20:00", hours: { mon: "08:00 – 20:00", tue: "08:00 – 20:00", wed: "08:00 – 20:00", thu: "08:00 – 20:00", fri: "08:00 – 20:00", sat: "08:00 – 20:00", sun: "08:00 – 20:00" } },
+  { label: "24 horas", desc: "Todos os dias", hours: { mon: "24 horas", tue: "24 horas", wed: "24 horas", thu: "24 horas", fri: "24 horas", sat: "24 horas", sun: "24 horas" } },
+];
+
 export default function HeaderLinktreeSection({ form, updateField }) {
   const hours = form.header_hours || {};
   const links = form.header_quick_links || [];
@@ -60,6 +68,18 @@ export default function HeaderLinktreeSection({ form, updateField }) {
       {/* 1.1 Horários */}
       <div className="space-y-3">
         <p className="text-[12px] font-bold text-[#1d1d1f] dark:text-[#f5f5f7]">1.1 Horário de Funcionamento</p>
+        <div className="flex flex-wrap gap-1.5">
+          {HOUR_PRESETS.map(preset => (
+            <button
+              key={preset.label}
+              onClick={() => updateField("header_hours", preset.hours)}
+              title={preset.desc}
+              className="text-[11px] font-medium px-3 py-1.5 rounded-lg border border-black/[0.06] dark:border-white/[0.06] bg-white dark:bg-[#2c2c2e] text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-[#f0f0f5] dark:hover:bg-[#3a3a3c] transition-colors"
+            >
+              {preset.label}
+            </button>
+          ))}
+        </div>
         <div className="bg-[#fafafa] dark:bg-[#1c1c1e] rounded-xl p-3 space-y-2">
           {DAYS.map(d => (
             <div key={d.key} className="flex items-center gap-3">

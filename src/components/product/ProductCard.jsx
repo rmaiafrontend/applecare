@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Plus, Truck, RotateCcw } from 'lucide-react';
+import { Plus, Truck, RotateCcw, Package } from 'lucide-react';
 import { formatPrice } from '@/lib/format';
 
 export default function ProductCard({ product, onAddToCart, isAdding }) {
@@ -21,14 +21,20 @@ export default function ProductCard({ product, onAddToCart, isAdding }) {
       {/* Image */}
       <Link to={createPageUrl(`ProductDetail?id=${product.id}`)} className="block relative">
         <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100">
-          <img
-            src={
-              product.images?.[0] ||
-              'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=500&fit=crop'
-            }
-            alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-          />
+          {product.images?.[0] ? (
+            <img
+              src={product.images[0]}
+              alt={product.name}
+              className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200">
+              <div className="w-14 h-14 rounded-2xl bg-white/80 flex items-center justify-center shadow-sm">
+                <Package className="w-7 h-7 text-gray-300" strokeWidth={1.4} />
+              </div>
+              <p className="text-[10px] font-medium text-gray-300 mt-2">Sem imagem</p>
+            </div>
+          )}
 
           {/* Badges top-left */}
           <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">

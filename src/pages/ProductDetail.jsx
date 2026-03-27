@@ -110,10 +110,7 @@ export default function ProductDetail() {
     setIsAdding(false);
   };
 
-  const images =
-    product?.images?.length > 0
-      ? product.images
-      : ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop'];
+  const images = product?.images?.length > 0 ? product.images : [];
 
   const isUsed = product?.condition === 'USADO';
   const hasDiscount = product?.original_price && product.original_price > product.price;
@@ -168,16 +165,29 @@ export default function ProductDetail() {
         <div className="relative bg-gradient-to-b from-gray-100 to-gray-50">
           <div className="relative aspect-[4/5] overflow-hidden">
             <AnimatePresence mode="wait">
-              <motion.img
-                key={currentImage}
-                initial={{ opacity: 0, scale: 1.02 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.3 }}
-                src={images[currentImage]}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
+              {images.length > 0 ? (
+                <motion.img
+                  key={currentImage}
+                  initial={{ opacity: 0, scale: 1.02 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.3 }}
+                  src={images[currentImage]}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200"
+                >
+                  <div className="w-20 h-20 rounded-3xl bg-white/80 flex items-center justify-center shadow-sm">
+                    <Package className="w-10 h-10 text-gray-300" strokeWidth={1.4} />
+                  </div>
+                  <p className="text-sm font-medium text-gray-300 mt-3">Sem imagem</p>
+                </motion.div>
+              )}
             </AnimatePresence>
 
             {/* Gradient overlay bottom */}

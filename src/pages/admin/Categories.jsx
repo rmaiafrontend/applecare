@@ -191,15 +191,9 @@ export default function Categories() {
             <DialogTitle className="text-[#1d1d1f]">{editDialog === 'new' ? 'Nova Categoria' : 'Editar Categoria'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">ID *</Label>
-                <Input value={form.category_id} onChange={e => setForm({...form, category_id: e.target.value})} placeholder="cat-1" className="h-11 rounded-2xl text-[13px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white" />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-[11px] text-[#86868b] font-medium">Nome *</Label>
-                <Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="iPhone" className="h-11 rounded-2xl text-[13px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white" />
-              </div>
+            <div className="space-y-1.5">
+              <Label className="text-[11px] text-[#86868b] font-medium">Nome *</Label>
+              <Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="iPhone" className="h-11 rounded-2xl text-[13px] border-black/[0.06] bg-[#f5f5f7]/50 focus:bg-white" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
@@ -234,7 +228,7 @@ export default function Categories() {
           </div>
           <DialogFooter>
             <button onClick={() => setEditDialog(null)} className="h-10 px-5 text-[13px] font-medium text-[#86868b] hover:text-[#1d1d1f] transition-colors">Cancelar</button>
-            <button onClick={handleSave} disabled={saving || !form.name || !form.category_id} className="h-10 px-6 bg-[#0071e3] hover:bg-[#0077ED] text-white rounded-full text-[13px] font-semibold flex items-center gap-2 transition-colors shadow-sm disabled:opacity-40">
+            <button onClick={handleSave} disabled={saving || !form.name} className="h-10 px-6 bg-[#0071e3] hover:bg-[#0077ED] text-white rounded-full text-[13px] font-semibold flex items-center gap-2 transition-colors shadow-sm disabled:opacity-40">
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Salvar
             </button>

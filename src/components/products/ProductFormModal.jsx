@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, X, Upload, Save, Loader2, Check,
   Info, DollarSign, Image, Cpu, Tags, Settings, FileText,
-  Package, Zap, Star, Eye
+  Package, Zap, Star, Eye, Trash2
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,7 +26,7 @@ const emptyForm = {
 
 const inputClass = "h-10 rounded-xl text-[13px] border-black/[0.06] dark:border-white/[0.06] bg-[#fafafa] dark:bg-[#1c1c1e] dark:text-[#f5f5f7] focus:bg-white dark:focus:bg-[#2c2c2e] transition-colors";
 
-export default function ProductFormModal({ open, onOpenChange, editProduct, categories = [], tags = [] }) {
+export default function ProductFormModal({ open, onOpenChange, editProduct, categories = [], tags = [], onDelete }) {
   const isEditing = !!editProduct;
 
   const [form, setForm] = useState(emptyForm);
@@ -37,6 +37,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [aiFilled, setAiFilled] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const createMutation = useCreateProduct();
   const updateMutation = useUpdateProduct();
@@ -60,6 +61,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
       setSaved(false);
       setSaving(false);
       setAiFilled(false);
+      setConfirmDelete(false);
       setNewTag("");
       setNewSpecLabel("");
       setNewSpecValue("");
@@ -150,7 +152,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
   };
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 
-  const canSave = form.name && form.product_id && form.price && form.category_id;
+  const canSave = form.name && form.price && form.category_id && (isEditing || form.product_id);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -389,6 +391,31 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
                 <Input value={form.datasheet_url} onChange={e => updateField("datasheet_url", e.target.value)} placeholder="https://exemplo.com/ficha.pdf" className={inputClass} />
               </FieldGroup>
             </FormSection>
+
+            {/* Delete */}
+            {isEditing && onDelete && (
+              <div className="pt-2 border-t border-black/[0.04] dark:border-white/[0.06]">
+                {!confirmDelete ? (
+                  <button
+                    onClick={() => setConfirmDelete(true)}
+                    className="flex items-center gap-2 text-[12px] font-medium text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Excluir produto
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-3 bg-red-50 dark:bg-red-500/[0.1] border border-red-100 dark:border-red-500/[0.2] rounded-xl px-4 py-3">
+                    <p className="text-[12px] text-red-600 dark:text-red-400 flex-1">Tem certeza? Esta ação não pode ser desfeita.</p>
+                    <button onClick={() => setConfirmDelete(false)} className="h-7 px-3 rounded-lg text-[11px] font-semibold bg-white dark:bg-[#2c2c2e] border border-black/[0.06] dark:border-white/[0.08] text-[#1d1d1f] dark:text-[#f5f5f7] hover:bg-[#f5f5f7] dark:hover:bg-[#3a3a3c] transition-colors">
+                      Cancelar
+                    </button>
+                    <button onClick={() => { onDelete(editProduct); onOpenChange(false); }} className="h-7 px-3 rounded-lg text-[11px] font-semibold bg-red-500 hover:bg-red-600 text-white transition-colors">
+                      Excluir
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Bottom spacer */}
             <div className="h-2" />
