@@ -48,9 +48,9 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import { lazy } from 'react';
-import LandingPage from './pages/LandingPage';
 import __Layout from './Layout.jsx';
 
+const LandingPage = lazy(() => import('./pages/LandingPage'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Compare = lazy(() => import('./pages/Compare'));
 const Categories = lazy(() => import('./pages/Categories'));
