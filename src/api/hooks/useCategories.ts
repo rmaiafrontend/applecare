@@ -66,6 +66,8 @@ export function usePublicCategories(slug: string) {
     queryKey: KEYS.public(slug),
     queryFn: () => categoryService.publicList(slug),
     enabled: !!slug,
+    staleTime: 60_000,
+    refetchOnWindowFocus: true,
   });
 }
 

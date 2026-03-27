@@ -52,5 +52,7 @@ export function usePublicCatalogSections(slug: string) {
     queryKey: KEYS.public(slug),
     queryFn: () => catalogSectionService.publicList(slug),
     enabled: !!slug,
+    staleTime: 60_000,
+    refetchOnWindowFocus: true,
   });
 }

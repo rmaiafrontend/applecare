@@ -64,6 +64,8 @@ export function usePublicProducts(slug: string, params?: ProdutoListParams) {
     queryKey: KEYS.public(slug, params),
     queryFn: () => productService.publicList(slug, params),
     enabled: !!slug,
+    staleTime: 60_000,
+    refetchOnWindowFocus: true,
   });
 }
 

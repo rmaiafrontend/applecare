@@ -52,5 +52,7 @@ export function usePublicBanners(slug: string, tipo?: BannerTipo) {
     queryKey: KEYS.public(slug, tipo),
     queryFn: () => bannerService.publicList(slug, tipo),
     enabled: !!slug,
+    staleTime: 60_000,
+    refetchOnWindowFocus: true,
   });
 }
