@@ -5,11 +5,20 @@ import {
 } from "lucide-react";
 import { PreviewSectionHeader, PreviewProductCarousel, PreviewProductGrid } from "./PreviewProductGrid";
 
-export default function HomePreview({ form, storeInfo = {}, activeSection, scrollProgress = 0 }) {
+export default function HomePreview({ form, storeInfo = {}, activeSection, scrollProgress = 0, themeColors }) {
   // Campos base vêm de storeInfo (ConfigLoja), campos exclusivos de form (ConfigHome)
   const storeName = storeInfo.name || 'aLink';
   const storeLogo = storeInfo.logo || '';
   const storeWhatsapp = storeInfo.whatsapp || '';
+
+  // Theme colors com defaults
+  const tc = {
+    primary: themeColors?.primary_color || '#1d1d1f',
+    secondary: themeColors?.secondary_color || '#f5f5f7',
+    accent: themeColors?.accent_color || '#0071e3',
+    bg: themeColors?.background_color || '#ffffff',
+    text: themeColors?.text_color || '#1d1d1f',
+  };
   const storeInstagram = storeInfo.instagram || '';
   const scrollRef = useRef(null);
   const isAutoScrolling = useRef(false);
@@ -98,17 +107,17 @@ export default function HomePreview({ form, storeInfo = {}, activeSection, scrol
               >
                 <div
                   ref={scrollRef}
-                  className="w-full h-full overflow-y-auto overflow-x-hidden bg-[#f8f8f8] no-scrollbar"
-                  style={{ scrollBehavior: "smooth", padding: activeSection ? "6px" : "0px", transition: "padding 0.3s ease" }}
+                  className="w-full h-full overflow-y-auto overflow-x-hidden no-scrollbar"
+                  style={{ scrollBehavior: "smooth", padding: activeSection ? "6px" : "0px", transition: "padding 0.3s ease, background-color 0.3s ease", backgroundColor: tc.bg }}
                 >
                   {/* ── 01. Header / Linktree ── */}
                   <div
                     data-section="header"
-                    className={`px-5 pt-6 pb-5 bg-white ${sectionWrapperClass("header")}`}
-                    style={activeGlowStyle("header")}
+                    className={`px-5 pt-6 pb-5 ${sectionWrapperClass("header")}`}
+                    style={{ ...activeGlowStyle("header"), backgroundColor: tc.bg, transition: 'background-color 0.3s ease' }}
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-14 h-14 rounded-2xl bg-gray-800 flex items-center justify-center shrink-0 overflow-hidden">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden" style={{ backgroundColor: tc.primary, transition: 'background-color 0.3s ease' }}>
                         {storeLogo ? (
                           <img src={storeLogo} alt="" className="w-full h-full object-cover" />
                         ) : (
@@ -119,7 +128,7 @@ export default function HomePreview({ form, storeInfo = {}, activeSection, scrol
                       </div>
                       <div className="flex-1 pt-0.5 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-[14px] font-bold text-gray-900 truncate">
+                          <span className="text-[14px] font-bold truncate" style={{ color: tc.text, transition: 'color 0.3s ease' }}>
                             {storeName}
                           </span>
                           <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full ring-1 ring-emerald-500/20 flex items-center gap-0.5 shrink-0">
@@ -180,7 +189,7 @@ export default function HomePreview({ form, storeInfo = {}, activeSection, scrol
                       return (
                         <div className="flex gap-2 mt-4">
                           {hasWhatsapp && (
-                            <div className="flex-1 h-10 rounded-xl bg-gray-800 flex items-center justify-center gap-1.5">
+                            <div className="flex-1 h-10 rounded-xl flex items-center justify-center gap-1.5" style={{ backgroundColor: tc.primary, transition: 'background-color 0.3s ease' }}>
                               <MessageCircle className="w-3.5 h-3.5 text-white" strokeWidth={2} />
                               <span className="text-[10px] font-semibold text-white">WhatsApp</span>
                             </div>
@@ -233,7 +242,7 @@ export default function HomePreview({ form, storeInfo = {}, activeSection, scrol
                       <Bar w="75%" h={14} className="!bg-white/25 mb-2" />
                       <Bar w="50%" h={14} className="!bg-white/12 mb-2" />
                       <Bar w="65%" h={6} className="!bg-white/8 mb-6" />
-                      <div className="inline-flex items-center gap-2 bg-white text-gray-900 px-4 py-2.5 rounded-xl">
+                      <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white" style={{ backgroundColor: tc.accent, transition: 'background-color 0.3s ease' }}>
                         <span className="text-[10px] font-semibold">Explorar</span>
                         <ArrowRight className="w-3 h-3" />
                       </div>
@@ -284,7 +293,7 @@ export default function HomePreview({ form, storeInfo = {}, activeSection, scrol
                     style={activeGlowStyle("categories")}
                   >
                     <div className="flex items-center justify-between px-4 mb-3">
-                      <span className="text-[13px] font-bold text-gray-900">Categorias</span>
+                      <span className="text-[13px] font-bold" style={{ color: tc.text }}>Categorias</span>
                       <span className="text-[10px] text-gray-400 flex items-center">
                         Ver todas
                         <ChevronRight className="w-3 h-3" />
@@ -293,7 +302,7 @@ export default function HomePreview({ form, storeInfo = {}, activeSection, scrol
                     <div className="flex gap-2.5 px-4 overflow-hidden">
                       {["iPhone", "Mac", "Watch", "Audio"].map(name => (
                         <div key={name} className="flex flex-col items-center gap-2 shrink-0">
-                          <div className="w-[60px] h-[60px] rounded-2xl bg-gray-800 flex items-center justify-center">
+                          <div className="w-[60px] h-[60px] rounded-2xl flex items-center justify-center" style={{ backgroundColor: tc.primary, transition: 'background-color 0.3s ease' }}>
                             <div className="w-6 h-6 rounded-lg bg-white/15" />
                           </div>
                           <span className="text-[9px] font-semibold text-gray-600">{name}</span>

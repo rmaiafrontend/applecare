@@ -241,6 +241,13 @@ export default function StoreSettingsTab() {
               whatsapp: form.whatsapp_number,
               instagram: form.instagram_url,
             }}
+            themeColors={{
+              primary_color: form.primary_color,
+              secondary_color: form.secondary_color,
+              accent_color: form.accent_color,
+              background_color: form.background_color,
+              text_color: form.text_color,
+            }}
           />
         </div>
       </div>
