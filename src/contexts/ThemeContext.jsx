@@ -19,6 +19,9 @@ export function ThemeProvider({ children }) {
       root.classList.remove("dark");
     }
     localStorage.setItem("admin-theme", theme);
+
+    // Limpar classe dark ao desmontar (sair do admin)
+    return () => root.classList.remove("dark");
   }, [theme]);
 
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
