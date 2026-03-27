@@ -98,8 +98,8 @@ export default function Home() {
   const aiButtonActive = homeConfig.ai_button_active !== false;
   const aiButtonTitle = homeConfig.ai_button_title || 'Compra Assistida';
   const aiButtonSubtitle = homeConfig.ai_button_subtitle || 'Converse com a IA e descubra o produto ideal pra você';
-  const aiButtonGradientFrom = homeConfig.ai_button_gradient_from || '#6366f1';
-  const aiButtonGradientTo = homeConfig.ai_button_gradient_to || '#a855f7';
+  const aiButtonGradientFrom = homeConfig.ai_button_gradient_from || 'var(--store-accent-hex)';
+  const aiButtonGradientTo = homeConfig.ai_button_gradient_to || 'var(--store-primary-hex)';
 
   // Categories
   const categoriesActive = homeConfig.categories_active !== false;
