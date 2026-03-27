@@ -21,12 +21,23 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const validateEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const trimmedEmail = email.trim();
+    if (!validateEmail(trimmedEmail)) {
+      setError('Formato de email invalido');
+      return;
+    }
+    if (senha.length < 6) {
+      setError('Senha deve ter pelo menos 6 caracteres');
+      return;
+    }
     setError('');
     setLoading(true);
     try {
-      await login(email, senha);
+      await login(trimmedEmail, senha);
       navigate('/Admin');
     } catch (err) {
       setError(err.message || 'Email ou senha incorretos');

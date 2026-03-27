@@ -51,15 +51,34 @@ export default function Registro() {
     });
   };
 
-  const canGoStep2 = form.nomeLoja.trim() && form.slug.trim();
-  const canSubmit = form.nomeUsuario.trim() && form.emailUsuario.trim() && form.senha.length >= 6;
+  const validateEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const sanitizeSlug = (v) => v.toLowerCase().replace(/[^a-z0-9-]/g, '').replace(/--+/g, '-');
+
+  const canGoStep2 = form.nomeLoja.trim() && form.slug.trim() && /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(form.slug);
+  const canSubmit = form.nomeUsuario.trim() && validateEmail(form.emailUsuario.trim()) && form.senha.length >= 6;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateEmail(form.emailUsuario.trim())) {
+      setError('Formato de email invalido');
+      return;
+    }
+    if (form.senha.length < 6) {
+      setError('Senha deve ter pelo menos 6 caracteres');
+      return;
+    }
     setError('');
     setLoading(true);
     try {
-      await registro(form);
+      await registro({
+        ...form,
+        nomeLoja: form.nomeLoja.trim(),
+        slug: form.slug.trim(),
+        nomeUsuario: form.nomeUsuario.trim(),
+        emailUsuario: form.emailUsuario.trim(),
+        emailLoja: form.emailLoja.trim() || undefined,
+        telefoneLoja: form.telefoneLoja.trim() || undefined,
+      });
       navigate('/Admin');
     } catch (err) {
       setError(err.message || 'Erro ao criar conta');
@@ -156,7 +175,7 @@ export default function Registro() {
                   <input
                     type="text"
                     value={form.slug}
-                    onChange={(e) => { update('slug', e.target.value); setSlugEdited(true); }}
+                    onChange={(e) => { update('slug', sanitizeSlug(e.target.value)); setSlugEdited(true); }}
                     placeholder="minha-loja"
                     required
                     className="w-full h-12 bg-white/[0.06] border border-white/[0.08] rounded-xl pl-11 pr-4 text-[15px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 focus:bg-white/[0.08] transition-all"
