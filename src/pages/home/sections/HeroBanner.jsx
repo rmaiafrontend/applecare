@@ -16,7 +16,7 @@ export default function HeroBanner({
 }) {
   return (
     <motion.section initial="hidden" animate="visible" variants={fadeUp} className="relative mx-4 mt-4 rounded-3xl overflow-hidden">
-      <div className="relative p-6 pb-7">
+      <div className="relative p-6 pb-7 min-h-[280px]">
         <img src={image} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0" style={{ background: `linear-gradient(to right, rgb(var(--store-primary) / 0.97), rgb(var(--store-primary) / 0.85), rgb(var(--store-primary) / 0.6))` }} />
         <div className="absolute inset-0" style={{ background: `linear-gradient(to top, rgb(var(--store-primary) / 0.8), transparent 60%)` }} />
