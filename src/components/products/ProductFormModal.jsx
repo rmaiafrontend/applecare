@@ -73,6 +73,7 @@ export default function ProductFormModal({ open, onOpenChange, editProduct, cate
       description: data.description || prev.description,
       specs: data.specs?.length ? data.specs : prev.specs,
       tags: data.tags?.length ? data.tags : prev.tags,
+      images: data.image ? [data.image, ...prev.images] : prev.images,
     }));
     setAiFilled(true);
     setTimeout(() => setAiFilled(false), 3000);
