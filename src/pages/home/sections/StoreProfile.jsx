@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Clock, MessageCircle, Tag, Zap, Package, HelpCircle, Instagram } from 'lucide-react';
+import { Clock, MessageCircle, Tag, Zap, Package, HelpCircle, Instagram, Youtube, Facebook, Twitter } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+const TikTokIcon = ({ className, strokeWidth = 1.75 }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -71,17 +77,17 @@ export default function StoreProfile({
           )}
           {tiktokUrl && (
             <a href={tiktokUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-store-secondary flex items-center justify-center text-store-text/60 hover:bg-store-secondary/80 active:scale-95 transition-all">
-              <span className="text-[13px] font-bold">TT</span>
+              <TikTokIcon className="w-[18px] h-[18px]" strokeWidth={1.75} />
             </a>
           )}
           {youtubeUrl && (
             <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-store-secondary flex items-center justify-center text-store-text/60 hover:bg-store-secondary/80 active:scale-95 transition-all">
-              <span className="text-[13px] font-bold">YT</span>
+              <Youtube className="w-[18px] h-[18px]" strokeWidth={1.75} />
             </a>
           )}
           {facebookUrl && (
             <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className="w-11 h-11 rounded-2xl bg-store-secondary flex items-center justify-center text-store-text/60 hover:bg-store-secondary/80 active:scale-95 transition-all">
-              <span className="text-[13px] font-bold">FB</span>
+              <Facebook className="w-[18px] h-[18px]" strokeWidth={1.75} />
             </a>
           )}
         </div>
