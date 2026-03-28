@@ -37,7 +37,7 @@ export default function HeroBanner({
             {title}
           </motion.h1>
 
-          <motion.p variants={fadeUp} custom={1.5} className="text-[20px] text-white/60 mb-5 leading-snug max-w-[300px] font-medium">
+          <motion.p variants={fadeUp} custom={1.5} className="text-[14px] text-white/50 mb-6 leading-relaxed max-w-[320px]">
             {subtitle}
           </motion.p>
 
