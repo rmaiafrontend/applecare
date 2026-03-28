@@ -33,14 +33,12 @@ export default function HeroBanner({
             </motion.div>
           )}
 
-          <motion.h1 variants={fadeUp} custom={1} className="text-[28px] font-bold mb-2 leading-[1.15] text-white tracking-tight">
+          <motion.h1 variants={fadeUp} custom={1} className="text-[28px] font-bold mb-1 leading-[1.15] text-white tracking-tight">
             {title}
-            <br />
-            <span className="text-white/60">{subtitle}</span>
           </motion.h1>
 
-          <motion.p variants={fadeUp} custom={2} className="text-white/50 text-sm mb-6 leading-relaxed max-w-[240px]">
-            Originais com garantia. Entrega express na sua porta.
+          <motion.p variants={fadeUp} custom={1.5} className="text-[15px] text-white/60 mb-5 leading-snug max-w-[280px]">
+            {subtitle}
           </motion.p>
 
           <motion.div variants={fadeUp} custom={3}>
