@@ -21,7 +21,7 @@ import ProductFormTags from "./ProductFormTags";
 
 const emptyForm = {
   product_id: "", name: "", sku: "", price: "", original_price: "",
-  stock: "0", express_delivery: false, category_id: "", condition: "NOVO",
+  stock: "1", express_delivery: false, category_id: "", condition: "NOVO",
   images: [], description: "", specs: [], datasheet_url: "",
   is_featured: false, is_active: true, tags: [],
 };
